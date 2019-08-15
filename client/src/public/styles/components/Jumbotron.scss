@@ -1,0 +1,28 @@
+.jumbotron {
+    height: 700px;
+    padding: 0 !important;
+    margin: 0;
+    .before {
+        content: "";
+        background-color: rgba(71, 73, 76, 0.6);
+        background-size: cover;
+        height: 700px;
+        width: 100vw;
+        position: absolute;
+    }
+    h2 {
+        color: $primary-white;
+        margin: 15px 0;
+    }
+    p {
+        color: $primary-white;
+        text-align: center;
+    }
+    img {
+    height: 525px;
+    width: 350px;
+    }
+    .button-row {
+        width: 500px;
+    }
+}

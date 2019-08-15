@@ -1,0 +1,10 @@
+#ProfilePictureUpload {
+    height: 350px;
+    background: grey;
+    .dropzone {
+        height: 100%;
+        p {
+            height: 100%;
+        }
+    }
+}

@@ -1,0 +1,74 @@
+#UpdateUserForm {
+    margin: 0 auto;
+    padding: 20px;
+    label {
+        display: flex;
+        align-items: center;
+        font-size: 1.5rem;
+        svg {
+            margin-left: 5px;
+            font-size: 1.2rem;
+            &:hover{
+                cursor: pointer;
+            }
+        }
+    }
+    .update-input-wrapper {
+        &.input-error {
+            .before{
+                background: $primary-red;
+            }
+            * {
+                ::before{
+                    background: $primary-red; 
+                }
+            }
+        }
+        .update-input {
+            display: flex;
+            align-items: center;
+            input {
+                background: $primary-white;
+                flex: 1;
+                font-size: 1.25rem;
+                border: none;
+                &:disabled {
+                    border:none;
+                    color: $font-black;
+                    -webkit-text-fill-color: $font-black;
+                    opacity: 1;
+                }
+            }
+            svg {
+                font-size: 1.2rem;
+                &.fa-check-circle {
+                    color: #0b8457;
+                }
+            }
+        }
+        hr {
+            height: 2px;
+            width: 0;
+            border:none;
+            &.enabled {
+                width: 100%;
+                background: #0b8457;
+            }
+            &.error {
+                width: 100%;
+                background: $primary-red;
+            }
+        }
+    }
+    .actions {
+        .ui.button {
+            color: $primary-white;
+            &.submit {
+                background-color: #1A5A60;
+            }
+            &.delete {
+                background-color: $primary-red;
+            }
+        }
+    }
+}

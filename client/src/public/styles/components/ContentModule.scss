@@ -1,0 +1,29 @@
+#ContentModule {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
+    .tabs-wrapper {
+        display: flex;
+        justify-content: space-between;
+        width: 100vw;
+        .tab {
+            text-align: center;
+            padding: 15px 30px;
+            margin: 0;
+            flex: 1;
+            &.deselected-tab {
+                background-color: grey;
+                border-bottom: 2px solid $primary-blue;
+                &.right-tab {
+                    border-left: 2px solid $primary-blue;
+                    border-bottom-left-radius: 5px;
+                }
+                &.left-tab{
+                    border-right: 2px solid $primary-blue;
+                    border-bottom-right-radius: 5px;
+                }
+            }
+        }
+    }
+}

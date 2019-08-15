@@ -1,0 +1,43 @@
+#Register {
+    min-height: 100vh;
+    background-color: $primary-blue;
+    display: flex;
+    flex-direction: column;    
+    flex: 1 0 auto;
+    padding-top: 70px;
+    #RegisterForm{
+        margin-bottom: 40px;
+        * {
+            color: $primary-white !important;
+        }
+        button {
+            background-color:$primary-red;
+        }
+        .inline-form-field {
+            display: flex !important;
+            justify-content: space-between;
+        }
+        .input-field {
+            border-bottom: 2px solid $primary-white !important;
+            margin: 0 10px;
+            font-size: 16px;
+            .flex {
+                align-items: center;
+            }
+        }
+        .form-control {
+            background-color: $primary-blue !important;
+            border: none !important;
+            padding: 0;
+            margin: 10px 0;
+        }
+        .show-password {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            input {
+                margin-right: 5px;
+            }
+        }
+    }
+}

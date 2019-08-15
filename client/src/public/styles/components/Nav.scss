@@ -1,0 +1,36 @@
+#Nav {
+    background-color: $primary-blue;
+    position: fixed;
+    z-index: 9999;
+    top:0;
+    padding: 10px 0;
+    height: 70px;
+    width: 100vw;
+    border-radius: 2px;
+    box-shadow: 2px 0px 5px #555;
+    * {
+        color: $primary-white;
+        font-size: 1.2rem;
+    }
+    .item {
+        height: 45px;
+    }
+    .dropdown {
+        display: flex;
+        position: relative;
+        align-items: center;
+        .dropdown-items {
+            .item {
+                color: $primary-blue;
+                margin: 0;
+            }
+            background-color: $primary-white;
+            display: flex;
+            justify-content: flex-start;
+            flex-direction: column;
+            position: absolute;
+            top: 30px;
+            border: solid 1px $primary-blue;
+        }
+    }
+}

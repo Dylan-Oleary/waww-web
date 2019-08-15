@@ -1,0 +1,17 @@
+{
+  "name": "what-are-we-watching",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"cd api && npm run dev\" \"cd client && npm run start \"",
+    "build-client": "cd client && npm run build",
+    "start-server": "cd api && npm run start",
+    "start": "npm run build-client && npm run start-server"
+  },
+  "author": "Dylan O'Leary",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^4.1.1"
+  }
+}

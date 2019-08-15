@@ -1,0 +1,31 @@
+.slick-active {
+    & > div {
+        display: flex;
+        justify-content: center;
+    }
+}
+.slick-arrow {
+    &::before {
+        font-size: 35px;
+        color:$primary-red;
+    }
+}
+
+.slick-dots {
+    margin-left: 0;
+    &.slick-thumb {
+        bottom: -45px;
+        li {
+            width: 60px;
+            height: 45px;
+        }
+        a {
+            margin-bottom: 0;
+        }
+        img {
+            max-width: 100%;
+            margin: 0 0 1.45rem;
+            padding: 0;
+        }
+    }
+}

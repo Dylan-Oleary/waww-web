@@ -1,0 +1,219 @@
+@import './variables.scss';
+@import './icons.scss';
+@import './toastr.scss';
+@import './components/CardDeck.scss';
+@import './components/CardModal.scss';
+@import './components/Carousel.scss';
+@import './components/CheckboxGroup.scss';
+@import './components/CommentCard.scss';
+@import './components/ContentModule.scss';
+@import './components/Footer.scss';
+@import './components/Jumbotron.scss';
+@import './components/Layout.scss';
+@import './components/ListView.scss';
+@import './components/ListViewCard.scss';
+@import './components//Modal.scss';
+@import './components/Nav.scss';
+@import './components/Panel.scss';
+@import './components//ProfilePictureUpload.scss';
+@import './components/SearchBar.scss';
+@import './components/SearchResults.scss';
+@import './components/SearchResultCard.scss';
+@import './components//UpdateUserForm.scss';
+@import './components//VideoPlayer.scss';
+@import './pages/Account.scss';
+@import './pages/MovieProfile.scss';
+@import './static/Login.scss';
+@import './static/Register.scss';
+
+html, body, #root, #App, #Main {
+    min-height: 100vh;
+}
+
+.text {
+    &.small {
+        font-size: 1rem;
+        margin-top: 10px;
+    }
+    &.medium {
+        font-size: 1.25rem;
+        font-weight: 300;
+    }
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.flex {
+    display: flex;
+    flex: 1;
+    &.space-between {
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 4rem 8rem;
+    }
+    &.two-items {
+        justify-content: space-between;
+        .flex-item {
+            width: 50%;
+        }
+    }
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.fluid {
+    height: auto;
+    width: 100%;
+}
+
+.footnote {
+    display: flex;
+    justify-content: center;
+    color: $primary-white;
+    margin-top: 10px;
+    a {
+        padding: 0 5px;
+        color: $primary-red !important;
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+}
+
+.blur:hover img {
+    -webkit-filter: blur(2px);
+    filter: blur(4px);
+}
+
+.inline-form-field {
+    display: flex !important;
+    justify-content: space-between;
+}
+
+.synopsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* number of lines to show */
+    line-height: 1.3rem;        /* fallback */
+    max-height: 3.9;       /* fallback */
+}
+
+.top-layer {
+    display: flex;
+    justify-content: center;
+    pointer-events: all;
+    z-index: 99999;
+}
+
+.form-image-container {
+    height: 300px;
+    width: 500px;
+    margin: 0 auto;
+    margin-bottom: 30px;
+}
+
+.ui.form .field .field.input-field .form-control:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #13293d inset !important;
+    box-shadow: 0 0 0 1000px #13293d inset !important;
+    -webkit-text-fill-color: #F6F4F3;
+    caret-color: #F6F4F3;
+}
+
+.ui.active.loader {
+    height: 50px;
+    width: 50px;
+}
+
+.column-centered {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+    align-items: center;
+    z-index: 999;
+    padding: 30px 0 30px;
+    min-width: 405px;
+}
+
+.layer-one {
+    position: relative;
+    z-index: 999;
+}
+
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    &.three-buttons{
+        .flex-column {
+            align-items: center;
+            width: 50%;
+        }
+        .flex * {
+            justify-content: center;
+            width: 50%;
+        }
+    }
+}
+
+.bold {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.title-link {
+    &:hover {
+        color: $primary-red;
+        cursor: pointer;
+    }
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.vertical-hr {
+    content: '';
+    max-height: 80%;
+    display: flex;
+    align-items: center;
+    width: 2px;
+    background-color: $primary-blue;
+    opacity: 0.4;
+    margin: 0 10px;
+}
+
+.inline-jumbo-before {
+    content: "";
+    background-color: rgba(71, 73, 76, 0.6);
+    background-size: cover;
+    height: 100%;
+    width: 100vw;
+    position: absolute;
+}
+
+.text-medium {
+    font-size: 1.25rem;
+}
+
+.ui.button {
+    color: $primary-white;
+    &.submit {
+        background-color: #1A5A60;
+    }
+    &.delete {
+        background-color: $primary-red;
+    }
+}

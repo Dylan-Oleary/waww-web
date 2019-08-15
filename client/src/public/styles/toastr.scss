@@ -1,0 +1,52 @@
+@import './variables.scss';
+
+.Toastify__toast-container--top-right {
+    top: 70px !important;
+    right: 1em !important;
+}
+
+.Toastify__toast-container--top-center {
+    top: 200px !important;
+}
+
+#Toastr {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+}
+
+.toast-success {
+    background-color: #1A5A60;
+}
+
+.toast-error {
+    background-color: $primary-red;
+}
+
+.toast-success, .toast-error {
+    color: $primary-white;
+    span {
+        padding-left: 10px;
+    }
+}
+
+.toast-general {
+    background-color: #fff;
+    color: $primary-blue !important;
+    height: 100px;
+    span {
+        text-align: center;
+        font-size: 1.5rem;
+    }
+}
+
+.toast-progress {
+    background: $primary-white;
+}
+
+.toast-message-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+}

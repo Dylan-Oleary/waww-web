@@ -1,0 +1,39 @@
+#VideoPlayerWrapper {
+    display: flex;
+    flex-direction: column;
+    #VideoPlayer {
+        padding-top: 56.25%;
+        position: relative;
+        width: 100%;
+        iframe {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top:0;
+            left:0;
+        }
+    }
+    #VideoPlayerControls {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        min-height: 100%;
+        .video-thumb {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            width: 20%;
+            text-align: center;
+            img {
+                height: 60px;
+                width: 100px;
+            }
+            &.selected-video {
+                color: $primary-red;
+                font-weight: bold;
+                text-shadow: -1px -1px 1px rgba(255,255,255,.1), 1px 1px 1px rgba(0,0,0,.5);
+            }
+        }
+    }
+}

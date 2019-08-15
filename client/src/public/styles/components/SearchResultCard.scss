@@ -1,0 +1,17 @@
+#SearchResultCard {
+    display: flex;
+    width: 530px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    .search-view-image-container {
+        position: relative;
+        height: 270px;
+        width: 180px;
+    }
+    .search-view-card-content {
+        width: 350px;
+        padding-left: 10px;
+        display: flex;
+        flex-direction: column;
+    }    
+}

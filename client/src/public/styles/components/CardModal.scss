@@ -1,0 +1,23 @@
+#CardModal {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 999;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    &::before {
+        content: "";
+        background-color: rgba(71, 73, 76, 0.8);
+        background-size: cover;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+    }
+    &:hover {
+        opacity: 1;
+        pointer-events: all;
+    }
+}
