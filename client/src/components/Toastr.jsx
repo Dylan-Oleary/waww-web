@@ -9,7 +9,8 @@ import {
     faHeartBroken as removeFromFavourites,
     faEye as addToViewed,
     faEyeSlash as removeFromViewed,
-    faCheck as success
+    faCheck as success,
+    faSignOutAlt as logOut
 } from '@fortawesome/free-solid-svg-icons';
 
 const Toastr = ({ messages, type, alertFor }) => {
@@ -34,7 +35,10 @@ const Toastr = ({ messages, type, alertFor }) => {
                 return <FontAwesomeIcon icon={addToViewed} size="2x" />
             }
             if(alertFor === "deleteAccount"){
-                return <FontAwesomeIcon icon={success} />
+                return <FontAwesomeIcon icon={success} size="2x" />
+            }
+            if(alertFor === "userLogout"){
+                return <FontAwesomeIcon icon={logOut} size="2x" />
             }
         }
 

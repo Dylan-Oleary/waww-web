@@ -57,7 +57,7 @@ router.post("/", (req, res) => {
         alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
         alert.alertFor = "DB ERROR"
   
-        res.send(500).send({ alert });
+        res.status(500).send({ alert });
       })
     }
   })
@@ -65,7 +65,7 @@ router.post("/", (req, res) => {
     alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
     alert.alertFor = "DB ERROR"
 
-    res.send(502).send({ alert });
+    res.status(502).send({ alert });
   })
 });
 
@@ -129,7 +129,7 @@ router.post("/watchlist", async (req, res) => {
           alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
           alert.alertFor = "DB ERROR"
     
-          res.send(502).send({ alert });
+          res.status(502).send({ alert });
         })
 
     if(!watchListMovie){
@@ -167,7 +167,7 @@ router.post("/watchlist", async (req, res) => {
         alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
         alert.alertFor = "DB ERROR"
   
-        res.send(502).send({ alert });
+        res.status(502).send({ alert });
       })
     } else {
       //If it is on the Watch List, remove it
@@ -207,7 +207,7 @@ router.post("/watchlist", async (req, res) => {
         alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
         alert.alertFor = "DB ERROR"
   
-        res.send(502).send({ alert });
+        res.status(502).send({ alert });
       })
     }
   }
@@ -238,7 +238,7 @@ router.post("/favourites", async (req, res) => {
           alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
           alert.alertFor = "DB ERROR"
     
-          res.send(502).send({ alert });
+          res.status(502).send({ alert });
         })
 
     if(!favouriteMovie){
@@ -276,7 +276,7 @@ router.post("/favourites", async (req, res) => {
         alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
         alert.alertFor = "DB ERROR"
   
-        res.send(403).send({ alert });
+        res.status(403).send({ alert });
       })
     } else {
       //If it is in Favourites, remove it
@@ -316,7 +316,7 @@ router.post("/favourites", async (req, res) => {
         alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
         alert.alertFor = "DB ERROR"
   
-        res.send(403).send({ alert });
+        res.status(403).send({ alert });
       })
     }
   }
@@ -347,7 +347,7 @@ router.post("/viewed", async (req, res) => {
           alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
           alert.alertFor = "DB ERROR"
     
-          res.send(502).send({ alert });
+          res.status(502).send({ alert });
         })
 
     if(!viewedMovie){
@@ -385,7 +385,7 @@ router.post("/viewed", async (req, res) => {
         alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
         alert.alertFor = "DB ERROR"
   
-        res.send(403).send({ alert });
+        res.status(403).send({ alert });
       })
     } else {
       //If it is in Viewed, remove it
@@ -425,7 +425,7 @@ router.post("/viewed", async (req, res) => {
         alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
         alert.alertFor = "DB ERROR"
   
-        res.send(403).send({ alert });
+        res.status(403).send({ alert });
       })
     }
   }
@@ -483,7 +483,7 @@ router.post("/update", async (req, res) => {
       alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
       alert.alertFor = "DB ERROR"
 
-      res.send(403).send({ alert });
+      res.status(403).send({ alert });
 		})
     }
 });
@@ -512,7 +512,7 @@ router.post("/delete", async (req, res) => {
         alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
         alert.alertFor = "DB ERROR"
   
-        res.send(403).send({ alert });
+        res.status(403).send({ alert });
       })
     }
 });

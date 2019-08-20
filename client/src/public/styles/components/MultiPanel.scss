@@ -1,0 +1,70 @@
+#MultiPanel {
+    margin: 2rem 0;
+    .multi-content{
+        display: flex;
+        height: 300px;
+    }
+    .multi-image-wrapper {
+        width: 800px;
+        display: flex;
+        flex: 1;
+        .multi-image-main {
+            width: 500px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            position: relative;
+        }
+        .multi-image-stack {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            div {
+                position: relative;
+                height: 50%;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+        }
+    }
+    .multi-panel-list {
+        width: 450px;
+        padding: 0 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .multi-list-item {
+        font-size: 18px;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    .title-overlay-small {
+        position: absolute;
+        bottom: 0;
+        margin: 0;
+        width: 100%;
+        padding: .5rem 1rem;
+        font-size: 14px;
+        color: $primary-white;
+        background-color: rgba(71, 73, 76, 0.6);
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    .title-overlay-tiny {
+        position: absolute;
+        bottom: 0;
+        margin: 0;
+        width: 100%;
+        padding: .5rem 1rem;
+        font-size: 11px;
+        color: $primary-white;
+        background-color: rgba(71, 73, 76, 0.6);
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

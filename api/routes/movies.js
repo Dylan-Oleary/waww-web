@@ -1,7 +1,11 @@
 const router = require("express").Router();
 const tmdb = require('./apis/tmdb');
 const Movie = require('../models/movie');
-const User = require('../models/user');
+
+const alert = {
+    alertMessages: [],
+    alertFor: null
+}
 
 router.get(`/search`, (req, res) => {
     //Search the API for movies with the title, we get back an Array
@@ -87,20 +91,119 @@ router.post(`/`, async (req, res) => {
     }
 });
 
-router.get(`/:id/edit`, (req, res) => {
-    res.send("MOVIE EDIT")
+router.get('/now-playing', async (req, res) => {
+    tmdb.get("/movie/now_playing", {
+        params: {
+            api_key: process.env.TMDB_KEY,
+            language: "en-US",
+            region: "US",
+            page: 1,
+        }
+    }).then( response => {
+        const nowPlaying = response.data.results.slice(0, 11).map( movie => {
+            return {
+                id: movie.id,
+                title: movie.title,
+                poster_path: movie.poster_path,
+                backdrop_path: movie.backdrop_path,
+                release_date: movie.release_date
+            }
+        });
+
+        res.status(200).send({ nowPlaying })
+
+    }).catch( err => {
+        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
+        alert.alertFor = "TMDB API ERROR"
+    
+        res.status(502).send({ alert });
+    })
 });
 
-router.post(`/update`, (req, res) => {
-    res.send("MOVIE UPDATE")
-});
+router.get('/popular', async (req, res) => {
+    tmdb.get("/movie/popular", {
+        params: {
+            api_key: process.env.TMDB_KEY,
+            language: "en-US",
+            region: "US",
+            page: 1,
+        }
+    }).then( response => {
+        const popular = response.data.results.map( movie => {
+            return {
+                id: movie.id,
+                title: movie.title,
+                poster_path: movie.poster_path,
+                backdrop_path: movie.backdrop_path,
+                release_date: movie.release_date
+            }
+        });
 
-router.post(`/destroy`, (req, res) => {
-    res.send("MOVIE DESTROY")
-});
+        res.status(200).send({ popular })
 
-// router.get(`/:id`, (req, res) => {
-//     res.send()
-// });
+    }).catch( err => {
+        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
+        alert.alertFor = "TMDB API ERROR"
+    
+        res.status(502).send({ alert });
+    })
+})
+
+router.get('/top-rated', async (req, res) => {
+    tmdb.get("/movie/top_rated", {
+        params: {
+            api_key: process.env.TMDB_KEY,
+            language: "en-US",
+            region: "US",
+            page: 1,
+        }
+    }).then( response => {
+        const topRated = response.data.results.map( movie => {
+            return {
+                id: movie.id,
+                title: movie.title,
+                poster_path: movie.poster_path,
+                backdrop_path: movie.backdrop_path,
+                release_date: movie.release_date
+            }
+        });
+
+        res.status(200).send({ topRated })
+
+    }).catch( err => {
+        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
+        alert.alertFor = "TMDB API ERROR"
+    
+        res.status(502).send({ alert });
+    })
+})
+
+router.get('/upcoming', async (req, res) => {
+    tmdb.get('/movie/upcoming', {
+        params: {
+            api_key: process.env.TMDB_KEY,
+            language: "en-US",
+            region: "US",
+            page: 1
+        }
+    }).then( response => {
+        const upcoming = response.data.results.slice(1, 7).map( movie => {
+            return {
+                id: movie.id,
+                title: movie.title,
+                poster_path: movie.poster_path,
+                backdrop_path: movie.backdrop_path,
+                release_date: movie.release_date
+            }
+        });
+
+        res.status(200).send({ upcoming });
+    }).catch( err => {
+        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
+        alert.alertFor = "TMDB API ERROR"
+    
+        res.status(502).send({ alert });
+    })
+});
 
 module.exports = router;

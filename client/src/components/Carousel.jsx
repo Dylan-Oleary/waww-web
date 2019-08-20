@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Slider from 'react-slick';
  
 const Carousel = ({ children, iFrame, videos }) => {
-    const  settings = {
+    const settings = {
         customPaging: iFrame ? i => {
             return (
               <a>

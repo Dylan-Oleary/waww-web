@@ -68,6 +68,13 @@ export const userLogout = () => {
         //Log User Out
         dispatch({ type: "LOGOUT_REQUEST" });
         dispatch({ type: "CLEAR_USER" });
+        dispatch({ 
+            type: "LOG_SUCCESS", 
+            payload: {
+                alertFor: "userLogout",
+                alertMessages: ["Logout Successful!"]
+            } 
+        });
 
         navigate("/");
     }

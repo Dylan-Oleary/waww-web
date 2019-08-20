@@ -1,17 +1,19 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import Account from '../pages/Account';
-import Home from '../pages/Home';
 import About from '../pages/About';
-import UserList from '../pages/UserList';
+import Account from '../pages/Account';
+import GenreDiscover from '../pages/GenreDiscover';
+import Home from '../pages/Home';
 import Login from '../pages/Login';
 import MovieProfile from '../pages/MovieProfile';
 import Register from '../pages/Register';
 import SearchResults from '../pages/SearchResults';
+import UserList from '../pages/UserList';
 
 const routes = {
     "/": () => <Layout><Home/></Layout>,
     "/about": () => <Layout><About/></Layout>,
+    "/genres/:genreID" : params => <Layout><GenreDiscover params={params} /></Layout>,
     "/search*": () => <Layout><SearchResults /></Layout>,
     "/users/watchlist": () => <Layout><UserList/></Layout>,
     "/users/viewed": () => <Layout><UserList/></Layout>,
