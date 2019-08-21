@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '../components/Layout';
 import About from '../pages/About';
 import Account from '../pages/Account';
+import Error from '../pages/Error';
 import GenreDiscover from '../pages/GenreDiscover';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
@@ -37,7 +38,10 @@ const routes = {
     },
     "/login": () => <Login/>,
     "/register": () => <Register/>,
-    "/movies/:movieID": params => <Layout><MovieProfile params={params} /></Layout>
+    "/movies/:movieID": params => <Layout><MovieProfile params={params} /></Layout>,
+    "/error/401": () => <Error type="authError"/>,
+    "/error/404": () => <Error type="notFound" />,
+    "/*": () => <Error type="notFound" />,
 }
 
 export default routes;

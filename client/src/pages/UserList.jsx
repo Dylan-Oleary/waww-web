@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { usePath } from 'hookrouter';
+import { usePath, navigate } from 'hookrouter';
 import { connect } from 'react-redux';
 
 import ListViewCard from '../components/ListViewCard';
 
-const UserList = ({ user }) => {
+const UserList = ({ user, login }) => {
     const path = usePath();
+    const token = window.localStorage.getItem("token");
+
+    useEffect(() => {
+        if(!token){
+            navigate("/error/401");
+        }
+    }, []);
 
     const renderContent = () => {
         if(user && user._id){

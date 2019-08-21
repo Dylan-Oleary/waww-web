@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { A } from 'hookrouter';
+import { A, navigate } from 'hookrouter';
 
 import UpdateUserForm from '../components/UpdateUserForm';
 import { formatDate } from '../utils/dateFormatter';
@@ -15,9 +15,13 @@ const Account = ({ user }) => {
     ]
     const [currentTab, setCurrentTab] = useState(tabs[0]);
 
+    const token = window.localStorage.getItem("token");
+
     useEffect(() => {
         if(user._id){
             setIsLoading(false);
+        } else if(!token){
+            navigate("/error/401");
         }
     }, [user]);
 

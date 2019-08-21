@@ -1,7 +1,7 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import { A } from 'hookrouter';
+import { A, navigate } from 'hookrouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye as hidingPassword, faEyeSlash as showingPassword  } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,6 +11,13 @@ import Logo from '../public/assets/images/inverted-logo.svg';
 
 const Login = props => {
     const [passwordHidden, setPasswordHidden] = useState(true);
+    const token = window.localStorage.getItem("token");
+
+    useEffect(() => {
+        if(token){
+            navigate('/');
+        }
+    }, [])
 
     const renderInput = ({ input, placeholder, type, meta, label  }) => {
         return (

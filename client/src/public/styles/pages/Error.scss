@@ -1,0 +1,38 @@
+#Error {
+    background: $primary-blue;
+    min-height: 100vh;
+    padding-top: 70px;
+   .image-container {
+        height: 300px;
+        width: 500px;
+        margin: 0 auto;
+        margin-bottom: 30px;
+        img {
+            height: auto;
+            width: 100%;
+        }
+   }
+   .error-message {
+       width: 800px;
+       margin: 4rem auto;
+       color: $primary-white;
+       text-align: center;
+       font-size: 32px;
+   }
+   .error-footnote {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: $primary-white;
+        div {
+            margin-bottom: 10px;
+        }
+        a {
+            padding: 0 5px;
+            color: $primary-red !important;
+            &:hover{
+                text-decoration: underline;
+            }
+        }
+   }
+}
