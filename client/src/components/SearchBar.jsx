@@ -13,10 +13,12 @@ const SearchBar = () => {
         event.preventDefault();
 
         //This line is needed until hookrouter fixes a bug where the navigate function doesn't change the query params if they already exist
-        setQueryParams({title: searchTerm});
-
-        navigate('/search', false, queryParams);
-        setSearchTerm('');
+        if(searchTerm !== ''){
+            setQueryParams({title: searchTerm, page:1});
+    
+            navigate('/search', false, queryParams);
+            setSearchTerm('');
+        }
     }
 
     return (

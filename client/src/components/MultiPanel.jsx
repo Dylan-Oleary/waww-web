@@ -54,7 +54,7 @@ const MultiPanel = ({ title, content }) => {
                 <div className="multi-image-wrapper">
                     {renderMainPanel(shuffledMovies[0])}
                     {renderStackPanel(shuffledMovies.slice(1,3))}
-                    {renderList(shuffledMovies.slice(3, 11))}
+                    {renderList(shuffledMovies.slice(3, 12))}
                 </div>
             </div>
         </div>

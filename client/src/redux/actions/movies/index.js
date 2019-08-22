@@ -1,3 +1,4 @@
+import { navigate } from 'hookrouter';
 import expressServer from '../../../api';
 
 export const getSelectedMovie = movieID => {
@@ -10,6 +11,18 @@ export const getSelectedMovie = movieID => {
     }
 }
 
+export const getRandomMovie = () => {
+    return async dispatch => {
+        expressServer.get("/api/movies/random")
+        .then( response => {
+            const { movie } = response.data;
+            navigate(`/movies/${movie.id}`)
+        })
+        .catch( err => {
+            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
+        })
+    }
+}
 export const clearSelectedMovie = () => {
     return { type: "CLEAR_SELECTED_MOVIE" };
 }

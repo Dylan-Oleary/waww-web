@@ -1,17 +1,48 @@
 #SearchResultCard {
     display: flex;
-    width: 530px;
+    width: 500px;
     margin-top: 10px;
     margin-bottom: 10px;
+    background: #fff;
+    -webkit-box-shadow: 0 5px 6px -6px #777;
+    -moz-box-shadow: 0 5px 6px -6px #777;
+    box-shadow: 0 5px 6px -6px #777;
+    .search-view-image{
+        width: 100%;
+        height: 100%;
+    }
     .search-view-image-container {
         position: relative;
         height: 270px;
         width: 180px;
     }
     .search-view-card-content {
-        width: 350px;
-        padding-left: 10px;
+        width: 250px;
+        padding: 10px 20px;
         display: flex;
         flex-direction: column;
+        flex: 1;
+        h3 {
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+        }
+        .search-card-content-title {
+            font-style: italic;
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        .search-card-content-body {
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 5; /* number of lines to show */
+            line-height: 1.3rem;        /* fallback */
+            max-height: 5;       /* fallback */
+        }
     }    
 }

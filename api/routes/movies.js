@@ -14,7 +14,7 @@ router.get(`/search`, (req, res) => {
             api_key: process.env.TMDB_KEY,
             language: "en-US",
             query: req.query.searchTerm,
-            page: 1,
+            page: req.query.page,
             include_adult: false
         }
     }).then( response => {
@@ -23,7 +23,10 @@ router.get(`/search`, (req, res) => {
         }else {
             res.send({
                 currentSearch: req.query.searchTerm,
-                searchResults: response.data.results
+                searchResults: response.data.results,
+                currentPage: response.data.page,
+                totalPages: response.data.total_pages,
+                totalResults: response.data.total_results
             })
         }
     }).catch(err => {
@@ -205,5 +208,28 @@ router.get('/upcoming', async (req, res) => {
         res.status(502).send({ alert });
     })
 });
+
+router.get('/random', async (req, res) => {
+    const randomPage = Math.ceil(Math.random() * (150 - 1) + 1);
+    const randomPageItem = Math.floor(Math.random() * 19);
+
+    tmdb.get('/discover/movie', {
+        params: {
+            api_key: process.env.TMDB_KEY,
+            language: "en-US",
+            region: "US",
+            sort_by: "popularity.desc",
+            include_adult: false,
+            page: randomPage
+        }
+    }).then( response => {
+        res.status(200).send({ movie: response.data.results[randomPageItem] })
+    }).catch( err => {
+        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
+        alert.alertFor = "TMDB API ERROR"
+    
+        res.status(502).send({ alert });
+    })
+})
 
 module.exports = router;

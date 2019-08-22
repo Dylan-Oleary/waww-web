@@ -4,6 +4,11 @@ exports.validateEmptyField = value => { return value === "" ? `Field cannot be e
 
 exports.required = value => (value ? undefined : 'Field is required');
 
+exports.isNumber = value => {
+    let pattern= /^\d+$/;
+    return pattern.test(value);  
+}
+
 const validateMaxCharacters = max => value => { return value && value.length > max ? `Field must be ${max} characters or less` : undefined; }
 
 exports.maxCharacters25 = validateMaxCharacters(25);

@@ -1,7 +1,10 @@
-export const searchReducer = (searchObject = {currentSearch: '', searchResults: [] }, action) => {
+export const searchReducer = (searchObject = {currentSearch: '', searchResults: [], currentPage: null, totalPages: null, totalResults: null }, action) => {
     const emptySearch = {
         currentSearch: '',
-        searchResults: []
+        searchResults: [],
+        currentPage: null,
+        totalPages: null,
+        totalResults: null
     };
 
     switch(action.type){
