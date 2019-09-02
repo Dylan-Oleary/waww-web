@@ -3,7 +3,7 @@ import Layout from '../components/Layout';
 import About from '../pages/About';
 import Account from '../pages/Account';
 import Error from '../pages/Error';
-import GenreDiscover from '../pages/GenreDiscover';
+import Discover from '../pages/Discover';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import MovieProfile from '../pages/MovieProfile';
@@ -14,7 +14,7 @@ import UserList from '../pages/UserList';
 const routes = {
     "/": () => <Layout><Home/></Layout>,
     "/about": () => <Layout><About/></Layout>,
-    "/genres/:genreID" : params => <Layout><GenreDiscover params={params} /></Layout>,
+    "/discover/:slug" : params => <Layout><Discover params={params}/></Layout>,
     "/search*": () => <Layout><SearchResults /></Layout>,
     "/users/watchlist": () => <Layout><UserList/></Layout>,
     "/users/viewed": () => <Layout><UserList/></Layout>,

@@ -7,6 +7,7 @@
 @import './components/CheckboxGroup.scss';
 @import './components/CommentCard.scss';
 @import './components/ContentModule.scss';
+@import './components//CustomSelect.scss';
 @import './components/Footer.scss';
 @import './components/Jumbotron.scss';
 @import './components/Layout.scss';
@@ -24,11 +25,22 @@
 @import './components//UpdateUserForm.scss';
 @import './components//VideoPlayer.scss';
 @import './pages/Account.scss';
+@import './pages/Discover.scss';
 @import './pages/Error.scss';
 @import './pages/Home.scss';
 @import './pages/MovieProfile.scss';
 @import './static/Login.scss';
 @import './static/Register.scss';
+
+@font-face {
+    font-family: 'Blackside-Bold';
+    src: local('Blackside-Bold'), url(../fonts/Blackside-Bold.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Blackside-Bold-Italic';
+    src: local('Blackside-Bold-Italic'), url(../fonts/Blackside-Bold-Italic.otf) format('opentype');
+}
 
 html, body, #root, #App, #Main {
     min-height: 100vh;
@@ -219,5 +231,18 @@ html, body, #root, #App, #Main {
     }
     &.delete {
         background-color: $primary-red;
+    }
+}
+
+
+
+.about-images {
+    margin-top: 10px;
+    margin-left: -25px;
+    width: 1600px;
+    img {
+        width: 100px;
+        height: 150px;
+        margin-top: -5px;
     }
 }

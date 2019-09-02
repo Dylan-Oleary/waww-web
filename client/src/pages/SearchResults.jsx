@@ -1,29 +1,33 @@
 import React , { useEffect, useState, Fragment } from 'react';
-import { useQueryParams } from 'hookrouter';
+import { useQueryParams, navigate} from 'hookrouter';
 import { connect } from 'react-redux';
 
 import SearchResultCard from '../components/SearchResultCard';
 import Pagination from '../components/Pagination';
-import { getSearchResults, clearSearchObject } from '../redux/actions/search';
+import { getSearchResults, clearSearchObject, setSearch } from '../redux/actions/search';
 import Logo from '../public/assets/images/error-ticket.svg';
 import { getRandomMovie } from '../redux/actions/movies';
 
-const SearchResults = ({ search, getSearchResults, clearSearchObject, getRandomMovie }) => {
-    const [ params ] = useQueryParams();
+const SearchResults = ({ search, getSearchResults, clearSearchObject, getRandomMovie, setSearch }) => {
+    const [ params, setQueryParams ] = useQueryParams();
     const { title, page } = params;
-
-    useEffect( () => {
-        getSearchResults(title, page);
-
-        return () => clearSearchObject();
-
-    }, [title, page]);
+    const { currentSearch, currentPage, searchResults, totalPages, totalResults, isSearching } = search;
     
+    useEffect(() => {
+        //If fresh load of page
+        if(!currentSearch || !currentPage){
+            setSearch(title, page);
+        } else {
+            getSearchResults(currentSearch, currentPage);
+        }
+
+    }, [currentSearch, currentPage])
+
     const renderSearchResults = () => {
         return (
             <div className="results-body">
                 {
-                    search.searchResults.map( result => {
+                    searchResults.map( result => {
                         return <SearchResultCard key={result.id} movie={result} />
                     })
                 }
@@ -32,24 +36,29 @@ const SearchResults = ({ search, getSearchResults, clearSearchObject, getRandomM
     }
 
     const renderResultsHeader = () => {
-        const resultRange = `${(page * 20) - 19} - ${page == search.totalPages ? search.totalResults : page * 20}`;
+        const resultRange = `${(currentPage * 20) - 19} - ${currentPage == totalPages ? totalResults : currentPage * 20}`;
 
         return (
             <div className="results-header">
                 <div className="results-meta">
-                    <h2>{`${search.totalResults} results found for '${title}'`}</h2>
-                    <p>{`Showing ${resultRange} of ${search.totalResults}`}</p>
+                    <h2>{`${totalResults} results found for '${currentSearch}'`}</h2>
+                    <p>{`Showing ${resultRange} of ${totalResults}`}</p>
                 </div>
-                <Pagination initialPage={parseInt(page)} />
+                <Pagination initialPage={parseInt(currentPage)} changePage={onPageChange} totalPages={totalPages} />
             </div>
         )
+    }
+
+    const onPageChange = newPage => {
+        setQueryParams({ title: currentSearch, page: newPage}, true);
+        setSearch(currentSearch, newPage);
     }
 
     return (
         <div id="SearchResults">
             {
-                search.currentSearch === '' && search.searchResults.length < 1 ? <div className="ui active loader massive"></div> : (
-                    search.searchResults && search.searchResults.length ? (
+                isSearching ? <div className="ui active loader massive"></div> : (
+                    searchResults && searchResults.length ? (
                         <Fragment>
                             {renderResultsHeader()}
                             {renderSearchResults()}
@@ -75,4 +84,4 @@ const mapStateToProps = ({ search }) => {
     return { search };
 }
 
-export default connect(mapStateToProps, { getSearchResults, clearSearchObject, getRandomMovie })(SearchResults)
+export default connect(mapStateToProps, { getSearchResults, clearSearchObject, getRandomMovie, setSearch })(SearchResults)

@@ -1,5 +1,5 @@
 import React from 'react';
-import { navigate } from 'hookrouter';
+import { A, navigate } from 'hookrouter';
 
 import CardModal from './CardModal';
 import altLogo from '../public/assets/images/case-white.svg';
@@ -18,7 +18,7 @@ const ListViewCard = ({ movie, size }) => {
                 <CardModal movie={movie} navigateToMovieProfile={navigateToMovieProfile}/>
             </div>
             <div className="list-view-card-content">
-                <h2>{`${movie.title} (${movie.release_date.substring(0,4)})`}</h2>
+                <A href={`/movies/${movie.tmdb_id ? movie.tmdb_id : movie.id}`} onClick={() => navigateToMovieProfile(movie)}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
             </div>
         </div>
     )

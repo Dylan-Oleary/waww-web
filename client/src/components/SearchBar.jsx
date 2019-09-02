@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { navigate, useQueryParams } from 'hookrouter';
 
-const SearchBar = () => {
+import { setSearch } from '../redux/actions/search';
+
+const SearchBar = ({ currentSearch, setSearch }) => {
     const [ searchTerm , setSearchTerm ] = useState('');
     const [ queryParams , setQueryParams ] = useQueryParams();
 
@@ -9,14 +12,15 @@ const SearchBar = () => {
         setSearchTerm(event.target.value);
     }
 
-    const handleSubmit = event => {
+    const handleSubmit = async event => {
         event.preventDefault();
 
         //This line is needed until hookrouter fixes a bug where the navigate function doesn't change the query params if they already exist
         if(searchTerm !== ''){
-            setQueryParams({title: searchTerm, page:1});
-    
-            navigate('/search', false, queryParams);
+            setQueryParams({ title: searchTerm, page: 1 }, true);
+            setSearch(searchTerm, 1);
+            
+            navigate('/search', false, {title: searchTerm, page:1});
             setSearchTerm('');
         }
     }
@@ -29,4 +33,9 @@ const SearchBar = () => {
     )
 }
 
-export default SearchBar;
+const mapStateToProps = ({ search }) => {
+    return {
+        currentSearch: search.currentSearch
+    }
+}
+export default connect(mapStateToProps, { setSearch })(SearchBar);

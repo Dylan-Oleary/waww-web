@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { A } from 'hookrouter';
+import { A, navigate } from 'hookrouter';
 
 import { userLogout } from '../redux/actions/session';
 import SearchBar from './SearchBar';
@@ -59,6 +59,7 @@ const Nav = ({ user, isLoggedIn, userLogout }) => {
             <div className="ui container grid">
                 <div className="row">
                     <A className="item" href="/"> Home </A>
+                    <span className="item" onClick={() => navigate('/discover/action')}>Discover</span>
                     {
                         isLoggedIn === true ? listMenu() : null
                     }

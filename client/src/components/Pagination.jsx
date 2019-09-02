@@ -1,40 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { navigate, useQueryParams } from 'hookrouter';
 import { toast } from 'react-toastify';
 import Toastr from './Toastr';
-import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretLeft as previous, faCaretRight as next } from '@fortawesome/free-solid-svg-icons';
 
 import { isNumber } from '../utils/formFieldValidators';
 
-const Pagination = ({ initialPage, totalPages }) => {
-    const [currentPage, setCurrentPage] = useState(initialPage);
+const Pagination = ({ initialPage, totalPages, changePage }) => {
     const [customPage, setCustomPage] = useState(null);
-    const [queryParams , setQueryParams] = useQueryParams();
-    
-    useEffect(() => {
-        if(currentPage !== initialPage){
-            setQueryParams({title: queryParams.title, page: currentPage});
-            navigate('/search', false, queryParams);
-        }
-
-    }, [currentPage])
 
     const nextPage = () => {
-        if(currentPage + 1 <= totalPages){
-            setCurrentPage(currentPage + 1);
+        if(initialPage + 1 <= totalPages){
+            changePage(initialPage + 1);
         }
     }
 
     const previousPage = () => {
-        if(currentPage - 1 !== 0){
-            setCurrentPage(currentPage - 1);
+        if(initialPage - 1 !== 0){
+            changePage(initialPage - 1);
         }
     }
 
     const handlePageNumberClick = page => {
-        setCurrentPage(page)
+        changePage(page)
     }
 
     const handleCustomPageInputChange = event => {
@@ -46,12 +34,12 @@ const Pagination = ({ initialPage, totalPages }) => {
     const handleCustomPageSubmit = event => { 
         event.preventDefault();
 
-        if(customPage > totalPages || customPage < 1 || customPage == currentPage || !(isNumber(customPage))){
-            const messages = customPage == currentPage ? ["You are already on this page"] : ["This page doesn't exist!"];
+        if(customPage > totalPages || customPage < 1 || customPage == initialPage || !(isNumber(customPage))){
+            const messages = customPage == initialPage ? ["You are already on this page"] : ["This page doesn't exist!"];
 
             return toast(<Toastr messages={messages} type={"error"} alertFor={'clientError'} />, { containerId: "error" });
         }else {
-            setCurrentPage(customPage)
+            changePage(customPage)
         }
     }
 
@@ -60,8 +48,8 @@ const Pagination = ({ initialPage, totalPages }) => {
         let pages = [];
 
         const pagination = {
-            startAt: currentPage - buffer,
-            endAt: currentPage + buffer,
+            startAt: initialPage - buffer,
+            endAt: initialPage + buffer,
             maxPageNo: totalPages
         };
 
@@ -86,7 +74,7 @@ const Pagination = ({ initialPage, totalPages }) => {
         }
 
         return pages.map(page => {
-            if(page === currentPage){
+            if(page === initialPage){
                 return (
                     <span className="active pagination-number" key={`page-${page}`}>{page}</span>
                 )
@@ -100,7 +88,7 @@ const Pagination = ({ initialPage, totalPages }) => {
 
     const renderPageSelect = () => {
         return (
-            <form className="custom-page-wrapper" onSubmit={e => handleCustomPageSubmit(e)} >
+            <form className="custom-page" onSubmit={e => handleCustomPageSubmit(e)} >
                 <input onChange={e => handleCustomPageInputChange(e)} value={customPage} />
                 <span>{`/ ${totalPages}`}</span>
             </form>
@@ -114,16 +102,12 @@ const Pagination = ({ initialPage, totalPages }) => {
                 {renderPages()}
                 <FontAwesomeIcon icon={next} onClick={() => nextPage()} />
             </div>
-            {renderPageSelect()}
+            <div className="custom-page-wrapper">
+                <label>Go To Page: </label>
+                {renderPageSelect()}
+            </div>
         </div>
     )
 }
 
-const mapStateToProps = ({ search }) => {
-    return {
-        totalPages: search.totalPages,
-        totalResults: search.totalResults
-    }
-}
-
-export default connect(mapStateToProps)(Pagination);
+export default Pagination;

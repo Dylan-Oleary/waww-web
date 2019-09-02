@@ -8,6 +8,8 @@ import { formatGenres } from '../utils/genreFormatter';
 
 const SearchResultCard = (props) => {
     const { movie } = props;
+    
+    const releaseDate = movie.release_date ? `(${movie.release_date.substring(0,4)})` : '';
 
     const navigateToMovieProfile = movie => {
         navigate(`/movies/${movie.id}`)
@@ -28,7 +30,7 @@ const SearchResultCard = (props) => {
                 <CardModal movie={movie} navigateToMovieProfile={navigateToMovieProfile}/>
             </div>
             <div className="search-view-card-content">
-                <h3 onClick={() => navigateToMovieProfile(movie)}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</h3>
+                <h3 onClick={() => navigateToMovieProfile(movie)}>{`${movie.title} ${releaseDate}`}</h3>
                 <p className="search-card-content-title">Synopsis</p>
                 <p className="search-card-content-body">{movie.overview ? movie.overview : "N/A"}</p>
                 <p className="search-card-content-title">Genres</p>

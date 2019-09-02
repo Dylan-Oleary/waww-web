@@ -1,6 +1,6 @@
 import React, { useEffect }from 'react';
 import { connect } from 'react-redux';
-import { useRoutes, usePath } from 'hookrouter';
+import { useRoutes, usePath, navigate } from 'hookrouter';
 import { ToastContainer, toast, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -9,6 +9,7 @@ import routes from './routes';
 import { persistUser } from './redux/actions/session';
 import Toastr from './components/Toastr';
 import Modal from './components/Modal';
+import SearchBar from './components/SearchBar';
 
 const toastrAlert = (messages, type, alertFor) => {
     switch(type){
@@ -23,9 +24,15 @@ const toastrAlert = (messages, type, alertFor) => {
     }
 }
 
-const App = ({ login, alerts, persistUser }) => {
+const App = ({ login, alerts, persistUser, currentSearch }) => {
     const routeResult = useRoutes(routes);
     const currentPath = usePath();
+
+    // useEffect(() => {
+    //     if(currentPath !== '/search' && currentSearch){
+    //         navigate('/search')
+    //     }
+    // }, [currentSearch])
 
     //Log the user in on page refresh if they have a token
     useEffect(() => {
@@ -81,8 +88,8 @@ const App = ({ login, alerts, persistUser }) => {
     );
 }
 
-const mapStateToProps = ({ login, alerts }) => {
-    return { login, alerts }
+const mapStateToProps = ({ login, alerts, search }) => {
+    return { login, alerts, currentSearch: search.currentSearch }
 }
 
 export default connect(mapStateToProps, { persistUser })(App);

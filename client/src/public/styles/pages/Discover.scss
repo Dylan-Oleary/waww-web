@@ -1,0 +1,158 @@
+#Discover {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0;
+    .discover-header{
+        height: 300px;
+        width: 100vw;
+        color: #fff;
+        text-align: center;
+        position: relative;
+        h2 {
+            position: absolute;
+            height: 100%;
+            letter-spacing: 7px;
+            font-family: 'Blackside-Bold-Italic';
+            z-index: 99;
+            width: 100%;
+            text-align: center;
+            padding-top: 50px;
+            font-size: 10rem;
+            text-shadow: -1px -1px 1px rgba(255,255,255,.1), 1px 1px 1px rgba(0,0,0,.5);
+        }
+        &::before{
+            content: "";
+            background-color: rgba(71, 73, 76, 0.6);
+            background-size: cover;
+            height: 300px;
+            width: 100%;
+            position: absolute;
+            left: 0;
+        } 
+    }
+    .discover-body {
+        display: flex;
+        flex: 1 0;
+        height: 100%;
+    }
+    .discover-filter-wrapper{
+        width: 250px;
+        padding: 2rem 0;
+        background: #fff;
+        border-right: 1px solid rgba(0,0,0,0.19);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+        .filters{
+            display: flex;
+            flex-direction: column;
+            position: -webkit-sticky;
+            position: sticky;
+            top: 90px;
+            .filter-category {
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+                margin: 0.5rem 0;
+                h3 {
+                    margin-bottom: 0.25rem;
+                }
+                select {
+                    width: 150px;
+                    margin: 0 auto;
+                }
+            }
+        }
+        .filter-field {
+            padding: 0.5rem 0;
+            font-size: 16px;
+
+            cursor: pointer;
+            * {
+                cursor: pointer;
+            }
+            &:hover{
+                background: #cccccc;
+            }
+            &.active {
+                background: #5490d1;
+                color: #fff;
+            }
+        }
+    }
+    .discover-content-wrapper {
+        display: flex;
+        flex-direction: column;
+        flex: 1 0;
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 2rem;
+        .discover-content-controller {
+            display: flex;
+            align-items: center;
+            height: 50px;
+            > div {
+                height: 100%;
+                label {
+                    font-size: 16px;
+                    margin-right: 5px;
+                    font-weight: 700;
+                }
+                display: flex;
+                align-items: center;
+                &.view-options {
+                    display: flex;
+                    align-items: center;
+                    width: 325px;
+                    > div {
+                        display: flex;
+                        align-items: center;
+                        padding: 0 0.5rem;
+                        margin: 0 1rem;
+                        cursor: pointer;
+                        font-size: 1.75em;
+                        height: 40px;
+                        &.selected-view {
+                            background: #fff;
+                            box-shadow: inset 0 0 1px;
+                        }
+                    }
+                }
+                &.sort-options {
+                    width: 325px;
+                    display: flex;
+                    justify-content: flex-end;
+                }
+            }
+        }
+        .discover-content-body {
+            display: flex;
+            flex: 1 0;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding-top: 2rem;
+        }
+        .search-error {
+            margin-top: 20px;
+            .image-container {
+                display: flex;
+                justify-content: center;
+                img {
+                    width: 500px;
+                }
+            }
+            .search-error-message{
+                margin-top: 10px;
+                text-align: center;
+                p {
+                    font-size: 18px;
+                }
+                span{
+                    color: $primary-red;
+                    cursor: pointer;
+                    &:hover {
+                        text-decoration: underline
+                    }
+                }
+            }
+        }
+    }
+}

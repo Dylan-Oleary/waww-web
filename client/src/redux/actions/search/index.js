@@ -5,7 +5,7 @@ export const getSearchResults = (searchTerm, page) => {
         const response = await expressServer.get("/api/movies/search", {
             params: {
                 searchTerm: searchTerm,
-                page: page
+                page: page,
             }
         });
 
@@ -13,8 +13,16 @@ export const getSearchResults = (searchTerm, page) => {
     }
 }
 
-export const clearSearchObject = () => {
+export const setSearch = (searchTerm, page) => {
     return {
-        type: "CLEAR_SEARCH_OBJECT"
-    };
+        type: "SET_SEARCH",
+        payload: {
+            searchTerm: searchTerm,
+            page: page
+        }
+    }
+}
+
+export const clearSearchObject = () => {
+    return { type: "CLEAR_SEARCH_OBJECT" };
 }
