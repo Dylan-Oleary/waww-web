@@ -16,7 +16,7 @@ router.get('/:id', (req, res)  => {
             api_key: process.env.TMDB_KEY,
             language: "en-US",
             region: "US",
-            sort_by: sortBy,
+            sort_by: sortBy ? sortBy : 'vote_count.desc',
             include_adult: false,
             certification_country: "US",
             certification: certification ? certification : null,

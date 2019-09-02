@@ -1,3 +1,4 @@
+import { GET_DISCOVER_PAGE_CONTENT, SET_FILTERS, SET_BACKDROP, CLEAR_DISCOVER_PAGE } from '../constants';
 import { certificationFilters, sortOptions, releaseDateFilters } from '../../constants';
 
 const defaultDiscoverPageProps = {
@@ -19,7 +20,7 @@ const defaultDiscoverPageProps = {
 
 export const discoverPageReducer = (state = defaultDiscoverPageProps, action) => {
     switch(action.type){
-        case "GET_DISCOVER_PAGE_CONTENT" :
+        case GET_DISCOVER_PAGE_CONTENT :
             return {
                 ...state,
                 movies: action.payload.movies,
@@ -27,7 +28,7 @@ export const discoverPageReducer = (state = defaultDiscoverPageProps, action) =>
                 totalResults: action.payload.totalResults,
                 isSearching: false
             };
-        case "SET_FILTERS" : 
+        case SET_FILTERS : 
             return {
                 ...state,
                 id: action.payload.id,
@@ -42,12 +43,12 @@ export const discoverPageReducer = (state = defaultDiscoverPageProps, action) =>
                 page: action.payload.page,
                 isSearching: true
             }
-        case "SET_BACKDROP" :
+        case SET_BACKDROP :
             return {
                 ...state,
                 backdropPath: action.payload
             }
-        case "CLEAR_DISCOVER_PAGE" :
+        case CLEAR_DISCOVER_PAGE :
             return defaultDiscoverPageProps;
         default :
             return defaultDiscoverPageProps;

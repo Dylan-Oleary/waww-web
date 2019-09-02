@@ -12,7 +12,7 @@ export const getUserGenres = genres => {
             const userGenres = response.map( (genre, index) => {
                 return {
                     id: genre.id,
-                    movies: genre.results,
+                    movies: genre.movies,
                     name: genres[index].name
                 }
             })
