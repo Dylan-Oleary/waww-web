@@ -2,12 +2,12 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { A, navigate } from 'hookrouter';
 
-import UpdateUserForm from '../components/UpdateUserForm';
 import { formatDate } from '../utils/dateFormatter';
-import altLogo from '../public/assets/images/pink-blue-circle.svg';
+import UpdateUserForm from '../components/UpdateUserForm';
 import ListViewCard from '../components/ListViewCard';
+import { showModal } from '../redux/actions/modal';
 
-const Account = ({ user }) => {
+const Account = ({ user, showModal }) => {
     const [isLoading, setIsLoading] = useState(true);
     const tabs = [
         {key: 0, title: "General"},
@@ -96,7 +96,7 @@ const Account = ({ user }) => {
         return (
             <Fragment>
                 <div className="left-sidebar">
-                    <img className="image-rounded" src={altLogo}/>
+                    <img className="image-rounded" src={user.profilePicture.secureURL} onClick={() => showModal("Upload Profile Picture", user, "profilePicture")} />
                     <div className="sidebar-title">
                         <h2 className="title-medium">{`${user.firstName} ${user.lastName}`}</h2>
                         <p className="italic">{user.username}</p>
@@ -153,4 +153,4 @@ const mapStateToProps = ({ user }) => {
     return { user }
 }
 
-export default connect(mapStateToProps)(Account);
+export default connect(mapStateToProps, { showModal })(Account);

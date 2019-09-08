@@ -35,7 +35,7 @@ const Nav = ({ user, isLoggedIn, userLogout }) => {
     const accountMenu = () => {
         return (
             <div className="ui item">
-                <img className="ui avatar image" src="" />
+                <img className="ui avatar image" src={user.profilePicture.secureURL} />
                 <OutsideClickDetect className="dropdown" state={accountMenuIsOpen} setState={setAccountMenu}>
                     <span className="item">{user.username}</span>
                     {

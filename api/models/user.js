@@ -37,15 +37,14 @@ const UserSchema = new mongoose.Schema(
             type: Array
         },
         profilePicture: {
-            contentType: {
+            publicID: {
                 type: String,
-                enum: ["image/jpeg", "image/png", null]
+                default: "wn2d2wndipkglyggiyd0"
             },
-            size: {
-                type: Number,
-                max: 1000000
-            },
-            data: Buffer
+            secureURL: {
+                type: String,
+                default: "https://res.cloudinary.com/dkdqmpkfa/image/upload/v1567913079/wn2d2wndipkglyggiyd0.png"
+            }
         },
         recentActivity: {
             type: Array

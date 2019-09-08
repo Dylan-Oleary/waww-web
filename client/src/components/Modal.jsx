@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWindowClose as close } from '@fortawesome/free-solid-svg-icons';
 
-import { deleteAccount } from '../redux/actions/user';
+import { deleteAccount, updateProfilePicture } from '../redux/actions/user';
 import { closeModal } from '../redux/actions/modal';
 import altImage from '../public/assets/images/case-white.svg';
+import DropzoneField from './DropzoneField';
 
-const Modal = ({ modal, closeModal, deleteAccount }) => {
+const Modal = ({ modal, closeModal, deleteAccount, updateProfilePicture }) => {
     const { content, title, type } = modal.props;
     const [waitingForAPI, setWaitingForAPI] = useState(false)
 
@@ -71,6 +72,16 @@ const Modal = ({ modal, closeModal, deleteAccount }) => {
         )
     }
 
+    const dropzone = () => {
+        const token = window.localStorage.getItem("token");
+        const handleSubmit = token => {
+            setWaitingForAPI(true);
+            updateProfilePicture(token);
+        }
+
+        return <DropzoneField />
+    }
+
     const modalContent = () => {
         switch(type){
             case "movieList" :
@@ -78,7 +89,9 @@ const Modal = ({ modal, closeModal, deleteAccount }) => {
             case "profileList" :
                 return profileList();
             case "deleteAccount" :
-                return deleteAccountModal()
+                return deleteAccountModal();
+            case "profilePicture" :
+                return dropzone();
             default :
                 return null;
         }
@@ -107,4 +120,4 @@ const mapStateToProps = ({ modal }) => {
     return { modal };
 }
 
-export default connect(mapStateToProps, { closeModal, deleteAccount })(Modal);
+export default connect(mapStateToProps, { closeModal, deleteAccount, updateProfilePicture })(Modal);

@@ -1,10 +1,25 @@
 const router = require("express").Router();
-const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
-const Movie = require('../models/movie');
+const shortId = require('shortid');
 const User = require('../models/user');
 const jwt = require("jsonwebtoken");
 const secret = process.env.TOKEN_SECRET;
+const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const fs = require('fs')
+const { promisify } = require('util')
+const unlinkAsync = promisify(fs.unlink)
+
+// Multer Set-Up
+const multer  = require('multer');
+const storage = multer.diskStorage({
+  destination: function(req, file, cb){
+    cb(null, 'uploads/');
+  },
+  filename: function(req, file, cb){
+    cb(null, `${shortId.generate()}-${file.originalname}`);
+  }
+});
+const upload = multer({ storage: storage });
 
 const alert = {
   alertMessages: [],
@@ -486,6 +501,68 @@ router.post("/update", async (req, res) => {
       res.status(403).send({ alert });
 		})
     }
+});
+
+//UPDATE PROFILE PICTURE
+router.post("/profile-picture", upload.single('file'), async (req, res) => {
+  const userJWT = jwt.verify(req.body.jwt, process.env.TOKEN_SECRET);
+
+  if(req.file && userJWT){
+    cloudinary.uploader.upload(req.file.path, {width: 200, height: 200, crop: "fill"})
+    .then(response => {
+      User.findOneAndUpdate({
+        _id: userJWT.id
+        },{
+          profilePicture: {
+            publicID: response.public_id,
+            secureURL: response.secure_url
+          }
+        },{
+          runValidators: true,
+          new: true
+        }
+      ).then( user => {
+        const payload = { 
+          id: user.id
+        };
+    
+        const token = jwt.sign(payload, secret, {
+          expiresIn: '8h'
+        });
+    
+        const updatedUser = {
+          _id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          username: user.username,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          profilePicture: user.profilePicture,
+          watchlist: user.watchlist,
+          favourites: user.favourites,
+          viewed: user.viewed,
+          genres: user.genres,
+          recentActivity: user.recentActivity,
+          recentlyVisited: user.recentlyVisited
+        }
+    
+        alert.alertMessages = [`Profile picture successfully updated!`];
+        alert.alertFor = "updateUserProfile";
+
+        unlinkAsync(req.file.path);
+    
+        res.status(200).send({ token, updatedUser, alert });
+      }).catch(() => {
+        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
+        alert.alertFor = "DB ERROR"
+    
+        res.status(403).send({ alert });
+      })
+    }).catch(err => {
+      console.log(err);
+    })
+  }
 });
 
 //DELETE USER

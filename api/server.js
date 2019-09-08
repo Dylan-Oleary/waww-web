@@ -11,6 +11,14 @@ mongoose.connect(process.env.DB_URI, {
 }).catch(err => console.log(`ERROR: ${err}`));
 mongoose.set('useFindAndModify', false);
 
+//Configure Cloudinary
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 //Initialize Express application
 const express = require("express");
 const app = express();
@@ -36,7 +44,7 @@ app.use("/api", routes);
 
 // Serve any static files
 app.use(express.static(path.join(__dirname, '../client/build')));
-  
+
 // Handle React routing, return all requests to React app
 app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));

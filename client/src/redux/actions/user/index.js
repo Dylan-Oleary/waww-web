@@ -82,6 +82,26 @@ export const updateUserProfile = (jwt, formValues) => {
     }
 }
 
+export const updateProfilePicture = (jwt, image) => {
+    let data = new FormData();
+
+    data.append('file', image);
+    data.append('jwt', jwt);
+
+    return async dispatch => {
+        expressServer.post('/api/users/profile-picture', data)
+        .then(response => {
+            window.localStorage.setItem('token', response.data.token);
+
+            dispatch({ type: "LOG_SUCCESS", payload: response.data.alert });
+            dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.updatedUser })
+        })
+        .catch( err => {
+            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
+        })
+    }
+}
+
 export const deleteAccount = (jwt) => {
     return async dispatch => {
         expressServer.post("/api/users/delete", {jwt})
