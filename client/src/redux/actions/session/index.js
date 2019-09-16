@@ -92,7 +92,9 @@ export const persistUser = (jwt, currentPath) => {
             navigate(currentPath);
         })
         .catch( err => {
+            dispatch({ type: "CLEAR_USER" });
             dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
+            window.localStorage.clear();
             navigate("/login");
         })
 

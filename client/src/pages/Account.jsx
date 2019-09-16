@@ -96,7 +96,9 @@ const Account = ({ user, showModal }) => {
         return (
             <Fragment>
                 <div className="left-sidebar">
-                    <img className="image-rounded" src={user.profilePicture.secureURL} onClick={() => showModal("Upload Profile Picture", user, "profilePicture")} />
+                    <div className="profile-image">
+                        <img className="image-rounded" src={user.profilePicture.secureURL} onClick={() => showModal("Upload Profile Picture", user, "profilePicture")} />
+                    </div>
                     <div className="sidebar-title">
                         <h2 className="title-medium">{`${user.firstName} ${user.lastName}`}</h2>
                         <p className="italic">{user.username}</p>

@@ -97,6 +97,7 @@ export const updateProfilePicture = (jwt, image) => {
             dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.updatedUser })
         })
         .catch( err => {
+            console.log("heyeye")
             dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
         })
     }

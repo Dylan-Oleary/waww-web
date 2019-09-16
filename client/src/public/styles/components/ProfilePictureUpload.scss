@@ -1,10 +1,54 @@
-#ProfilePictureUpload {
+#Dropzone {
     height: 350px;
-    background: grey;
-    .dropzone {
-        height: 100%;
-        p {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    * {
+        outline: none;
+    }
+    #ProfilePictureUpload {
+        cursor: pointer;
+        height: 300px;
+        background: grey;
+        .dropzone {
             height: 100%;
+            p {
+                height: 100%;
+            }
+        }
+        .dropzone-body {
+            height: 100%;
+            background-color: 	#D8D8D8;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            &:hover {
+                box-shadow: 0 4px 10px rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22);
+            }
+            .dropzone-preview {
+                height: 200px;
+                width: 200px;
+                border-radius: 50%;
+                text-align: center;
+            }
+            svg {
+                color: #B0B0B0;
+            }
+        }
+    }
+    .submit-menu {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: $primary-white;
+        padding: 5px 0;
+        button {
+            height: 25px;
         }
     }
 }
