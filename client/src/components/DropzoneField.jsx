@@ -15,6 +15,7 @@ const DropzoneField = ({ updateProfilePicture }) => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
   const [fileToUpload, setFileToUpload] = useState();
+  const [isUploading, setIsUploading] = useState(false);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDropAccepted(acceptedFile){
@@ -45,9 +46,20 @@ const DropzoneField = ({ updateProfilePicture }) => {
   const renderDropzoneBody = () => {
     if(!error){
       if(fileToUpload){
-        return (
-          <img className="dropzone-preview" src={URL.createObjectURL(fileToUpload)} />
-        )
+        if(isUploading){
+          return (
+            <Fragment>
+              <div>
+                <div className="ui active loader massive"></div>
+                <h5>Uploading your image...</h5>
+              </div>
+            </Fragment>
+          )
+        } else {
+          return (
+            <img className="dropzone-preview" src={URL.createObjectURL(fileToUpload)} />
+          )
+        }
       } else {
         return (
           <Fragment>
@@ -79,6 +91,7 @@ const DropzoneField = ({ updateProfilePicture }) => {
 
   const handleSubmit = () => {
     const token = window.localStorage.getItem("token");
+    setIsUploading(true);
 
     updateProfilePicture(token, fileToUpload)
   }

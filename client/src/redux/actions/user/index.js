@@ -94,10 +94,10 @@ export const updateProfilePicture = (jwt, image) => {
             window.localStorage.setItem('token', response.data.token);
 
             dispatch({ type: "LOG_SUCCESS", payload: response.data.alert });
-            dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.updatedUser })
+            dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.updatedUser });
+            dispatch({ type: "CLOSE_MODAL" });
         })
         .catch( err => {
-            console.log("heyeye")
             dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
         })
     }

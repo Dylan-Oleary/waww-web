@@ -1,6 +1,8 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { A, navigate } from 'hookrouter';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCamera as cameraIcon } from '@fortawesome/free-solid-svg-icons';
 
 import { formatDate } from '../utils/dateFormatter';
 import UpdateUserForm from '../components/UpdateUserForm';
@@ -97,7 +99,11 @@ const Account = ({ user, showModal }) => {
             <Fragment>
                 <div className="left-sidebar">
                     <div className="profile-image">
-                        <img className="image-rounded" src={user.profilePicture.secureURL} onClick={() => showModal("Upload Profile Picture", user, "profilePicture")} />
+                        <img className="image-rounded" src={user.profilePicture.secureURL} />
+                        <div className="image-modal" onClick={() => showModal("Upload Profile Picture", user, "profilePicture")}>
+                            <FontAwesomeIcon icon={cameraIcon} size="3x"/>
+                            <h5>Click here to change your profile picture</h5>
+                        </div>
                     </div>
                     <div className="sidebar-title">
                         <h2 className="title-medium">{`${user.firstName} ${user.lastName}`}</h2>
