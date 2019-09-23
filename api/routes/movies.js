@@ -1,6 +1,12 @@
 const router = require("express").Router();
 const tmdb = require('./apis/tmdb');
 const Movie = require('../models/movie');
+const Review = require("../models/review");
+const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const secret = process.env.TOKEN_SECRET;
+const requestAuthentication = require("../utils/isAuthenticated");
+const mongoose = require("mongoose");
 
 const alert = {
     alertMessages: [],
@@ -230,6 +236,81 @@ router.get('/random', async (req, res) => {
     
         res.status(502).send({ alert });
     })
-})
+});
+
+router.route("/:movieID/reviews")
+    .get((request, response) => {
+        Review.aggregate([
+            { $match: { movie: mongoose.Types.ObjectId(request.params.movieID) } },
+            { $lookup : {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "userDetails"
+                }
+            }
+        ]).then(reviews => {
+            response.status(200).send({ reviews });
+        }).catch(error => {
+            console.log(error);
+        });
+    })
+    .post(async (request, response) => {
+        const isAuthenticated = await requestAuthentication(request.body.jwt, request.body.user._id);
+
+        if(isAuthenticated){
+            const { title, review, rating } = request.body.formData;
+            const { user } = request.body;
+
+            Review.create({
+                title: title,
+                rating: rating,
+                review: review,
+                user: mongoose.Types.ObjectId(user._id),
+                movie: mongoose.Types.ObjectId(request.params.movieID)
+            }).then(review => {
+                return Promise.all([
+                    User.findOneAndUpdate({
+                        "_id": user._id
+                    }, {
+                        $push: {
+                            reviews: review._id
+                        }
+                    }),
+                    Movie.findOneAndUpdate({
+                        "_id": request.params.movieID
+                    }, {
+                        $push: {
+                            reviews: review._id
+                        }
+                    })
+                ]).then(([
+                    userRecord,
+                    movieRecord
+                ]) => {
+                    const token = jwt.sign({ id: userRecord._id }, secret, {
+                        expiresIn: '8h'
+                    });
+
+                    alert.alertMessages = [`Review was successfully created!`];
+                    alert.alertFor = "successfulReview";
+
+                    response.status(201).send({ token, userRecord, movieRecord, alert });
+                }).catch(error => {
+                    console.log(error);
+                    console.log("There was a problem adding your review! - 276")
+                });
+            }).catch(error => {
+                console.log(error);
+                console.log("There was a problem adding your review!")
+            })
+        }else {
+            alert.alertMessages = ["You must be logged in order to leave a review!"];
+            alert.alertFor = "nullJWT";
+
+            response.status(401).send({ alert });
+        }
+    })
+; //close router.route("/:movieID/reviews")
 
 module.exports = router;

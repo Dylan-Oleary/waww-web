@@ -2,8 +2,8 @@ import React, { Fragment, useState } from 'react';
 import { Parallax } from 'react-parallax';
 
 import CardDeck from './CardDeck';
-import CommentCard from './CommentCard';
 import ListViewCard from './ListViewCard';
+import ReviewSection from "./ReviewSection";
 import Panel from './Panel';
 import Carousel from './Carousel';
 import VideoPlayer from './VideoPlayer';
@@ -16,7 +16,7 @@ const ContentModule = ({ movie }) => {
         { key: 1, name: "Comments"}
     ];
 
-    const [currentTab, setCurrentTab] = useState(tabs[0]);
+    const [currentTab, setCurrentTab] = useState(tabs[1]);
     const inlineBackdropImage = movie.images.backdrops && movie.images.backdrops.length ? (
         movie.images.backdrops.length > 1 ? `https://image.tmdb.org/t/p/original/${movie.images.backdrops[1].file_path}` : `https://image.tmdb.org/t/p/original/${movie.images.backdrops[0].file_path}`
     ) : null
@@ -123,11 +123,7 @@ const ContentModule = ({ movie }) => {
                 )
             case 1 :
                 return (
-                    <Fragment>
-                        <Panel title="Most Recent Reviews">
-                           Comment section coming soon!
-                        </Panel>
-                    </Fragment>
+                    <ReviewSection movieID={movie._id} reviewIDs={movie.reviews}/>
                 )
         }
     }

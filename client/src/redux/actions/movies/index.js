@@ -34,6 +34,25 @@ export const removeMovie = movie => {
     }
 }
 
+export const addReviewToMovie = (jwt, formData, user, movieID) => {
+    return async dispatch => {
+        expressServer.post(`/api/movies/${movieID}/reviews`, {
+            jwt,
+            formData,
+            user
+        })
+        .then(response => {
+            window.localStorage.setItem("token", response.data.token);
+
+            dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.userRecord });
+            dispatch({ type: "UPDATE_SELECTED_MOVIE", payload: response.data.movieRecord });
+            dispatch({ type: "LOG_SUCCESS", payload: response.data.alert });
+        }).catch(err => {
+            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
+        })
+    }
+};
+
 export const getNowPlaying = () => {
     return async dispatch => {
         expressServer.get('/api/movies/now-playing')

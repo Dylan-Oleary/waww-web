@@ -69,6 +69,10 @@ const MovieSchema = new mongoose.Schema (
         videos: {
             type: Array,
             required: false
+        },
+        reviews: {
+            type: Array,
+            required: false
         }
     },
     {

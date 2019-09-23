@@ -17,8 +17,9 @@ const defaultUser = {
     createdAt: "",
     updatedAt: "",
     recentActivity: [],
-    recentlyVisited: []
-  }
+    recentlyVisited: [],
+    reviews: []
+}
 
 export const userReducer = ( state = defaultUser, action ) => {
     switch(action.type){

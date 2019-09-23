@@ -11,7 +11,8 @@ import {
     faEyeSlash as removeFromViewed,
     faCheck as success,
     faSignOutAlt as logOut,
-    faExclamationCircle as clientError
+    faExclamationCircle as clientError,
+    faComment as successfulReview
 } from '@fortawesome/free-solid-svg-icons';
 
 const Toastr = ({ messages, type, alertFor }) => {
@@ -40,6 +41,9 @@ const Toastr = ({ messages, type, alertFor }) => {
             }
             if(alertFor === "userLogout"){
                 return <FontAwesomeIcon icon={logOut} size="2x" />
+            }
+            if(alertFor === "successfulReview"){
+                return <FontAwesomeIcon icon={successfulReview} size="2x" />
             }
         }
 

@@ -42,6 +42,7 @@ export const CLEAR_SEARCH_OBJECT = 'CLEAR_SEARCH_OBJECT';
 //Selected Movie Reducer
 export const GET_SELECTED_MOVIE = 'GET_SELECTED_MOVIE';
 export const CLEAR_SELECTED_MOVIE = 'CLEAR_SELECTED_MOVIE';
+export const UPDATE_SELECTED_MOVIE = "UPDATE_SELECTED_MOVIE";
 
 //User Reducer
 export const UPDATE_USER = "UPDATE_USER";

@@ -51,6 +51,10 @@ const UserSchema = new mongoose.Schema(
         },
         recentlyVisited: {
             type: Array
+        },
+        reviews: {
+            type: Array,
+            required: false
         }
     },
     {
