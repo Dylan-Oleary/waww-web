@@ -73,6 +73,7 @@ const ReviewCard = ({ isNew = false, openAsForm = false, reviewID, title, author
                 closeReview();
                 setIsLoading(false);
                 setReviewAuthor(defaultReviewAuthor);
+                setFormData(defaultFormData);
             });
         } else {
             setIsLoading(true);

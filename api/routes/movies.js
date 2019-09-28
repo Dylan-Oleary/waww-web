@@ -289,7 +289,8 @@ router.route("/:movieID/reviews")
             const { title, review } = request.body.formData;
             return new Promise((resolve, reject) => {
                 Review.findOne({
-                    userID: authenticatedUser
+                    userID: authenticatedUser,
+                    movieID: request.params.movieID
                 }).then(existingReview => {
                     if(existingReview){
                         reject();
@@ -309,7 +310,7 @@ router.route("/:movieID/reviews")
                     const token = jwt.sign({ id: authenticatedUser }, secret, {
                         expiresIn: '8h'
                     });
-    
+   
                     response.status(201).send({ newReview, token });
                 }).catch(error => {
                     alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
@@ -317,7 +318,7 @@ router.route("/:movieID/reviews")
     
                     response.status(500).send({ alert });
                 });
-            }).catch(() => {
+            }).catch(error => {
                 response.sendStatus(403);
             })
         }else {
