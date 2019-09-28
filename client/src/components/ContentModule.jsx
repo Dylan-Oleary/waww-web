@@ -16,7 +16,7 @@ const ContentModule = ({ movie }) => {
         { key: 1, name: "Comments"}
     ];
 
-    const [currentTab, setCurrentTab] = useState(tabs[1]);
+    const [currentTab, setCurrentTab] = useState(tabs[0]);
     const inlineBackdropImage = movie.images.backdrops && movie.images.backdrops.length ? (
         movie.images.backdrops.length > 1 ? `https://image.tmdb.org/t/p/original/${movie.images.backdrops[1].file_path}` : `https://image.tmdb.org/t/p/original/${movie.images.backdrops[0].file_path}`
     ) : null

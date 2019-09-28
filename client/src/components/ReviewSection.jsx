@@ -2,19 +2,26 @@ import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 
 import ReviewCard from "./ReviewCard";
-import ReviewForm from "./ReviewForm";
 import expressServer from "../api";
 
-const ReviewSection = ({ movieID, reviewIDs, login }) => {
+const ReviewSection = ({ movieID, reviewIDs, login, user }) => {
     const [newReviewOpen, setNewReviewOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [reviews, setReviews] = useState([]);
+    const [userHasReview, setUserHasReview] = useState(false);
 
     useEffect(() => {
         const fetchReviewsContent = () => {
+            setUserHasReview(false);
             expressServer.get(`/api/movies/${movieID}/reviews`).then(response => {
-                setReviews(response.data.formattedReviews);
+                setReviews(response.data.formattedReviews.reverse());
                 setIsLoading(false);
+                for(let i = 0; i< response.data.formattedReviews.length; i++){
+                    if(response.data.formattedReviews[i].user._id === user._id){
+                        setUserHasReview(true);
+                        break;
+                    }
+                }
             });
         };
 
@@ -22,20 +29,36 @@ const ReviewSection = ({ movieID, reviewIDs, login }) => {
     }, [reviewIDs]);
 
     const renderReviewCards = () => {
-        return reviews.reverse().map(review => {
-            return <ReviewCard reviewContent={review}/>
+        return reviews.map(review => {
+            return (
+                <ReviewCard
+                    reviewID={review._id}
+                    title={review.title}
+                    review={review.review}
+                    author={review.user.username}
+                    profilePicture={review.user.profilePicture.secureURL}
+                    createdAt={review.createdAt}
+                    updatedAt={review.updatedAt}
+                    setIsLoading={setIsLoading}
+                    userID={review.user._id}
+                />
+            )
         });
     };
 
     const renderContent = () => {
         return (
             <Fragment>
-                <button  onClick={() => setNewReviewOpen(true)}>Leave a Review!</button>
-                {newReviewOpen && login.isLoggedIn && <ReviewForm isAuthenticated={login.isLoggedIn}/>}
+                {!userHasReview && <button onClick={() => setNewReviewOpen(true)}>Leave a Review!</button>}
+                {newReviewOpen && login.isLoggedIn && <ReviewCard isNew={true} openAsForm={true} closeReview={closeNewReview} setIsLoading={setIsLoading}/>}
                 {reviews && reviews.length ? renderReviewCards() : <div>There are no reviews, be the first to leave one</div>}
             </Fragment>
         );
     };
+
+    const closeNewReview = () => {
+        setNewReviewOpen(false);
+    }
 
     return (
         <div id="ReviewSection">
@@ -44,9 +67,10 @@ const ReviewSection = ({ movieID, reviewIDs, login }) => {
     )
 };
 
-const mapStateToProps = ({ login }) => {
+const mapStateToProps = ({ login, user }) => {
     return {
-        login
+        login,
+        user
     }
 };
 

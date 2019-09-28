@@ -8,6 +8,7 @@ const cloudinary = require('cloudinary').v2;
 const fs = require('fs')
 const { promisify } = require('util')
 const unlinkAsync = promisify(fs.unlink)
+const requestAuthentication = require("../utils/isAuthenticated");
 
 // Multer Set-Up
 const multer  = require('multer');
@@ -84,6 +85,48 @@ router.post("/", (req, res) => {
   })
 });
 
+
+router.route("/:userID")
+  .get(async (request, response) => {
+    const authenticatedUser = await requestAuthentication(request.headers.authorization);
+
+    if(authenticatedUser){
+      User.findById(authenticatedUser).then(result => {
+        const user = {
+          _id: result._id,
+          firstName: result.firstName,
+          lastName: result.lastName,
+          email: result.email,
+          username: result.username,
+          createdAt: result.createdAt,
+          updatedAt: result.updatedAt,
+          reviews: result.reviews,
+          recentlyVisited: result.recentlyVisited,
+          recentActivity: result.recentActivity,
+          genres: result.genres,
+          viewed: result.viewed,
+          favourites: result.favourites,
+          watchlist: result.watchlist,
+          profilePicture: {
+            publicID: result.profilePicture.publicID,
+            secureURL: result.profilePicture.secureURL
+          }
+        };
+
+        const token = jwt.sign({ id: authenticatedUser }, secret, {
+          expiresIn: '8h'
+        });
+
+        response.status(200).send({ token, user });
+      }).catch(() => {
+        response.sendStatus(500);
+      })
+    }else {
+      response.sendStatus(401);
+    }
+  })
+;
+
 router.get("/", async (req, res) => {
   const userJWT = jwt.verify(req.query.jwt, process.env.TOKEN_SECRET);
   
@@ -106,7 +149,8 @@ router.get("/", async (req, res) => {
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
           recentActivity: user.recentActivity,
-          recentlyVisited: user.recentlyVisited
+          recentlyVisited: user.recentlyVisited,
+          reviews: user.reviews
       }
 
       res.status(200).send({ authenticatedUser });

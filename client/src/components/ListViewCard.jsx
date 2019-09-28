@@ -6,7 +6,11 @@ import altLogo from '../public/assets/images/case-white.svg';
 
 const ListViewCard = ({ movie, size }) => {
     const navigateToMovieProfile = movie => {
-        navigate(`/movies/${movie._id}`);
+        if(movie.id){
+            navigate(`/movies/${movie.id}`);
+        }else {
+            navigate(`/movies/${movie._id}`);
+        }
     }
 
     return (

@@ -234,12 +234,10 @@ router.route("/:movieID")
                         console.log(err);
                     })
                 }).catch(error => {
-                    console.log("line 90")
                     console.log(error);
                 })
             }
         }).catch(err => {
-            console.log("hit 241")
             console.log(err);
         })
     })
@@ -289,24 +287,38 @@ router.route("/:movieID/reviews")
 
         if(authenticatedUser){
             const { title, review } = request.body.formData;
-            const { user } = request.body;
-
-            Review.create({
-                title: title,
-                review: review,
-                userID: mongoose.Types.ObjectId(user._id),
-                movieID: request.params.movieID
+            return new Promise((resolve, reject) => {
+                Review.findOne({
+                    userID: authenticatedUser
+                }).then(existingReview => {
+                    if(existingReview){
+                        reject();
+                    }else {
+                        resolve();
+                    }
+                }).catch(() => {
+                    response.sendStatus(500);
+                })
             }).then(() => {
-                const token = jwt.sign({ id: authenticatedUser }, secret, {
-                    expiresIn: '8h'
+                Review.create({
+                    title: title,
+                    review: review,
+                    userID: mongoose.Types.ObjectId(authenticatedUser),
+                    movieID: request.params.movieID
+                }).then(newReview => {
+                    const token = jwt.sign({ id: authenticatedUser }, secret, {
+                        expiresIn: '8h'
+                    });
+    
+                    response.status(201).send({ newReview, token });
+                }).catch(error => {
+                    alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
+                    alert.alertFor = "TMDB API ERROR";
+    
+                    response.status(500).send({ alert });
                 });
-
-                response.status(201).send({ token });
-            }).catch(error => {
-                alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-                alert.alertFor = "TMDB API ERROR";
-
-                response.status(500).send({ alert });
+            }).catch(() => {
+                response.sendStatus(403);
             })
         }else {
             alert.alertMessages = ["You must be logged in order to leave a review!"];
@@ -318,13 +330,58 @@ router.route("/:movieID/reviews")
 ; //close router.route("/:movieID/reviews")
 
 router.route("/:movieID/reviews/:reviewID")
+    .put(async (request, response) => {
+        const authenticatedUser = await requestAuthentication(request.headers.authorization);
+
+        if(authenticatedUser){
+            return new Promise((resolve, reject) => {
+                Review.findById(request.params.reviewID).then(review => {
+                    if(review.userID == authenticatedUser){
+                        resolve();
+                    }else {
+                        reject();
+                    }
+                }).catch(() => {
+                    response.sendStatus(500);
+                })
+            }).then(() => {
+                const { title, review } = request.body.formData;
+
+                Review.findByIdAndUpdate(request.params.reviewID, {
+                    title: title,
+                    review: review
+                }, {
+                    new: true
+                }).then(updatedReview => {
+                    console.log(updatedReview);
+                    const token = jwt.sign({ id: authenticatedUser }, secret, {
+                        expiresIn: '8h'
+                    });
+
+                    response.status(200).send({ updatedReview, token });
+                }).catch(() => {
+                    response.sendStatus(500);
+                })
+            }).catch(() => {
+                response.sendStatus(401);
+            });
+        }else {
+            response.sendStatus(401);
+        }
+    })
     .delete(async (request, response) => {
         const authenticatedUser = await requestAuthentication(request.headers.authorization);
 
         if(authenticatedUser){
-            Review.findById(request.params.reviewID).then(review => {
-                return review.remove();
-            }).then(() => {
+            return new Promise((resolve, reject) => {
+                Review.findById(request.params.reviewID).then(review => {
+                    if(review.userID == authenticatedUser){
+                        resolve(review.remove());
+                    }else {
+                        reject();
+                    }
+                });
+            }).then(deletedReview => {
                 const token = jwt.sign({ id: authenticatedUser }, secret, {
                     expiresIn: '8h'
                 });
@@ -332,15 +389,12 @@ router.route("/:movieID/reviews/:reviewID")
                 alert.alertMessages = [`Review was successfully deleted!`];
                 alert.alertFor = "successfulReview";
 
-                response.status(204).send({ token, alert });
-            }).catch(error => {
-                console.log(error)
+                response.status(200).send({ deletedReview, token, alert });
+            }).catch(() => {
+                response.sendStatus(401);
             })
         }else {
-            alert.alertMessages = ["You cannot delete this review"];
-            alert.alertFor = "nullJWT";
-
-            response.status(401).send({ alert });
+            response.sendStatus(401);
         }
     })
 ; //close router.route("/:movieID/reviews")

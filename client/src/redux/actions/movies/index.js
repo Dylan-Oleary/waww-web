@@ -38,61 +38,112 @@ export const removeMovie = movie => {
     }
 }
 
-export const addReviewToMovie = (jwt, formData, user, movieID) => {
+export const addReviewToMovie = (jwt, formData, movieID) => {
     return async dispatch => {
         expressServer.post(`/api/movies/${movieID}/reviews`, {
-            formData,
-            user
+            formData
         }, {
             headers: {
                 "Authorization": jwt
             }
-        })
-        .then(response => {
+        }).then(response => {
             window.localStorage.setItem("token", response.data.token);
 
             return Promise.all([
-                expressServer.get(`/api/movies/${movieID}`)
+                expressServer.get(`/api/movies/${movieID}`),
+                expressServer.get(`/api/users/${response.data.newReview.userID}`, {
+                    headers: {
+                        "Authorization": jwt
+                    }
+                })
             ]).then(([
-                movie
+                movie,
+                userRecord
             ]) => {
                 dispatch({ type: "UPDATE_SELECTED_MOVIE", payload: movie.data });
-                // dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.userRecord });
+                dispatch({ type: "UPDATE_USER", payload: userRecord.data.user });
 
                 alert.alertMessages = [`Review was successfully created!`];
                 alert.alertFor = "successfulReview";
                 dispatch({ type: "LOG_SUCCESS", payload: alert });
             });
         }).catch(err => {
-            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
+            alert.alertMessages = [`Error!`];
+            dispatch({ type: "LOG_ERROR", payload: alert });
         })
     };
 };
 
-export const deleteReviewForMovie = (jwt, movieID, reviewID) => {
+export const editReviewForMovie = (jwt, formData, movieID) => {
     return async dispatch => {
-        expressServer.delete(`/api/movies/${movieID}/reviews/${reviewID}`, {
+        expressServer.put(`/api/movies/${movieID}/reviews/${formData._id}`, {
+            formData
+        }, {
             headers: {
                 "Authorization": jwt
             }
-        }).then(() => {
+        }).then(response => {
+            window.localStorage.setItem("token", response.data.token);
+
             return Promise.all([
-                expressServer.get(`/api/movies/${movieID}`)
+                expressServer.get(`/api/movies/${movieID}`),
+                expressServer.get(`/api/users/${response.data.updatedReview.userID}`, {
+                    headers: {
+                        "Authorization": jwt
+                    }
+                })
             ]).then(([
-                movie
+                movie,
+                userRecord
             ]) => {
                 dispatch({ type: "UPDATE_SELECTED_MOVIE", payload: movie.data });
-                // dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.userRecord });
+                dispatch({ type: "UPDATE_USER", payload: userRecord.data.user });
 
-                alert.alertMessages = [`Review was successfully deleted!`];
+                alert.alertMessages = [`Review was successfully edited!`];
                 alert.alertFor = "successfulReview";
                 dispatch({ type: "LOG_SUCCESS", payload: alert });
             });
         }).catch(error => {
             console.log(error);
+            alert.alertMessages = [`You cannot edit this review`];
+            alert.alertFor = "nullJWT";
+            dispatch({ type: "LOG_ERROR", payload: alert });
+        })
+    }
+};
+
+export const deleteReviewForMovie = (jwt, movieID, reviewID) => {;
+    return async dispatch => {
+        expressServer.delete(`/api/movies/${movieID}/reviews/${reviewID}`, {
+            headers: {
+                "Authorization": jwt
+            }
+        }).then(response => {
+            return Promise.all([
+                expressServer.get(`/api/movies/${movieID}`),
+                expressServer.get(`/api/users/${response.data.deletedReview.userID}`, {
+                    headers: {
+                        "Authorization": jwt
+                    }
+                })
+            ]).then(([
+                movie,
+                userRecord
+            ]) => {
+                dispatch({ type: "UPDATE_SELECTED_MOVIE", payload: movie.data });
+                dispatch({ type: "UPDATE_USER", payload: userRecord.data.user });
+
+                alert.alertMessages = [`Review was successfully deleted!`];
+                alert.alertFor = "successfulReview";
+                dispatch({ type: "LOG_SUCCESS", payload: alert });
+            });
+        }).catch(() => {
+            alert.alertMessages = [`You cannot delete this review`];
+            alert.alertFor = "nullJWT";
+            dispatch({ type: "LOG_ERROR", payload: alert });
         });
     };
-}
+};
 
 export const getNowPlaying = () => {
     return async dispatch => {

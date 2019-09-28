@@ -31,7 +31,8 @@ router.post("/persist", (req, res) => {
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
             recentActivity: user.recentActivity,
-            recentlyVisited: user.recentlyVisited
+            recentlyVisited: user.recentlyVisited,
+            reviews: user.reviews
         }
 
         res.status(200).send({ authenticatedUser });
@@ -78,7 +79,8 @@ router.post("/authenticate", (req, res, next) => {
                     createdAt: user.createdAt,
                     updatedAt: user.updatedAt,
                     recentActivity: user.recentActivity,
-                    recentlyVisited: user.recentlyVisited
+                    recentlyVisited: user.recentlyVisited,
+                    reviews: user.reviews
                 }
                 
                 alert.alertMessages = [`Welcome, ${authenticatedUser.firstName}!`];
