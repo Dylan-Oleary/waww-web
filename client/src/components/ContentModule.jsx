@@ -78,7 +78,7 @@ const ContentModule = ({ movie }) => {
         return movie.recommendations.length ? (
             <Panel title="Recommendations" modalContent={movie.recommendations} modalTitle={"Recommendations"} modalType={"movieList"}>
                 <Carousel iFrame={false}>
-                    { movie.recommendations.map(movie => <ListViewCard movie={movie} key={movie.tmdb_id} />) }
+                    { movie.recommendations.map(movie => <ListViewCard movie={movie} key={movie._id} />) }
                 </Carousel>
             </Panel>
         ) : null

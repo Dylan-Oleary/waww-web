@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
 
-import { validateEmptyField, maxCharacters50, required } from '../utils/formFieldValidators';
+import { validateEmptyField, maxCharacters50 } from '../utils/formFieldValidators';
 import { addReviewToMovie } from "../redux/actions/movies";
 
 const ReviewForm = ({ handleSubmit, initialValues, isAuthenticated, user, movieID, addReviewToMovie }) => {
@@ -14,23 +14,6 @@ const ReviewForm = ({ handleSubmit, initialValues, isAuthenticated, user, movieI
                 {renderError(meta)}
             </div>
 
-        )
-    };
-
-    const renderSelect = ({ input, label }) => {
-        let score = [];
-
-        for(let i = 0; i <= 100; i++){
-            score.push(i);        
-        }
-
-        return (
-            <div className="field input-field">
-                <label>{label}</label>
-                <select {...input}>
-                    {score.map(score => <option value={score}>{score}</option>)}
-                </select>
-            </div>
         )
     };
 
@@ -66,14 +49,6 @@ const ReviewForm = ({ handleSubmit, initialValues, isAuthenticated, user, movieI
                     />
                 </div>
                 <div className="field">
-                    <Field 
-                        name="rating"
-                        component={formProps => renderSelect(formProps)}
-                        type="select"
-                        label="Rating"
-                    />
-                </div>
-                <div className="field">
                     <Field
                         name="review"
                         component={formProps => renderInput(formProps)}
@@ -97,7 +72,6 @@ const mapStateToProps = ({ user, selectedMovie }) => {
     return {
         initialValues: {
             title: "",
-            rating: 0,
             review: ""
         },
         user: user,

@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const MovieSchema = new mongoose.Schema (
     {
+        _id : {
+            type: Number,
+            required: true
+        },
         backdrop_path: {
             type: String,
             required: false
@@ -62,18 +66,16 @@ const MovieSchema = new mongoose.Schema (
             type: String,
             required: true
         },
-        tmdb_id: {
-            type: Number,
-            required: true
-        },
         videos: {
             type: Array,
             required: false
         },
-        reviews: {
-            type: Array,
-            required: false
-        }
+        reviews: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: "Review"
+            }
+        ]
     },
     {
         timestamps: true

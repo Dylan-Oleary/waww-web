@@ -48,7 +48,7 @@ const Home = ({ clearHomePage, getUserGenres, getNowPlaying, getPopular, getTopR
                     return (
                         <div className="home-slider-wrapper">
                             <div className="home-slider-content" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdrop_path})`}}>
-                                <A className="title-overlay" href={`/movies/${movie.id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
+                                <A className="title-overlay" href={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
                             </div>
                         </div>
                     )
@@ -65,7 +65,7 @@ const Home = ({ clearHomePage, getUserGenres, getNowPlaying, getPopular, getTopR
 
                     return (
                         <div className="upcoming-content" style={{ backgroundImage: bgImage }}>
-                            <A className="title-overlay-small" href={`/movies/${movie.id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
+                            <A className="title-overlay-small" href={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
                         </div>
                     )
                 })}

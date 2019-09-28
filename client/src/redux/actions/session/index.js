@@ -97,6 +97,5 @@ export const persistUser = (jwt, currentPath) => {
             window.localStorage.clear();
             navigate("/login");
         })
-
     }
 }

@@ -52,10 +52,12 @@ const UserSchema = new mongoose.Schema(
         recentlyVisited: {
             type: Array
         },
-        reviews: {
-            type: Array,
-            required: false
-        }
+        reviews: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: "Review"
+            }
+        ]
     },
     {
         timestamps: true

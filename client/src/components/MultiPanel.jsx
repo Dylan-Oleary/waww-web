@@ -12,7 +12,7 @@ const MultiPanel = ({ title, content }) => {
 
         return (
             <div className="multi-image-main" style={{ backgroundImage: `url(${bgImage})` }}>
-                <A className="title-overlay-small" href={`/movies/${movie.id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
+                <A className="title-overlay-small" href={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
             </div>
         )
     }
@@ -25,7 +25,7 @@ const MultiPanel = ({ title, content }) => {
                         const bgImage = movie.backdrop_path === null ? altLogo : `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`;
                         return (
                             <div style={{ backgroundImage: `url(${bgImage})` }} key={`${movie.title}-stack-image`}>
-                                <A className="title-overlay-tiny" href={`/movies/${movie.id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
+                                <A className="title-overlay-tiny" href={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
                             </div>
                         )
                     })
@@ -40,7 +40,7 @@ const MultiPanel = ({ title, content }) => {
                 <h3>More Titles</h3>
                 {
                     movies.map(movie => {
-                        return <A className="multi-list-item" href={`/movies/${movie.id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
+                        return <A className="multi-list-item" href={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
                     })
                 }
             </div>

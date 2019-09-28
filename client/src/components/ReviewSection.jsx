@@ -10,12 +10,10 @@ const ReviewSection = ({ movieID, reviewIDs, login }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [reviews, setReviews] = useState([]);
 
-    console.log(reviews);
-
     useEffect(() => {
         const fetchReviewsContent = () => {
             expressServer.get(`/api/movies/${movieID}/reviews`).then(response => {
-                setReviews(response.data.reviews);
+                setReviews(response.data.formattedReviews);
                 setIsLoading(false);
             });
         };

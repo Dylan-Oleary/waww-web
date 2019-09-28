@@ -6,9 +6,7 @@ import altLogo from '../public/assets/images/case-white.svg';
 
 const ListViewCard = ({ movie, size }) => {
     const navigateToMovieProfile = movie => {
-        const movieID = movie.tmdb_id ? movie.tmdb_id : movie.id;
-
-        navigate(`/movies/${movieID}`);
+        navigate(`/movies/${movie._id}`);
     }
 
     return (
@@ -18,7 +16,7 @@ const ListViewCard = ({ movie, size }) => {
                 <CardModal movie={movie} navigateToMovieProfile={navigateToMovieProfile}/>
             </div>
             <div className="list-view-card-content">
-                <A href={`/movies/${movie.tmdb_id ? movie.tmdb_id : movie.id}`} onClick={() => navigateToMovieProfile(movie)}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
+                <A href={`/movies/${movie._id}`} onClick={() => navigateToMovieProfile(movie)}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
             </div>
         </div>
     )

@@ -1,13 +1,17 @@
 import { navigate } from 'hookrouter';
 import expressServer from '../../../api';
 
+const alert = {
+    alertMessages: [],
+    alertFor: null
+}
+
 export const getSelectedMovie = movieID => {
     return async dispatch => {
-        const response = await expressServer.post("/api/movies", {
-            tmdb_id: movieID
+        expressServer.get(`/api/movies/${movieID}`).then(response => {
+            dispatch({ type: "GET_SELECTED_MOVIE", payload: response.data })
         });
         
-        dispatch({ type: "GET_SELECTED_MOVIE", payload: response.data })
     }
 }
 
@@ -37,21 +41,58 @@ export const removeMovie = movie => {
 export const addReviewToMovie = (jwt, formData, user, movieID) => {
     return async dispatch => {
         expressServer.post(`/api/movies/${movieID}/reviews`, {
-            jwt,
             formData,
             user
+        }, {
+            headers: {
+                "Authorization": jwt
+            }
         })
         .then(response => {
             window.localStorage.setItem("token", response.data.token);
 
-            dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.userRecord });
-            dispatch({ type: "UPDATE_SELECTED_MOVIE", payload: response.data.movieRecord });
-            dispatch({ type: "LOG_SUCCESS", payload: response.data.alert });
+            return Promise.all([
+                expressServer.get(`/api/movies/${movieID}`)
+            ]).then(([
+                movie
+            ]) => {
+                dispatch({ type: "UPDATE_SELECTED_MOVIE", payload: movie.data });
+                // dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.userRecord });
+
+                alert.alertMessages = [`Review was successfully created!`];
+                alert.alertFor = "successfulReview";
+                dispatch({ type: "LOG_SUCCESS", payload: alert });
+            });
         }).catch(err => {
             dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
         })
-    }
+    };
 };
+
+export const deleteReviewForMovie = (jwt, movieID, reviewID) => {
+    return async dispatch => {
+        expressServer.delete(`/api/movies/${movieID}/reviews/${reviewID}`, {
+            headers: {
+                "Authorization": jwt
+            }
+        }).then(() => {
+            return Promise.all([
+                expressServer.get(`/api/movies/${movieID}`)
+            ]).then(([
+                movie
+            ]) => {
+                dispatch({ type: "UPDATE_SELECTED_MOVIE", payload: movie.data });
+                // dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.userRecord });
+
+                alert.alertMessages = [`Review was successfully deleted!`];
+                alert.alertFor = "successfulReview";
+                dispatch({ type: "LOG_SUCCESS", payload: alert });
+            });
+        }).catch(error => {
+            console.log(error);
+        });
+    };
+}
 
 export const getNowPlaying = () => {
     return async dispatch => {

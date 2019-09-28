@@ -13,9 +13,9 @@ const CardModal = ({movie, navigateToMovieProfile, updateWatchList, updateFavour
     const renderActionButton = () => {
         switch(path){
             case "/users/watchlist" :
-                return <button className="ui button medium inverted" onClick={() => updateWatchList(token, {_id: movie._id, tmdb_id: movie.tmdb_id, release_date: movie.release_date, poster_path: movie.poster_path, title: movie.title})} >Remove From WatchList</button>
+                return <button className="ui button medium inverted" onClick={() => updateWatchList(token, {_id: movie._id, release_date: movie.release_date, poster_path: movie.poster_path, title: movie.title})} >Remove From WatchList</button>
             case "/users/favourites" :
-                return <button className="ui button medium inverted" onClick={() => updateFavourites(token, {_id: movie._id, tmdb_id: movie.tmdb_id, release_date: movie.release_date, poster_path: movie.poster_path, title: movie.title})} >Remove from favourites</button>
+                return <button className="ui button medium inverted" onClick={() => updateFavourites(token, {_id: movie._id, release_date: movie.release_date, poster_path: movie.poster_path, title: movie.title})} >Remove from favourites</button>
             default :
                 return null;
         }
