@@ -302,8 +302,8 @@ router.route("/:movieID/reviews")
                 })
             }).then(() => {
                 Review.create({
-                    title: title,
-                    review: review,
+                    title: title.trim(),
+                    review: review.trim(),
                     userID: mongoose.Types.ObjectId(authenticatedUser),
                     movieID: request.params.movieID
                 }).then(newReview => {
@@ -313,6 +313,7 @@ router.route("/:movieID/reviews")
    
                     response.status(201).send({ newReview, token });
                 }).catch(error => {
+                    console.log(error);
                     alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
                     alert.alertFor = "TMDB API ERROR";
     
@@ -349,12 +350,12 @@ router.route("/:movieID/reviews/:reviewID")
                 const { title, review } = request.body.formData;
 
                 Review.findByIdAndUpdate(request.params.reviewID, {
-                    title: title,
-                    review: review
+                    title: title.trim(),
+                    review: review.trim()
                 }, {
+                    runValidators: true,
                     new: true
                 }).then(updatedReview => {
-                    console.log(updatedReview);
                     const token = jwt.sign({ id: authenticatedUser }, secret, {
                         expiresIn: '8h'
                     });

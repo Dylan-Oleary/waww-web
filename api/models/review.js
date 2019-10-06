@@ -2,15 +2,23 @@ const mongoose = require("mongoose");
 const User = require("./user");
 const Movie = require("./movie");
 
+const isValidField = value => {
+    const validField = /^[a-zA-Z0-9!, ?'()~#$:.-]+$/g;
+
+    return validField.test(value.trim());
+};
+
 const ReviewSchema = new mongoose.Schema (
     {
         title: {
             type: String,
-            required: true
+            required: true,
+            validate: isValidField
         },
         review: {
             type: String,
-            required: true
+            required: true,
+            validate: isValidField
         },
         userID: {
             type: mongoose.Schema.Types.ObjectId,

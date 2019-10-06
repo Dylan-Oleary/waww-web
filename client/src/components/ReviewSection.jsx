@@ -1,5 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCommentSlash as noReviewIcon } from '@fortawesome/free-solid-svg-icons';
 
 import ReviewCard from "./ReviewCard";
 import expressServer from "../api";
@@ -12,6 +14,7 @@ const ReviewSection = ({ movieID, reviewIDs, login, user }) => {
 
     useEffect(() => {
         const fetchReviewsContent = () => {
+            setIsLoading(true);
             setUserHasReview(false);
             expressServer.get(`/api/movies/${movieID}/reviews`).then(response => {
                 setReviews(response.data.formattedReviews.reverse());
@@ -29,29 +32,41 @@ const ReviewSection = ({ movieID, reviewIDs, login, user }) => {
     }, [reviewIDs]);
 
     const renderReviewCards = () => {
-        return reviews.map(review => {
-            return (
-                <ReviewCard
-                    reviewID={review._id}
-                    title={review.title}
-                    review={review.review}
-                    author={review.user.username}
-                    profilePicture={review.user.profilePicture.secureURL}
-                    createdAt={review.createdAt}
-                    updatedAt={review.updatedAt}
-                    setIsLoading={setIsLoading}
-                    userID={review.user._id}
-                />
-            )
-        });
+        if(reviews.length === 0 && !isLoading){
+            if(!newReviewOpen){
+                return (
+                    <div className="empty-message">
+                        <FontAwesomeIcon icon={noReviewIcon} size="8x" />
+                        <h3>There are no reviews! Be the first to leave one</h3>
+                        <button type="button" className="btn submit" onClick={() => setNewReviewOpen(true)}>Leave a Review!</button>
+                    </div>
+                )
+            }
+        } else {
+            return reviews.map(review => {
+                return (
+                    <ReviewCard
+                        reviewID={review._id}
+                        title={review.title}
+                        review={review.review}
+                        author={review.user.username}
+                        profilePicture={review.user.profilePicture.secureURL}
+                        createdAt={review.createdAt}
+                        updatedAt={review.updatedAt}
+                        setIsLoading={setIsLoading}
+                        userID={review.user._id}
+                    />
+                )
+            });
+        }
     };
 
     const renderContent = () => {
         return (
             <Fragment>
-                {!userHasReview && <button onClick={() => setNewReviewOpen(true)}>Leave a Review!</button>}
+                {!userHasReview && reviews.length > 0 && <button className="btn submit" onClick={() => setNewReviewOpen(true)}>Leave a Review!</button>}
                 {newReviewOpen && login.isLoggedIn && <ReviewCard isNew={true} openAsForm={true} closeReview={closeNewReview} setIsLoading={setIsLoading}/>}
-                {reviews && reviews.length ? renderReviewCards() : <div>There are no reviews, be the first to leave one</div>}
+                {reviews && renderReviewCards()}
             </Fragment>
         );
     };

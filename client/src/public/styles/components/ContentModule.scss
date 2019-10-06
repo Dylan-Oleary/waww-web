@@ -12,6 +12,7 @@
             padding: 15px 30px;
             margin: 0;
             flex: 1;
+            cursor: pointer;
             &.deselected-tab {
                 background-color: grey;
                 border-bottom: 2px solid $primary-blue;

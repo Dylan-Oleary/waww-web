@@ -19,6 +19,7 @@
 @import './components/Panel.scss';
 @import './components//ProfilePictureUpload.scss';
 @import './components/ReviewCard.scss';
+@import "./components/ReviewSection.scss";
 @import './components/SearchBar.scss';
 @import './components/SearchResults.scss';
 @import './components/SearchResultCard.scss';
@@ -268,4 +269,16 @@ html, body, #root, #App, #Main {
         opacity: .45;
     }
 
+}
+
+.muted-text {
+    font-style: italic;
+    color: #787878;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
 }
