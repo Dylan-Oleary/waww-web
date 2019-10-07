@@ -31,7 +31,7 @@ const Home = ({ clearHomePage, getUserGenres, getNowPlaying, getPopular, getTopR
     },[])
 
     useEffect(() => {
-        if(login.isLoggedIn){
+        if(user._id){
             getUserGenres(user.genres)
         } else {
             getNowPlaying();

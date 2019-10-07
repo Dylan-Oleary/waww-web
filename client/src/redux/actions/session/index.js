@@ -1,71 +1,63 @@
 import expressServer from '../../../api';
 import { navigate } from 'hookrouter';
 
-export const registerUser = formValues => {
+export const registerUser = formData => {
     return async dispatch => {
         window.localStorage.clear();
         
         dispatch({ type: "REGISTER_REQUEST"});
 
-        const newUser = {...formValues,};
+        const newUser = { ...formData };
 
-        expressServer.post("/api/users", { newUser })
-        .then( response => {
-            dispatch({ type: "REGISTER_SUCCESS"});
-            dispatch({ type: "LOGIN_REQUEST" });
-            navigate("/login");
+        expressServer.post("/api/register", {
+            newUser 
+        }).then(response => {
+            const { authenticatedUser, token } = response.data;
 
-            const user = response.data;
+            window.localStorage.setItem("token", token);
 
-            expressServer.post("/api/authenticate", { user, formValues })
-            .then( response => {
-                window.localStorage.setItem('token', response.data.token);
-    
-                dispatch({ type: "UPDATE_USER", payload: response.data.authenticatedUser});
-                dispatch({ type: "LOGIN_SUCCESS" });
-                navigate("/");
-            })
-            .catch( err => {
-                dispatch({ type: "LOGIN_FAILURE" });
-                dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
-            })
-        })
-        .catch( err => {
-            dispatch({ type: "REGISTER_FAILURE"});
-            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
-        })
-    }
-}
+            dispatch({ type: "REGISTER_SUCCESS" });
+            dispatch({ type: "UPDATE_USER", payload: authenticatedUser });
+            dispatch({ type: "LOGIN_SUCCESS"});
+            navigate("/");
+        }).catch(error => {
+            window.localStorage.clear();
+            dispatch({ type: "REGISTER_FAILURE" });
+            dispatch({ type: "LOG_ERROR", payload: error.response.data.errors });
+        });
+    };
+};
 
-export const userLogin = (formValues, token) => {
+export const authenticateUser = formData => {
     return async dispatch => {
         dispatch({ type: "LOGIN_REQUEST" });
 
-        const user = formValues === null ? token : {...formValues};
+        const user = { ...formData };
 
-        expressServer.post("/api/authenticate", { user })
-        .then( response => {
-            window.localStorage.setItem('token', response.data.token);
+        expressServer.post("/api/authenticate", {
+            user 
+        }).then(response => {
+            const { authenticatedUser, token } = response.data;
 
-            dispatch({ type: "UPDATE_USER", payload: response.data.authenticatedUser});
+            window.localStorage.setItem("token", token);
+
+            dispatch({ type: "UPDATE_USER", payload: authenticatedUser });
             dispatch({ type: "LOGIN_SUCCESS" });
             dispatch({ type: "LOG_GENERAL" , payload: response.data.alert });
-            
             navigate("/");
         })
-        .catch( err => {
+        .catch(error => {
+            window.localStorage.clear();
             dispatch({ type: "LOGIN_FAILURE" });
-            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert});
-        })
+            dispatch({ type: "LOG_ERROR", payload: error.response.data.alert});
+        });
     }
-}
+};
 
 export const userLogout = () => {
     return async dispatch => {
-        //Clear JWT
         window.localStorage.clear();
 
-        //Log User Out
         dispatch({ type: "LOGOUT_REQUEST" });
         dispatch({ type: "CLEAR_USER" });
         dispatch({ 
@@ -77,25 +69,24 @@ export const userLogout = () => {
         });
 
         navigate("/");
-    }
-}
+    };
+};
 
-export const persistUser = (jwt, currentPath) => {
+export const persistSession = token => {
     return async dispatch => {
-        expressServer.post("/api/persist", {jwt, currentPath })
-        .then( response => {
-            const { authenticatedUser } = response.data;
+        expressServer.get("/api/", {
+            headers: {
+                "Authorization": token
+            }
+        }).then(response => {
+            const { authenticatedUser, token } = response.data;
 
-            dispatch({ type: "LOGIN_SUCCESS"});
+            window.localStorage.setItem("token", token);
             dispatch({ type: "UPDATE_USER", payload: authenticatedUser });
-
-            navigate(currentPath);
-        })
-        .catch( err => {
-            dispatch({ type: "CLEAR_USER" });
-            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
+            dispatch({ type: "LOGIN_SUCCESS"});
+        }).catch(error => {
             window.localStorage.clear();
-            navigate("/login");
-        })
-    }
-}
+            console.log(error);
+        });
+    };
+};

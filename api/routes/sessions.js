@@ -1,106 +1,162 @@
 const router = require("express").Router();
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
 const secret = process.env.TOKEN_SECRET;
+const User = require("../models/user");
+const requestAuthentication = require("../utils/isAuthenticated");
 
-const alert = {
-    alertMessages: [],
-    alertFor: null
-}
+router.route("/")
+    .get((request, response) => {
+        const authenticationID = requestAuthentication(request.headers.authorization);
 
-router.post("/persist", (req, res) => {    
-    const userJWT = jwt.verify(req.body.jwt, process.env.TOKEN_SECRET);
-    //CHECK IF TIME HAS EXPIRED ON JWT SO WE CAN KICK THEM OUT AND CLEAR LOCAL
-    
-    User.findOne({
-        _id: userJWT.id
-    })
-    .then( user => {
-        const authenticatedUser = {
-            profilePicture: user.profilePicture,
-            watchlist: user.watchlist,
-            favourites: user.favourites,
-            viewed: user.viewed,
-            ratedList: user.ratedList,
-            genres: user.genres,
-            _id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            username: user.username,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
-            recentActivity: user.recentActivity,
-            recentlyVisited: user.recentlyVisited,
-            reviews: user.reviews
-        }
-
-        res.status(200).send({ authenticatedUser });
-    })
-    .catch( () => {
-        alert.alertMessages = ["Please login to view this content"];
-        alert.alertFor = "nullJWT";
-
-        res.status(409).send({ alert });
-    })
-})
-
-router.post("/authenticate", (req, res, next) => {
-    User.findOne({
-        email: req.body.user.email
-    })
-    .then( user => {
-        const password = req.body.formValues ? req.body.formValues.password : req.body.user.password;
-
-        user.authenticate(password, (err, isMatch) => {
-            if(err) throw new Error(err);
-
-            if (isMatch){
-                const payload = { 
-                    id: user._id
-                };
-
-                const token = jwt.sign(payload, secret, {
-                  expiresIn: '8h'
-                });
-
+        if(authenticationID){
+            User.findById(authenticationID).then(user => {
+                const token = jwt.sign({ id: user._id }, secret, { expiresIn: "1h" });
                 const authenticatedUser = {
-                    profilePicture: user.profilePicture,
-                    watchlist: user.watchlist,
-                    favourites: user.favourites,
-                    viewed: user.viewed,
-                    genres: user.genres,
-                    ratedList: user.ratedList,
                     _id: user._id,
                     firstName: user.firstName,
                     lastName: user.lastName,
                     email: user.email,
                     username: user.username,
-                    createdAt: user.createdAt,
-                    updatedAt: user.updatedAt,
-                    recentActivity: user.recentActivity,
+                    watchlist: user.watchlist,
+                    favourites: user.favourites,
+                    viewed: user.viewed,
+                    genres: user.genres,
+                    profilePicture: {
+                        publicID: user.profilePicture.publicID,
+                        secureURL: user.profilePicture.secureURL
+                    },
                     recentlyVisited: user.recentlyVisited,
-                    reviews: user.reviews
-                }
-                
-                alert.alertMessages = [`Welcome, ${authenticatedUser.firstName}!`];
-                alert.alertFor = "successfulLogin"
+                    recentActivity: user.recentActivity,
+                    reviews: user.reviews,
+                    createdAt: user.createdAt,
+                    updatedAt: user.updatedAt
+                };
 
-                res.status(200).send({ authenticatedUser, token, alert });
-            } else {
-                alert.alertMessages = ["E-mail and/or password are invalid!"]
-                alert.alertFor = "invalidCredentials";
-
-                res.status(409).send({ alert });
-            }
-        })
+                response.status(200).send({ authenticatedUser, token });
+            }).catch(error => {
+                response.status(500).send(error);
+            });
+        } else {
+            response.sendStatus(200);
+        }
     })
-    .catch( () => {
-        alert.alertMessages = ["An account with this e-mail does not exist!"]
-        alert.alertFor = "invalidCredentials";
+;
 
-        res.status(400).send({ alert });
-    });
-});
+router.route("/authenticate")
+    .post((request, response) => {
+        User.findOne({
+            email: request.body.user.email
+        }).then(user => {
+            const password = request.body.user.password;
+    
+            return new Promise((resolve, reject) => {
+                user.authenticate(password, (error, isMatch) => {
+                    if(error) throw new Error(error);
+        
+                    if (isMatch){
+                        resolve(user);
+                    } else {
+                        reject();
+                    }
+                });
+            }).then(user => {
+                const token = jwt.sign({ id: user._id }, secret, { expiresIn: "1h" });
+                const authenticatedUser = {
+                    _id: user._id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    username: user.username,
+                    watchlist: user.watchlist,
+                    favourites: user.favourites,
+                    viewed: user.viewed,
+                    genres: user.genres,
+                    profilePicture: {
+                        publicID: user.profilePicture.publicID,
+                        secureURL: user.profilePicture.secureURL
+                    },
+                    recentlyVisited: user.recentlyVisited,
+                    recentActivity: user.recentActivity,
+                    reviews: user.reviews,
+                    createdAt: user.createdAt,
+                    updatedAt: user.updatedAt
+                };
+
+                response.status(200).send({ authenticatedUser, token });
+            }).catch(error => {
+                response.status(401).send(error);
+            });
+        }).catch(error => {    
+            response.status(404).send(error);
+        });
+    })
+;
+
+router.route("/register")
+    .post((request, response) => {
+        User.findOne({
+            $or: [
+                {"username": request.body.newUser.username},
+                {"email": request.body.newUser.email}
+            ]
+        }).then(user => {
+            if(user){
+                let errors = [];
+                if(user.username === request.body.newUser.username){
+                    errors.push("A user with this user name already exists!");
+                }
+                if(user.email === request.body.newUser.email){
+                    errors.push("A user with this email already exists!");
+                }
+
+                response.status(409).send(errors);
+            } else {
+                User.create({
+                    firstName: request.body.newUser.firstName,
+                    lastName: request.body.newUser.lastName,
+                    email: request.body.newUser.email,
+                    username: request.body.newUser.username,
+                    password: request.body.newUser.password,
+                    confirmPassword: request.body.newUser.confirmPassword,
+                    watchlist: [],
+                    favourites: [],
+                    viewed: [],
+                    genres: [],
+                    recentlyVisited: [],
+                    recentActivity: [],
+                    reviews: []
+                }).then(user => {
+                    const token = jwt.sign({ id: user._id }, secret, { expiresIn: "1h" });
+                    const authenticatedUser = {
+                        _id: user._id,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email,
+                        username: user.username,
+                        watchlist: user.watchlist,
+                        favourites: user.favourites,
+                        viewed: user.viewed,
+                        genres: user.genres,
+                        profilePicture: {
+                            publicID: user.profilePicture.publicID,
+                            secureURL: user.profilePicture.secureURL
+                        },
+                        recentlyVisited: user.recentlyVisited,
+                        recentActivity: user.recentActivity,
+                        reviews: user.reviews,
+                        createdAt: user.createdAt,
+                        updatedAt: user.updatedAt
+                    };
+
+                    response.status(201).send({ authenticatedUser, token });
+                }).catch(error => {
+                    response.status(500).send(error);
+                });
+            }
+        }).catch(error => {
+            response.status(500).send(error);
+        });
+    })
+;
 
 module.exports = router;

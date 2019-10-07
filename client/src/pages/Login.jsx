@@ -5,8 +5,8 @@ import { A, navigate } from 'hookrouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye as hidingPassword, faEyeSlash as showingPassword  } from '@fortawesome/free-solid-svg-icons';
 
-import { userLogin } from '../redux/actions/session';
-import { validateEmail, validateEmptyField, maxCharacters25, maxCharacters50, required } from '../utils/formFieldValidators';
+import { authenticateUser } from '../redux/actions/session';
+import { validateEmail, validateEmptyField, maxCharacters50, required } from '../utils/formFieldValidators';
 import Logo from '../public/assets/images/inverted-logo.svg';
 
 const Login = props => {
@@ -15,9 +15,9 @@ const Login = props => {
 
     useEffect(() => {
         if(token){
-            navigate('/');
+            navigate("/");
         }
-    }, [])
+    }, [token])
 
     const renderInput = ({ input, placeholder, type, meta, label  }) => {
         return (
@@ -53,7 +53,7 @@ const Login = props => {
     }
 
     const onSubmit = formValues => {
-        props.userLogin(formValues);
+        props.authenticateUser(formValues);
     }
 
     const renderContent = () => {
@@ -128,4 +128,4 @@ const mapStateToProps = ({ login }) => {
     return { login };
 }
 
-export default connect(mapStateToProps, { userLogin })(formWrapped);  
+export default connect(mapStateToProps, { authenticateUser })(formWrapped);  

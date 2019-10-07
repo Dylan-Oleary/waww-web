@@ -3,7 +3,6 @@ const shortId = require('shortid');
 const User = require('../models/user');
 const jwt = require("jsonwebtoken");
 const secret = process.env.TOKEN_SECRET;
-const path = require('path');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs')
 const { promisify } = require('util')
@@ -23,68 +22,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const alert = {
-  alertMessages: [],
-  alertFor: null
+    alertMessages: [],
+    alertFor: null
 }
-
-router.post("/", (req, res) => {
-  User.findOne({
-    $or: [
-      {"username": req.body.newUser.username},
-      {"email": req.body.newUser.email}
-    ]
-  })
-  .then( user => {
-    //Check if any user credentials exist in the DB, if they do inform the user trying to register
-    if(user){
-      alert.alertMessages = [];
-      
-      if(user.username === req.body.newUser.username){
-        alert.alertMessages.push("A user with this user name already exists!");
-        alert.alertFor = "existingCredentials";
-      }
-      if(user.email === req.body.newUser.email){
-        alert.alertMessages.push("A user with this email already exists!");
-        alert.alertFor = "existingCredentials";
-      }
-
-      res.status(409).send({ alert });
-    } else{
-      //Create the user, if all required credentials are unique
-      User.create({
-        firstName: req.body.newUser.firstName,
-        lastName: req.body.newUser.lastName,
-        email: req.body.newUser.email,
-        username: req.body.newUser.username,
-        password: req.body.newUser.password,
-        confirmPassword: req.body.newUser.confirmPassword,
-        watchlist: [],
-        favourites: [],
-        genres: [],
-        profilePicture: {
-            contentType: null,
-            data: null
-        }
-      })
-      .then( user => {
-          res.send(user);
-      })
-      .catch(() => {
-        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-        alert.alertFor = "DB ERROR"
-  
-        res.status(500).send({ alert });
-      })
-    }
-  })
-  .catch(() => {
-    alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-    alert.alertFor = "DB ERROR"
-
-    res.status(502).send({ alert });
-  })
-});
-
 
 router.route("/:userID")
   .get(async (request, response) => {

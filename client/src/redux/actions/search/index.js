@@ -2,7 +2,7 @@ import expressServer from '../../../api';
 
 export const getSearchResults = (searchTerm, page) => {
     return async dispatch => {
-        const response = await expressServer.get("/api/movies/search", {
+        const response = await expressServer.get("/api/search", {
             params: {
                 searchTerm: searchTerm,
                 page: page,

@@ -1,15 +1,14 @@
 import React, { useEffect }from 'react';
 import { connect } from 'react-redux';
-import { useRoutes, usePath, navigate } from 'hookrouter';
+import { useRoutes } from 'hookrouter';
 import { ToastContainer, toast, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import './public/styles/main.scss';
 import routes from './routes';
-import { persistUser } from './redux/actions/session';
+import { persistSession } from './redux/actions/session';
 import Toastr from './components/Toastr';
 import Modal from './components/Modal';
-import SearchBar from './components/SearchBar';
 
 const toastrAlert = (messages, type, alertFor) => {
     switch(type){
@@ -24,22 +23,8 @@ const toastrAlert = (messages, type, alertFor) => {
     }
 }
 
-const App = ({ login, alerts, persistUser, currentSearch }) => {
+const App = ({ alerts }) => {
     const routeResult = useRoutes(routes);
-    const currentPath = usePath();
-
-    // useEffect(() => {
-    //     if(currentPath !== '/search' && currentSearch){
-    //         navigate('/search')
-    //     }
-    // }, [currentSearch])
-
-    //Log the user in on page refresh if they have a token
-    useEffect(() => {
-        if(window.localStorage.getItem("token") && login.isLoggedIn === false){
-            persistUser(window.localStorage.getItem("token"), currentPath);            
-        }
-    })
 
     //Toastr Errors
     useEffect(() => {
@@ -52,7 +37,7 @@ const App = ({ login, alerts, persistUser, currentSearch }) => {
         if(alerts.general && alerts.general.alertMessages){
             toastrAlert(alerts.general.alertMessages, "general", alerts.general.alertFor);
         }
-    }, [alerts])
+    }, [alerts]);
 
     return (
         <div id="App">
@@ -88,8 +73,8 @@ const App = ({ login, alerts, persistUser, currentSearch }) => {
     );
 }
 
-const mapStateToProps = ({ login, alerts, search }) => {
-    return { login, alerts, currentSearch: search.currentSearch }
+const mapStateToProps = ({ alerts }) => {
+    return { alerts }
 }
 
-export default connect(mapStateToProps, { persistUser })(App);
+export default connect(mapStateToProps, { persistSession })(App);

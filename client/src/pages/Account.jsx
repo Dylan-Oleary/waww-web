@@ -20,6 +20,7 @@ const Account = ({ user, showModal }) => {
     const token = window.localStorage.getItem("token");
 
     useEffect(() => {
+        console.log(user);
         if(user._id){
             setIsLoading(false);
         } else if(!token){

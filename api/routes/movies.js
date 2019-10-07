@@ -2,7 +2,6 @@ const router = require("express").Router();
 const tmdb = require('./apis/tmdb');
 const Movie = require('../models/movie');
 const Review = require("../models/review");
-const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const secret = process.env.TOKEN_SECRET;
 const requestAuthentication = require("../utils/isAuthenticated");
@@ -12,34 +11,6 @@ const alert = {
     alertMessages: [],
     alertFor: null
 }
-
-router.route("/search")
-    .get((request, response) => {
-        tmdb.get("search/movie", {
-            params: {
-                api_key: process.env.TMDB_KEY,
-                language: "en-US",
-                query: request.query.searchTerm,
-                page: request.query.page,
-                include_adult: false
-            }
-        }).then(results => {
-            if (results.data.results.length === 0){
-                response.send('no movies found');
-            }else {
-                response.send({
-                    currentSearch: request.query.searchTerm,
-                    searchResults: results.data.results,
-                    currentPage: results.data.page,
-                    totalPages: results.data.total_pages,
-                    totalResults: results.data.total_results
-                })
-            }
-        }).catch(err => {
-            console.log(err)
-        })
-    })
-;
 
 router.route("/now-playing")
     .get((request, response) => {
