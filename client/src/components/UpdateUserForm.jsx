@@ -11,7 +11,7 @@ import { showModal } from '../redux/actions/modal';
 import { equalArrays } from '../utils/arrayHelpers';
 import { validateEmail, validateEmptyField, maxCharacters25, maxCharacters50 } from '../utils/formFieldValidators';
 
-const UpdateUserForm = ({ updateUserProfile, clientAlertError, initialValues, handleSubmit, currentValues, showModal }) => {
+const UpdateUserForm = ({ user, updateUserProfile, clientAlertError, initialValues, handleSubmit, currentValues, showModal }) => {
     const token = window.localStorage.getItem("token");
     const [readyToSubmit, setReadyToSubmit] = useState(false);
     
@@ -100,7 +100,7 @@ const UpdateUserForm = ({ updateUserProfile, clientAlertError, initialValues, ha
         }
     }
 
-    const onSubmit = formValues => {
+    const onSubmit = (userID, formValues) => {
         const updatedFields = {};
 
         if(formValues.firstName !== initialValues.firstName){
@@ -124,7 +124,7 @@ const UpdateUserForm = ({ updateUserProfile, clientAlertError, initialValues, ha
             setEmailDisabled(true);
             setLastNameDisabled(true);
             setGenresDisabled(true);
-            updateUserProfile(token, updatedFields);
+            updateUserProfile(token, userID, updatedFields);
         } else {
             const alert = {
                 alertMessages: ["You haven't updated anything!"],
@@ -136,7 +136,7 @@ const UpdateUserForm = ({ updateUserProfile, clientAlertError, initialValues, ha
 
     const renderContent = () => {
         return (
-            <form className="ui form" onSubmit={handleSubmit(formValues => onSubmit(formValues))} encType="multipart/form-data">
+            <form className="ui form" onSubmit={handleSubmit(formValues => onSubmit(user._id, formValues))} encType="multipart/form-data">
                 <div className="field input-field">
                     <Field 
                         name="firstName" 
@@ -221,7 +221,8 @@ const mapStateToProps = (state) => {
             email: state.user.email,
             genres: state.user.genres
         },
-        currentValues: selector(state, 'firstName', 'lastName', 'email', 'genres')
+        currentValues: selector(state, 'firstName', 'lastName', 'email', 'genres'),
+        user: state.user
     };
 }
 

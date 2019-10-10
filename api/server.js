@@ -7,17 +7,10 @@ mongoose.connect(process.env.DB_URI, {
        user: process.env.DB_USERNAME,
        password: process.env.DB_PASSWORD
     },
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 }).catch(err => console.log(`ERROR: ${err}`));
 mongoose.set('useFindAndModify', false);
-
-//Configure Cloudinary
-const cloudinary = require('cloudinary').v2;
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 //Initialize Express application
 const express = require("express");

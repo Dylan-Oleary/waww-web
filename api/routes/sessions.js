@@ -40,7 +40,7 @@ router.route("/")
             response.sendStatus(200);
         }
     })
-;
+; // close router.route("/")
 
 router.route("/authenticate")
     .post((request, response) => {
@@ -90,7 +90,7 @@ router.route("/authenticate")
             response.status(404).send(error);
         });
     })
-;
+; // close router.route("/authenticate")
 
 router.route("/register")
     .post((request, response) => {
@@ -157,6 +157,6 @@ router.route("/register")
             response.status(500).send(error);
         });
     })
-;
+; //close router.route("/register")
 
 module.exports = router;

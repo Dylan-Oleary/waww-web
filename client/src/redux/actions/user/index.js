@@ -67,57 +67,61 @@ export const updateViewed = (jwt, movie) => {
     }
 }
 
-export const updateUserProfile = (jwt, formValues) => {
+export const updateUserProfile = (token, userID, formValues) => {
     return async dispatch => {
-        expressServer.post("/api/users/update", {jwt, formValues})
-        .then( response => {
-            window.localStorage.setItem('token', response.data.token);
+        expressServer.put(`/api/users/${userID}`, { formValues }, {
+            headers: {
+                Authorization: token
+            }
+        }).then(response => {
+            window.localStorage.setItem("token", response.data.token);
 
-            dispatch({ type: "LOG_SUCCESS", payload: response.data.alert });
-            dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.updatedUser })
-        })
-        .catch( err => {
-            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
-        })
-    }
-}
+            dispatch({ type: "LOG_SUCCESS" });
+            dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.user })
+        }).catch(error => {
+            dispatch({ type: "LOG_ERROR", payload: error.response.data.alert });
+        });
+    };
+};
 
-export const updateProfilePicture = (jwt, image) => {
+export const updateProfilePicture = (token, userID, image) => {
     let data = new FormData();
 
-    data.append('file', image);
-    data.append('jwt', jwt);
+    data.append("file", image);
 
     return async dispatch => {
-        expressServer.post('/api/users/profile-picture', data)
-        .then(response => {
-            window.localStorage.setItem('token', response.data.token);
+        expressServer.put(`/api/users/${userID}`, data, {
+            headers: {
+                Authorization: token
+            }
+        }).then(response => {
+            window.localStorage.setItem("token", response.data.token);
 
-            dispatch({ type: "LOG_SUCCESS", payload: response.data.alert });
-            dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.updatedUser });
+            dispatch({ type: "LOG_SUCCESS" });
+            dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.user });
             dispatch({ type: "CLOSE_MODAL" });
-        })
-        .catch( err => {
-            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
-        })
-    }
-}
+        }).catch(error => {
+            dispatch({ type: "LOG_ERROR", payload: error.response.data.alert });
+        });
+    };
+};
 
-export const deleteAccount = (jwt) => {
+export const deleteAccount = (token, userID) => {
     return async dispatch => {
-        expressServer.post("/api/users/delete", {jwt})
-        .then( response => {
+        expressServer.delete(`/api/users/${userID}`, {
+            headers: {
+                "Authorization": token
+            }
+        }).then(response => {
             window.localStorage.clear();
 
             navigate("/register");
-            dispatch({ type: "LOG_SUCCESS", payload: response.data.alert });
+            dispatch({ type: "LOG_SUCCESS" });
             dispatch({ type: "CLEAR_USER" });
             dispatch({ type: "LOGOUT_REQUEST" });
             dispatch({ type: "CLOSE_MODAL" });
-        })
-        .catch( err => {
+        }).catch(error => {
             dispatch({ type: "CLOSE_MODAL" });
-            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
-        })
-    }
-}
+        });
+    };
+};

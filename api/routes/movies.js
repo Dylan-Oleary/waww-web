@@ -7,11 +7,6 @@ const secret = process.env.TOKEN_SECRET;
 const requestAuthentication = require("../utils/isAuthenticated");
 const mongoose = require("mongoose");
 
-const alert = {
-    alertMessages: [],
-    alertFor: null
-}
-
 router.route("/now-playing")
     .get((request, response) => {
         tmdb.get("/movie/now_playing", {
@@ -32,16 +27,12 @@ router.route("/now-playing")
                 }
             });
     
-            response.status(200).send({ nowPlaying })
-    
-        }).catch( err => {
-            alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-            alert.alertFor = "TMDB API ERROR"
-        
-            response.status(502).send({ alert });
-        })
+            response.status(200).send({ nowPlaying });
+        }).catch(error => {
+            response.sendStatus(502);
+        });
     })
-;
+; //close router.route("/now-playing")
 
 router.route("/popular")
     .get((request, response) => {
@@ -63,16 +54,12 @@ router.route("/popular")
                 }
             });
     
-            response.status(200).send({ popular })
-    
-        }).catch( err => {
-            alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-            alert.alertFor = "TMDB API ERROR"
-        
-            response.status(502).send({ alert });
-        })
+            response.status(200).send({ popular });;
+        }).catch(error => {
+            response.sendStatus(502);
+        });
     })
-;
+; //close router.route("/popular")
 
 router.route("/top-rated")
     .get((request, response) => {
@@ -93,17 +80,13 @@ router.route("/top-rated")
                     release_date: movie.release_date
                 }
             });
-    
-            response.status(200).send({ topRated })
-    
-        }).catch( err => {
-            alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-            alert.alertFor = "TMDB API ERROR"
-        
-            response.status(502).send({ alert });
-        })
+
+            response.status(200).send({ topRated });
+        }).catch(error => {        
+            response.sendStatus(502);
+        });
     })
-;
+; //close router.route("/top-rated")
 
 router.route("/upcoming")
     .get((request, response) => {
@@ -126,14 +109,11 @@ router.route("/upcoming")
             });
     
             response.status(200).send({ upcoming });
-        }).catch( err => {
-            alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-            alert.alertFor = "TMDB API ERROR"
-        
-            response.status(502).send({ alert });
-        })
+        }).catch(error => {
+            response.sendStatus(502);
+        });
     })
-;
+; //close router.route("/upcoming")
 
 router.route("/random")
     .get((request, response) => {
@@ -150,15 +130,12 @@ router.route("/random")
                 page: randomPage
             }
         }).then(result => {
-            response.status(200).send({ movie: result.data.results[randomPageItem] })
-        }).catch( err => {
-            alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-            alert.alertFor = "TMDB API ERROR"
-        
-            response.status(502).send({ alert });
-        })
+            response.status(200).send({ movie: result.data.results[randomPageItem] });
+        }).catch( err => {        
+            response.sendStatus(502);
+        });
     })
-;
+; //close router.route("/random")
 
 router.route("/:movieID")
     .get((request, response) => {
@@ -201,18 +178,18 @@ router.route("/:movieID")
                         videos: movie.data.videos.results
                     }).then(movie => {
                         response.status(200).send(movie);
-                    }).catch(err => {
+                    }).catch(error => {
                         console.log(err);
                     })
                 }).catch(error => {
                     console.log(error);
                 })
             }
-        }).catch(err => {
+        }).catch(error => {
             console.log(err);
         })
     })
-;
+; //close router.route("/movieID")
 
 router.route("/:movieID/reviews")
     .get((request, response) => {
@@ -279,7 +256,7 @@ router.route("/:movieID/reviews")
                     movieID: request.params.movieID
                 }).then(newReview => {
                     const token = jwt.sign({ id: authenticatedUser }, secret, {
-                        expiresIn: '8h'
+                        expiresIn: "1h"
                     });
    
                     response.status(201).send({ newReview, token });
@@ -303,8 +280,8 @@ router.route("/:movieID/reviews")
 ; //close router.route("/:movieID/reviews")
 
 router.route("/:movieID/reviews/:reviewID")
-    .put(async (request, response) => {
-        const authenticatedUser = await requestAuthentication(request.headers.authorization);
+    .put((request, response) => {
+        const authenticatedUser = requestAuthentication(request.headers.authorization);
 
         if(authenticatedUser){
             return new Promise((resolve, reject) => {
@@ -328,7 +305,7 @@ router.route("/:movieID/reviews/:reviewID")
                     new: true
                 }).then(updatedReview => {
                     const token = jwt.sign({ id: authenticatedUser }, secret, {
-                        expiresIn: '8h'
+                        expiresIn: "1h"
                     });
 
                     response.status(200).send({ updatedReview, token });
@@ -342,8 +319,8 @@ router.route("/:movieID/reviews/:reviewID")
             response.sendStatus(401);
         }
     })
-    .delete(async (request, response) => {
-        const authenticatedUser = await requestAuthentication(request.headers.authorization);
+    .delete((request, response) => {
+        const authenticatedUser = requestAuthentication(request.headers.authorization);
 
         if(authenticatedUser){
             return new Promise((resolve, reject) => {
@@ -356,7 +333,7 @@ router.route("/:movieID/reviews/:reviewID")
                 });
             }).then(deletedReview => {
                 const token = jwt.sign({ id: authenticatedUser }, secret, {
-                    expiresIn: '8h'
+                    expiresIn: "1h"
                 });
 
                 alert.alertMessages = [`Review was successfully deleted!`];

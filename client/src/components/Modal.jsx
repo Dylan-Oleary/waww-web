@@ -9,7 +9,7 @@ import { closeModal } from '../redux/actions/modal';
 import altImage from '../public/assets/images/case-white.svg';
 import DropzoneField from './DropzoneField';
 
-const Modal = ({ modal, closeModal, deleteAccount, updateProfilePicture }) => {
+const Modal = ({ modal, user, closeModal, deleteAccount, updateProfilePicture }) => {
     const { content, title, type } = modal.props;
     const [waitingForAPI, setWaitingForAPI] = useState(false)
 
@@ -59,9 +59,10 @@ const Modal = ({ modal, closeModal, deleteAccount, updateProfilePicture }) => {
 
     const deleteAccountModal = () => {
         const token = window.localStorage.getItem("token");
+
         const handleSubmit = token => {
             setWaitingForAPI(true);
-            deleteAccount(token);
+            deleteAccount(token, user._id);
         }
 
         return (
@@ -73,12 +74,6 @@ const Modal = ({ modal, closeModal, deleteAccount, updateProfilePicture }) => {
     }
 
     const dropzone = () => {
-        const token = window.localStorage.getItem("token");
-        const handleSubmit = token => {
-            setWaitingForAPI(true);
-            updateProfilePicture(token);
-        }
-
         return <DropzoneField />
     }
 
@@ -116,8 +111,11 @@ const Modal = ({ modal, closeModal, deleteAccount, updateProfilePicture }) => {
     }
 }
 
-const mapStateToProps = ({ modal }) => {
-    return { modal };
+const mapStateToProps = ({ modal, user }) => {
+    return { 
+        modal,
+        user
+     };
 }
 
 export default connect(mapStateToProps, { closeModal, deleteAccount, updateProfilePicture })(Modal);
