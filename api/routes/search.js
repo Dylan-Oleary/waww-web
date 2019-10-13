@@ -27,6 +27,6 @@ router.route("/")
             console.log(err)
         })
     })
-;
+; // close router.route("/")
 
 module.exports = router;

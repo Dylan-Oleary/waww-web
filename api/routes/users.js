@@ -9,16 +9,174 @@ const requestAuthentication = require("../utils/isAuthenticated");
 const cloudinary = require("../config/cloudinary");
 const upload = require("../config/multer");
 
+router.route([ "/:userID/watchlist", "/:userID/favourites", "/:userID/viewed" ])
+    .get((request, response) => {
+        const authenticationID = requestAuthentication(request.headers.authorization);
+
+        if(authenticationID){
+            User.findById(authenticationID).then(user => {
+                const listType = request.path.split("/")[2];
+                const token = jwt.sign({ id: result._id }, secret, { expiresIn: "1h" });
+                const list = user[listType];
+
+                response.status(200).send({ token, list });
+            }).catch(error => {
+                response.sendStatus(500);
+            });
+        } else {
+            response.sendStatus(401);
+        }
+    })
+    .post((request, response) => {
+        const authenticationID = requestAuthentication(request.headers.authorization);
+
+        if(authenticationID){
+            User.findById(authenticationID).then(user => {
+                const listType = request.path.split("/")[2];
+                const movieRecord = user[listType].filter(movie => movie._id === request.body._id)[0];
+
+                if(movieRecord !== null && movieRecord !== undefined){
+                    response.sendStatus(400);
+                } else {
+                    User.findOneAndUpdate(authenticationID, {
+                        $push: {
+                            [listType]: {
+                                _id: request.body._id,
+                                poster_path: request.body.poster_path,
+                                release_date: request.body.release_date,
+                                title: request.body.title
+                            },
+                            recentActivity: {
+                                $each: [{
+                                    _id: request.body._id,
+                                    title: request.body.title,
+                                    release_date: request.body.release_date,
+                                    body: `added to your ${listType}`,
+                                    date: new Date()
+                                }],
+                                $slice: -15
+                            }
+                        }
+                    },{
+                        runValidators: true,
+                        new: true
+                    }).then(result => {
+                        const token = jwt.sign({ id: result._id }, secret, { expiresIn: "1h" });
+                        const user = {
+                            _id: result._id,
+                            firstName: result.firstName,
+                            lastName: result.lastName,
+                            email: result.email,
+                            username: result.username,
+                            createdAt: result.createdAt,
+                            updatedAt: result.updatedAt,
+                            reviews: result.reviews,
+                            recentlyVisited: result.recentlyVisited,
+                            recentActivity: result.recentActivity,
+                            genres: result.genres,
+                            viewed: result.viewed,
+                            favourites: result.favourites,
+                            watchlist: result.watchlist,
+                            profilePicture: {
+                                publicID: result.profilePicture.publicID,
+                                secureURL: result.profilePicture.secureURL
+                            }
+                        };
+
+                        response.status(200).send({ token, user });
+                    }).catch(error => {
+                        response.sendStatus(500);
+                    });
+                }
+            }).catch(error => {
+                response.sendStatus(500);
+            });
+        } else {
+            response.sendStatus(401);
+        }
+    })
+; //close router.route([ "/watchlist", "/favourites", "/viewed" ])
+
+router.route([ "/:userID/watchlist/:movieID", "/:userID/favourites/:movieID", "/:userID/viewed/:movieID" ])
+    .delete((request, response) => {
+        const authenticationID = requestAuthentication(request.headers.authorization);
+
+        if(authenticationID){
+            User.findById(authenticationID).then(user => {
+                const listType = request.path.split("/")[2];
+                const movieRecord = user[listType].filter(movie => movie._id === parseInt(request.params.movieID))[0];
+
+                if(movieRecord === null || movieRecord === undefined){
+                    response.sendStatus(400);
+                } else {
+                    User.findOneAndUpdate(authenticationID, {
+                        $pull: {
+                            [listType]: {
+                                _id: movieRecord._id,
+                                title: movieRecord.title,
+                                poster_path: movieRecord.poster_path,
+                                release_date: movieRecord.release_date
+                            }
+                        },
+                        $push: {
+                            recentActivity: {
+                                $each: [{
+                                    _id: movieRecord._id,
+                                    title: movieRecord.title,
+                                    release_date: movieRecord.release_date,
+                                    body: `removed from your ${listType}`,
+                                    date: new Date()
+                                }],
+                                $slice: -15
+                            }
+                        }
+                    }, {
+                        runValidators: true,
+                        new: true
+                    }).then(result => {
+                        const token = jwt.sign({ id: result._id }, secret, { expiresIn: "1h" });
+                        const user = {
+                            _id: result._id,
+                            firstName: result.firstName,
+                            lastName: result.lastName,
+                            email: result.email,
+                            username: result.username,
+                            createdAt: result.createdAt,
+                            updatedAt: result.updatedAt,
+                            reviews: result.reviews,
+                            recentlyVisited: result.recentlyVisited,
+                            recentActivity: result.recentActivity,
+                            genres: result.genres,
+                            viewed: result.viewed,
+                            favourites: result.favourites,
+                            watchlist: result.watchlist,
+                            profilePicture: {
+                                publicID: result.profilePicture.publicID,
+                                secureURL: result.profilePicture.secureURL
+                            }
+                        };
+
+                        response.status(200).send({ token, user });
+                    }).catch(error => {
+                        response.sendStatus(500);
+                    });
+                }
+            }).catch(error => {
+                response.sendStatus(500);
+            })
+        } else {
+            response.sendStatus(401);
+        }
+    })
+; ///close router.route([ "/watchlist/:movieID", "/favourites/:movieID", "/viewed/:movieID" ])
+
 router.route("/:userID")
     .get((request, response) => {
         const authenticationID = requestAuthentication(request.headers.authorization);
 
         if(authenticationID){
             User.findById(authenticationID).then(result => {
-                const token = jwt.sign({ id: authenticationID }, secret, {
-                    expiresIn: "1h"
-                });
-
+                const token = jwt.sign({ id: authenticationID }, secret, { expiresIn: "1h" });
                 const user = {
                     _id: result._id,
                     firstName: result.firstName,
@@ -87,10 +245,7 @@ router.route("/:userID")
                     });
                 }
             }).then(result => {
-                const token = jwt.sign({ id: result._id }, secret, {
-                    expiresIn: "1h"
-                });
-
+                const token = jwt.sign({ id: result._id }, secret, { expiresIn: "1h" });
                 const user = {
                     _id: result._id,
                     firstName: result.firstName,
@@ -134,332 +289,5 @@ router.route("/:userID")
         }
     })
 ; // close router.route("/:userID")
-
-//UPDATE QUEUE
-router.post("/watchlist", async (req, res) => {
-  //If no JWT, send alert message
-  if(req.body.jwt === null ){
-    alert.alertMessages = ["You must log in before adding movies to your lists!"];
-    alert.alertFor = "nullJWT";
-
-    res.status(401).send({ alert });
-  }else {
-    const userJWT = jwt.verify(req.body.jwt, process.env.TOKEN_SECRET);
-    const movie = req.body.movie
-
-    //Check if movie appears in Watch List - if it doesn't add it, if it does remove it
-    const watchListMovie = await User.findById(userJWT.id)
-        .then(user => {
-            for(let i = 0; i < user.watchlist.length; i++){
-                if(user.watchlist[i]._id === movie._id){
-                    return user.watchlist[i];
-                }
-            }
-        })
-        .catch(() => {
-          alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-          alert.alertFor = "DB ERROR"
-    
-          res.status(502).send({ alert });
-        })
-
-    if(!watchListMovie){
-      User.updateOne({
-        _id: userJWT.id
-      },{
-        $push: {
-          watchlist: {
-              _id: movie._id,
-              tmdb_id: movie.tmdb_id,
-              poster_path: movie.poster_path,
-              release_date: movie.release_date,
-              title: movie.title
-          },
-          recentActivity: {
-            $each: [{ 
-              _id: movie._id,
-              tmdb_id: movie.tmdb_id,
-              title: movie.title,
-              message: `added to your backlog`,
-              date: new Date(),
-              release_date: movie.release_date
-            }],
-            $slice: -15
-          }
-        }
-      })
-      .then(() => {
-        alert.alertMessages = [`${movie.title} has been successfully added to your WatchList!`];
-        alert.alertFor = "addToWatchList"
-
-        res.status(200).send({ alert });
-      })
-      .catch(() => {
-        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-        alert.alertFor = "DB ERROR"
-  
-        res.status(502).send({ alert });
-      })
-    } else {
-      //If it is on the Watch List, remove it
-      User.updateOne({
-        _id: userJWT.id
-      },{
-        $pull: {
-          watchlist: {
-            _id: movie._id,
-            tmdb_id: movie.tmdb_id,
-            poster_path: movie.poster_path,
-            release_date: movie.release_date,
-            title: movie.title
-          }
-        },
-        $push : {
-          recentActivity: {
-            $each: [{ 
-              _id: movie._id,
-              tmdb_id: movie.tmdb_id,
-              title: movie.title,
-              message: `removed from your backlog`,
-              date: new Date(),
-              release_date: movie.release_date
-            }],
-            $slice: -15
-          }
-        }
-      })
-      .then(() => {
-        alert.alertMessages = [`${movie.title} has been successfully removed to your WatchList!`];
-        alert.alertFor = "removeFromWatchList";
-
-        res.status(200).send({ alert });
-      })
-      .catch(() => {
-        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-        alert.alertFor = "DB ERROR"
-  
-        res.status(502).send({ alert });
-      })
-    }
-  }
-});
-
-//UPDATE FAVOURITES
-router.post("/favourites", async (req, res) => {
-  //If no JWT, send alert message
-  if(req.body.jwt === null ){
-    alert.alertMessages = ["You must log in before adding movies to your lists!"];
-    alert.alertFor = "nullJWT";
-
-    res.status(401).send({ alert });
-  }else {
-    const userJWT = jwt.verify(req.body.jwt, process.env.TOKEN_SECRET);
-    const movie = req.body.movie
-
-    //Check if movie appears in Watch List - if it doesn't add it, if it does remove it
-    const favouriteMovie = await User.findById(userJWT.id)
-        .then(user => {
-            for(let i = 0; i < user.favourites.length; i++){
-                if(user.favourites[i]._id === movie._id){
-                    return user.favourites[i];
-                }
-            }
-        })
-        .catch(err => {
-          alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-          alert.alertFor = "DB ERROR"
-    
-          res.status(502).send({ alert });
-        })
-
-    if(!favouriteMovie){
-      User.updateOne({
-        _id: userJWT.id
-      },{
-        $push: {
-          favourites: {
-              _id: movie._id,
-              tmdb_id: movie.tmdb_id,
-              poster_path: movie.poster_path,
-              release_date: movie.release_date,
-              title: movie.title
-          },
-          recentActivity: {
-            $each: [{ 
-              _id: movie._id,
-              tmdb_id: movie.tmdb_id,
-              title: movie.title,
-              message: `added to your favourites`,
-              date: new Date(),
-              release_date: movie.release_date
-            }],
-            $slice: -15
-          }
-      }
-      })
-      .then(() => {
-        alert.alertMessages = [`${movie.title} has been successfully added to your Favourites!`];
-        alert.alertFor = "addToFavourites";
-
-        res.status(200).send({ alert });
-      })
-      .catch( err => {
-        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-        alert.alertFor = "DB ERROR"
-  
-        res.status(403).send({ alert });
-      })
-    } else {
-      //If it is in Favourites, remove it
-      User.updateOne({
-        _id: userJWT.id
-      },{
-        $pull: {
-          favourites: {
-            _id: movie._id,
-            tmdb_id: movie.tmdb_id,
-            poster_path: movie.poster_path,
-            release_date: movie.release_date,
-            title: movie.title,
-          }
-        },
-        $push : {
-          recentActivity: {
-            $each: [{ 
-              _id: movie._id,
-              tmdb_id: movie.tmdb_id,
-              title: movie.title,
-              message: `removed from your favourites`,
-              date: new Date(),
-              release_date: movie.release_date
-            }],
-            $slice: -15
-          }
-        }
-      })
-      .then( () => {
-        alert.alertMessages = [`${movie.title} has been successfully removed from your Favourites!`];
-        alert.alertFor = "removeFromFavourites";
-
-        res.status(200).send({ alert });
-      })
-      .catch(() => {
-        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-        alert.alertFor = "DB ERROR"
-  
-        res.status(403).send({ alert });
-      })
-    }
-  }
-});
-
-//UPDATE LOG
-router.post("/viewed", async (req, res) => {
-  //If no JWT, send alert message
-  if(req.body.jwt === null ){
-    alert.alertMessages = ["You must log in before adding movies to your lists!"];
-    alert.alertFor = "nullJWT";
-
-    res.status(401).send({ alert });
-  }else {
-    const userJWT = jwt.verify(req.body.jwt, process.env.TOKEN_SECRET);
-    const movie = req.body.movie
-
-    //Check if movie appears in ViewedList - if it doesn't add it, if it does remove it
-    const viewedMovie = await User.findById(userJWT.id)
-        .then(user => {
-            for(let i = 0; i < user.viewed.length; i++){
-                if(user.viewed[i]._id === movie._id){
-                    return user.viewed[i];
-                }
-            }
-        })
-        .catch(err => {
-          alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-          alert.alertFor = "DB ERROR"
-    
-          res.status(502).send({ alert });
-        })
-
-    if(!viewedMovie){
-      User.updateOne({
-        _id: userJWT.id
-      },{
-        $push: {
-          viewed: {
-              _id: movie._id,
-              tmdb_id: movie.tmdb_id,
-              poster_path: movie.poster_path,
-              release_date: movie.release_date,
-              title: movie.title
-          },
-          recentActivity: {
-            $each: [{ 
-              _id: movie._id,
-              tmdb_id: movie.tmdb_id,
-              title: movie.title,
-              message: `added to your log`,
-              date: new Date(),
-              release_date: movie.release_date
-            }],
-            $slice: -15
-          }
-      }
-      })
-      .then(() => {
-        alert.alertMessages = [`${movie.title} has been successfully added to your ViewedList!`];
-        alert.alertFor = "addToViewed";
-
-        res.status(200).send({ alert });
-      })
-      .catch( err => {
-        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-        alert.alertFor = "DB ERROR"
-  
-        res.status(403).send({ alert });
-      })
-    } else {
-      //If it is in Viewed, remove it
-      User.updateOne({
-        _id: userJWT.id
-      },{
-        $pull: {
-          viewed: {
-            _id: movie._id,
-            tmdb_id: movie.tmdb_id,
-            poster_path: movie.poster_path,
-            release_date: movie.release_date,
-            title: movie.title,
-          }
-        },
-        $push: {
-          recentActivity: {
-            $each: [{ 
-              _id: movie._id,
-              tmdb_id: movie.tmdb_id,
-              title: movie.title,
-              message: `removed from your log`,
-              date: new Date(),
-              release_date: movie.release_date
-            }],
-            $slice: -15
-          }
-        }
-      })
-      .then( () => {
-        alert.alertMessages = [`${movie.title} has been successfully removed from your ViewedList!`];
-        alert.alertFor = "removeFromViewed";
-
-        res.status(200).send({ alert });
-      })
-      .catch(() => {
-        alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-        alert.alertFor = "DB ERROR"
-  
-        res.status(403).send({ alert });
-      })
-    }
-  }
-})
 
 module.exports = router;

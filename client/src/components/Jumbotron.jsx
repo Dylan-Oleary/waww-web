@@ -1,54 +1,72 @@
-import React, { Fragment } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Parallax } from 'react-parallax';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStopCircle as removeFromWatchList, faPlayCircle as addToWatchList, faHeart as removeFromFavourites, faEye as addToViewed, faEyeSlash as removeFromViewed } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as addToFavourites } from '@fortawesome/free-regular-svg-icons';
 
-import { updateWatchList, updateFavourites, updateViewed } from '../redux/actions/user';
+import { addToUserList, removeFromUserList } from '../redux/actions/user';
 import altImage from '../public/assets/images/case-white.svg';
 
-const Jumbotron = ({ movie, updateWatchList, updateFavourites, updateViewed, user, login }) => {
+const listTypes = [
+    "watchlist",
+    "viewed",
+    "favourites"
+];
+
+const Jumbotron = ({ movie, addToUserList, removeFromUserList, user, login }) => {
     const bgImagestyle = { backgroundSize: 'contain' };
     const jumbotronImage = `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`;
     const token = window.localStorage.getItem("token");
 
+    const [appearsOnWatchList, setAppearsOnWatchList] = useState(user.watchlist.some(listItem => listItem._id === movie._id));
+    const [appearsOnViewed, setAppearsOnViewed] = useState(user.viewed.some(listItem => listItem._id === movie._id));
+    const [appearsOnFavourites, setAppearsOnFavourites] = useState(user.favourites.some(listItem => listItem._id === movie._id));
+
+    useEffect(() => {
+    }, [user.watchlist, movie._id]);
+
+    const handeListUpdate = (listType, isOnList, setListState) => {
+        if(isOnList){
+            removeFromUserList(token, listType, movie, user._id).then(() => {
+                setListState(false);
+            });
+        } else {
+            addToUserList(token, listType, movie, user._id).then(() => {
+                setListState(true);
+            });
+        }
+    };
+
     const renderButtonMenu = () => {
         if(login.isLoggedIn){
-            let appearsOnWatchList = false;
-            let appearsOnFavourites = false;
-            let appearsOnViewed = false;
-
-            for(let i = 0; i < user.watchlist.length; i++){
-                if(user.watchlist[i]._id === movie._id){
-                    appearsOnWatchList = true;
-                }
-            }
-
-            for(let i = 0; i < user.favourites.length; i++){
-                if(user.favourites[i]._id === movie._id){
-                    appearsOnFavourites = true;
-                }
-            }
-
-            for(let i = 0; i < user.viewed.length; i++){
-                if(user.viewed[i]._id === movie._id){
-                    appearsOnViewed = true;
-                }
-            }
-
             return (
                 <div className="button-row three-buttons">
                     <div className="flex-column">
-                        <FontAwesomeIcon id="WatchListIcon" icon={appearsOnWatchList ? removeFromWatchList : addToWatchList } size="2x" onClick={() => updateWatchList(token, {_id: movie._id, tmdb_id: movie.tmdb_id, release_date: movie.release_date, poster_path: movie.poster_path, title: movie.title})} />
+                        <FontAwesomeIcon 
+                            id="WatchListIcon" 
+                            icon={appearsOnWatchList ? removeFromWatchList : addToWatchList } 
+                            size="2x" 
+                            onClick={() => handeListUpdate(listTypes[0], appearsOnWatchList, setAppearsOnWatchList)} 
+                        />
                         <p className="text small">{appearsOnWatchList ? "Remove from WatchList" : "Add to WatchList"}</p>
                     </div>
                     <div className="flex-column">
-                        <FontAwesomeIcon id="ViewedListIcon" icon={appearsOnViewed ? removeFromViewed : addToViewed } size="2x" onClick={() => updateViewed(token, {_id: movie._id, tmdb_id: movie.tmdb_id, release_date: movie.release_date, poster_path: movie.poster_path, title: movie.title})} />
+                        <FontAwesomeIcon 
+                            id="ViewedListIcon" 
+                            icon={appearsOnViewed ? removeFromViewed : addToViewed } 
+                            size="2x" 
+                            onClick={() => handeListUpdate(listTypes[1], appearsOnViewed, setAppearsOnViewed)} 
+                        />
                         <p className="text small">{appearsOnViewed? "Remove from Viewed" : "Add to Viewed"}</p>
                     </div>
                     <div className="flex-column">
-                        <FontAwesomeIcon id="FavouritesIcon" icon={appearsOnFavourites ? removeFromFavourites : addToFavourites } size="2x" onClick={() => updateFavourites(token, {_id: movie._id, tmdb_id: movie.tmdb_id, release_date: movie.release_date, poster_path: movie.poster_path, title: movie.title})}/>
+                        <FontAwesomeIcon 
+                            id="FavouritesIcon" 
+                            icon={appearsOnFavourites ? removeFromFavourites : addToFavourites } 
+                            size="2x" 
+                            onClick={() => handeListUpdate(listTypes[2], appearsOnFavourites, setAppearsOnFavourites)}
+                        />
                         <p className="text small">{appearsOnFavourites ? "Remove from Favourites" : "Add to Favourites"}</p>
                     </div>
                 </div>
@@ -80,7 +98,10 @@ const Jumbotron = ({ movie, updateWatchList, updateFavourites, updateViewed, use
 }
 
 const mapStateToProps = ({ user, login }) => {
-    return { user, login };
+    return { 
+        user, 
+        login 
+    };
 }
 
-export default connect(mapStateToProps, { updateWatchList, updateFavourites, updateViewed })(Jumbotron);
+export default connect(mapStateToProps, { addToUserList, removeFromUserList })(Jumbotron);

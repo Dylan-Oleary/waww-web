@@ -11,31 +11,18 @@ const defaultFormData = {
     review: ""
 }
 
-const defaultReviewAuthor = {
-    _id: "",
-    username: "",
-    profilePicture: {
-        secureURL: ""
-    }
-};
-
 const ReviewCard = ({ isNew = false, openAsForm = false, reviewID, title, author, review, profilePicture, userID, createdAt, updatedAt, closeReview = () => {}, setIsLoading = () => {},  movieID, authenticatedUser, addReviewToMovie, deleteReviewForMovie, editReviewForMovie }) => {
     const token = window.localStorage.getItem("token");
 
     const [isForm, setIsForm] = useState(openAsForm);
     const [formData, setFormData] = useState(defaultFormData);
-    const [reviewAuthor, setReviewAuthor] = useState(defaultReviewAuthor);
 
     useEffect(() => {
         if(isNew){
             setIsForm(true);
-            setReviewAuthor(authenticatedUser);
-        } else {
-            setReviewAuthor(author);
         }
 
         return () => {
-            setReviewAuthor(defaultReviewAuthor);
             setFormData(defaultFormData);
         }
     }, []);
@@ -73,7 +60,6 @@ const ReviewCard = ({ isNew = false, openAsForm = false, reviewID, title, author
             addReviewToMovie(token, formData, movieID).then(() => {
                 setIsLoading(false);
                 closeReview();
-                setReviewAuthor(defaultReviewAuthor);
                 setFormData(defaultFormData);
             });
         } else {
@@ -81,7 +67,6 @@ const ReviewCard = ({ isNew = false, openAsForm = false, reviewID, title, author
                 setIsLoading(false);
                 setFormData(defaultFormData);
                 setIsForm(false);
-                setReviewAuthor(defaultReviewAuthor);
             })
         }
     };

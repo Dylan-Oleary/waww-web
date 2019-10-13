@@ -31,6 +31,10 @@ const ReviewSection = ({ movieID, reviewIDs, login, user }) => {
         fetchReviewsContent();
     }, [reviewIDs]);
 
+    const handleReviewSubmit = isLoading => {
+        setIsLoading(isLoading);
+    }
+
     const renderReviewCards = () => {
         if(reviews.length === 0 && !isLoading){
             if(!newReviewOpen){
@@ -53,7 +57,7 @@ const ReviewSection = ({ movieID, reviewIDs, login, user }) => {
                         profilePicture={review.user.profilePicture.secureURL}
                         createdAt={review.createdAt}
                         updatedAt={review.updatedAt}
-                        setIsLoading={setIsLoading}
+                        setIsLoading={handleReviewSubmit}
                         userID={review.user._id}
                     />
                 )

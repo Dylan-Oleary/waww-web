@@ -2,23 +2,16 @@ import React from 'react';
 import { usePath } from 'hookrouter';
 import { connect } from 'react-redux';
 
-import { updateWatchList, updateFavourites } from '../redux/actions/user';
+import { removeFromUserList } from '../redux/actions/user';
 
-
-const CardModal = ({movie, navigateToMovieProfile, updateWatchList, updateFavourites}) => {
-    const path = usePath();
-
-    const token = window.localStorage.getItem("token");
+const CardModal = ({ movie, navigateToMovieProfile, removeFromUserList, user }) => {
+    const path = usePath().slice(7);
 
     const renderActionButton = () => {
-        switch(path){
-            case "/users/watchlist" :
-                return <button className="ui button medium inverted" onClick={() => updateWatchList(token, {_id: movie._id, release_date: movie.release_date, poster_path: movie.poster_path, title: movie.title})} >Remove From WatchList</button>
-            case "/users/favourites" :
-                return <button className="ui button medium inverted" onClick={() => updateFavourites(token, {_id: movie._id, release_date: movie.release_date, poster_path: movie.poster_path, title: movie.title})} >Remove from favourites</button>
-            default :
-                return null;
-        }
+        const token = window.localStorage.getItem("token");
+        let buttonText = `Remove From ${path.charAt(0).toUpperCase() + path.slice(1)}`;
+
+        return <button className="ui button medium inverted" onClick={() => removeFromUserList(token, path, movie, user._id)}>{buttonText}</button>
     }
 
     return (
@@ -31,4 +24,10 @@ const CardModal = ({movie, navigateToMovieProfile, updateWatchList, updateFavour
     )
 }
 
-export default connect(null, { updateWatchList, updateFavourites })(CardModal);
+const mapStateToProps = ({ user }) => {
+    return {
+        user
+    };
+};
+
+export default connect(mapStateToProps, { removeFromUserList })(CardModal);

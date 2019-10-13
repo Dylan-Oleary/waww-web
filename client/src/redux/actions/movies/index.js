@@ -62,10 +62,6 @@ export const addReviewToMovie = (jwt, formData, movieID) => {
             ]) => {
                 dispatch({ type: "UPDATE_SELECTED_MOVIE", payload: movie.data });
                 dispatch({ type: "UPDATE_USER", payload: userRecord.data.user });
-
-                alert.alertMessages = [`Review was successfully created!`];
-                alert.alertFor = "successfulReview";
-                dispatch({ type: "LOG_SUCCESS", payload: alert });
             });
         }).catch(err => {
             alert.alertMessages = [`Error!`];

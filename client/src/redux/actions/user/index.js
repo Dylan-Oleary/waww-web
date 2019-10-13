@@ -1,71 +1,37 @@
 import expressServer from '../../../api';
 import { navigate } from 'hookrouter';
 
-export const updateWatchList = (jwt, movie) => {
+export const addToUserList = (token, listType, movie, userID) => {
     return async dispatch => {
-        expressServer.post("/api/users/watchlist", {jwt, movie})
-        .then( response => {
-            dispatch({ type: "LOG_SUCCESS", payload: response.data.alert });
-
-            expressServer.get("/api/users", {
-                params: { jwt }
-            })
-            .then( response => {
-                dispatch({ type: "UPDATE_USER", payload: response.data.authenticatedUser });
-            })
-            .catch( err => {
-                dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
-            })  
-        })
-        .catch( err => {
-            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
+        expressServer.post(`/api/users/${userID}/${listType}`, movie, {
+            headers: {
+                Authorization: token
+            }
+        }).then(response => {
+            window.localStorage.setItem("token", response.data.token);
+            
+            dispatch({ type: "UPDATE_USER", payload: response.data.user });
+        }).catch(error => {
+            console.log(error);
         })
     }
 }
 
-export const updateFavourites = (jwt, movie) => {
+export const removeFromUserList = (token, listType, movie, userID) => {
     return async dispatch => {
-        expressServer.post("/api/users/favourites", {jwt, movie})
-        .then( response => {
-            dispatch({ type: "LOG_SUCCESS", payload: response.data.alert });
+        expressServer.delete(`/api/users/${userID}/${listType}/${movie._id}`, {
+            headers: {
+                Authorization: token
+            }
+        }).then(response => {
+            window.localStorage.setItem("token", response.data.token);
 
-            expressServer.get("/api/users", {
-                params: { jwt }
-            })
-            .then( response => {
-                dispatch({ type: "UPDATE_USER", payload: response.data.authenticatedUser });
-            })
-            .catch( err => {
-                dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
-            }) 
-        })
-        .catch( err => {
-            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
-        })
-    }    
-}
-
-export const updateViewed = (jwt, movie) => {
-    return async dispatch => {
-        expressServer.post("/api/users/viewed", {jwt, movie})
-        .then( response => {
-            dispatch({ type: "LOG_SUCCESS", payload: response.data.alert });
-
-            expressServer.get("/api/users", {
-                params: { jwt }
-            })
-            .then( response => {
-                dispatch({ type: "UPDATE_USER", payload: response.data.authenticatedUser });
-            })
-            .catch( err => {
-                dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
-            })
-        })
-        .catch( err => {
-            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
-        })
-    }
-}
+            dispatch({ type: "UPDATE_USER", payload: response.data.user });
+        }).catch(error => {
+            console.log(error);
+        });
+    };
+};
 
 export const updateUserProfile = (token, userID, formValues) => {
     return async dispatch => {

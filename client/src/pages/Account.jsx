@@ -74,7 +74,7 @@ const Account = ({ user, showModal }) => {
                                         user.recentActivity.reverse().map(activity => {
                                             return (
                                                 <div className="table-item">
-                                                    <p><A className="link-blue" href={`/movies/${activity.tmdb_id}`}>{`${activity.title} (${activity.release_date.substr(0,4)}) `}</A>{activity.message}</p>
+                                                    <p><A className="link-blue" href={`/movies/${activity._id}`}>{`${activity.title} (${activity.release_date.substr(0,4)}) `}</A>{activity.body}</p>
                                                     <p className="footer">{formatDate(activity.date)}</p>
                                                 </div>
                                             )

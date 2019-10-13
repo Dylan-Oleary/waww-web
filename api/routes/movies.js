@@ -230,14 +230,15 @@ router.route("/:movieID/reviews")
             console.log(error);
         });
     })
-    .post(async (request, response) => {
-        const authenticatedUser = await requestAuthentication(request.headers.authorization);
+    .post((request, response) => {
+        const authenticationID = requestAuthentication(request.headers.authorization);
 
-        if(authenticatedUser){
+        if(authenticationID){
             const { title, review } = request.body.formData;
+
             return new Promise((resolve, reject) => {
                 Review.findOne({
-                    userID: authenticatedUser,
+                    userID: authenticationID,
                     movieID: request.params.movieID
                 }).then(existingReview => {
                     if(existingReview){
@@ -252,41 +253,32 @@ router.route("/:movieID/reviews")
                 Review.create({
                     title: title.trim(),
                     review: review.trim(),
-                    userID: mongoose.Types.ObjectId(authenticatedUser),
+                    userID: mongoose.Types.ObjectId(authenticationID),
                     movieID: request.params.movieID
                 }).then(newReview => {
-                    const token = jwt.sign({ id: authenticatedUser }, secret, {
-                        expiresIn: "1h"
-                    });
+                    const token = jwt.sign({ id: authenticationID }, secret, { expiresIn: "1h" });
    
                     response.status(201).send({ newReview, token });
-                }).catch(error => {
-                    console.log(error);
-                    alert.alertMessages = ["Woops, something went wrong on our end! Sorry"];
-                    alert.alertFor = "TMDB API ERROR";
-    
-                    response.status(500).send({ alert });
+                }).catch(error => {    
+                    response.sendStatus(500);
                 });
             }).catch(error => {
                 response.sendStatus(403);
             })
         }else {
-            alert.alertMessages = ["You must be logged in order to leave a review!"];
-            alert.alertFor = "nullJWT";
-
-            response.status(401).send({ alert });
+            response.sendStatus(401);
         }
     })
 ; //close router.route("/:movieID/reviews")
 
 router.route("/:movieID/reviews/:reviewID")
     .put((request, response) => {
-        const authenticatedUser = requestAuthentication(request.headers.authorization);
+        const authenticationID = requestAuthentication(request.headers.authorization);
 
-        if(authenticatedUser){
+        if(authenticationID){
             return new Promise((resolve, reject) => {
                 Review.findById(request.params.reviewID).then(review => {
-                    if(review.userID == authenticatedUser){
+                    if(review.userID == authenticationID){
                         resolve();
                     }else {
                         reject();
@@ -304,9 +296,7 @@ router.route("/:movieID/reviews/:reviewID")
                     runValidators: true,
                     new: true
                 }).then(updatedReview => {
-                    const token = jwt.sign({ id: authenticatedUser }, secret, {
-                        expiresIn: "1h"
-                    });
+                    const token = jwt.sign({ id: authenticationID }, secret, { expiresIn: "1h" });
 
                     response.status(200).send({ updatedReview, token });
                 }).catch(() => {
@@ -320,26 +310,21 @@ router.route("/:movieID/reviews/:reviewID")
         }
     })
     .delete((request, response) => {
-        const authenticatedUser = requestAuthentication(request.headers.authorization);
+        const authenticationID = requestAuthentication(request.headers.authorization);
 
-        if(authenticatedUser){
+        if(authenticationID){
             return new Promise((resolve, reject) => {
                 Review.findById(request.params.reviewID).then(review => {
-                    if(review.userID == authenticatedUser){
+                    if(review.userID == authenticationID){
                         resolve(review.remove());
                     }else {
                         reject();
                     }
                 });
             }).then(deletedReview => {
-                const token = jwt.sign({ id: authenticatedUser }, secret, {
-                    expiresIn: "1h"
-                });
+                const token = jwt.sign({ id: authenticationID }, secret, { expiresIn: "1h" });
 
-                alert.alertMessages = [`Review was successfully deleted!`];
-                alert.alertFor = "successfulReview";
-
-                response.status(200).send({ deletedReview, token, alert });
+                response.status(200).send({ deletedReview, token });
             }).catch(() => {
                 response.sendStatus(401);
             })
