@@ -28,8 +28,8 @@ router.route("/now-playing")
             });
     
             response.status(200).send({ nowPlaying });
-        }).catch(error => {
-            response.sendStatus(502);
+        }).catch(() => {
+            response.status(502).send({ message: "Woops! Something went wrong on our end! Please try again" });
         });
     })
 ; //close router.route("/now-playing")
@@ -55,8 +55,8 @@ router.route("/popular")
             });
     
             response.status(200).send({ popular });;
-        }).catch(error => {
-            response.sendStatus(502);
+        }).catch(() => {
+            response.status(502).send({ message: "Woops! Something went wrong on our end! Please try again" });
         });
     })
 ; //close router.route("/popular")
@@ -82,8 +82,8 @@ router.route("/top-rated")
             });
 
             response.status(200).send({ topRated });
-        }).catch(error => {        
-            response.sendStatus(502);
+        }).catch(() => {
+            response.status(502).send({ message: "Woops! Something went wrong on our end! Please try again" });
         });
     })
 ; //close router.route("/top-rated")
@@ -109,8 +109,8 @@ router.route("/upcoming")
             });
     
             response.status(200).send({ upcoming });
-        }).catch(error => {
-            response.sendStatus(502);
+        }).catch(() => {
+            response.status(502).send({ message: "Woops! Something went wrong on our end! Please try again" });
         });
     })
 ; //close router.route("/upcoming")
@@ -131,8 +131,8 @@ router.route("/random")
             }
         }).then(result => {
             response.status(200).send({ movie: result.data.results[randomPageItem] });
-        }).catch( err => {        
-            response.sendStatus(502);
+        }).catch(() => {        
+            response.status(502).send({ message: "Woops! Something went wrong on our end! Please try again" });
         });
     })
 ; //close router.route("/random")
@@ -142,7 +142,7 @@ router.route("/:movieID")
         Movie.findById(parseInt(request.params.movieID)).then(movie => {
             if(movie !== null && movie !== undefined){
                 response.status(200).send(movie);
-            }else {
+            } else {
                 return tmdb.get(`movie/${request.params.movieID}`, {
                     params: {
                         api_key: process.env.TMDB_KEY,
@@ -178,16 +178,16 @@ router.route("/:movieID")
                         videos: movie.data.videos.results
                     }).then(movie => {
                         response.status(200).send(movie);
-                    }).catch(error => {
-                        console.log(err);
-                    })
-                }).catch(error => {
-                    console.log(error);
-                })
+                    }).catch(() => {
+                        response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
+                    });
+                }).catch(() => {
+                    response.status(502).send({ message: "Woops! Something went wrong on our end! Please try again" });
+                });
             }
-        }).catch(error => {
-            console.log(err);
-        })
+        }).catch(() => {
+            response.status(502).send({ message: "Woops! Something went wrong on our end! Please try again" });
+        });
     })
 ; //close router.route("/movieID")
 
@@ -226,8 +226,8 @@ router.route("/:movieID/reviews")
             });
 
             response.status(200).send({ formattedReviews });
-        }).catch(error => {
-            console.log(error);
+        }).catch(() => {
+            response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
         });
     })
     .post((request, response) => {
@@ -243,11 +243,11 @@ router.route("/:movieID/reviews")
                 }).then(existingReview => {
                     if(existingReview){
                         reject();
-                    }else {
+                    } else {
                         resolve();
                     }
                 }).catch(() => {
-                    response.sendStatus(500);
+                    response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
                 })
             }).then(() => {
                 Review.create({
@@ -259,14 +259,14 @@ router.route("/:movieID/reviews")
                     const token = jwt.sign({ id: authenticationID }, secret, { expiresIn: "1h" });
    
                     response.status(201).send({ newReview, token });
-                }).catch(error => {    
-                    response.sendStatus(500);
+                }).catch(() => {
+                    response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
                 });
-            }).catch(error => {
-                response.sendStatus(403);
-            })
-        }else {
-            response.sendStatus(401);
+            }).catch(() => {
+                response.status(403).send({ message: "A review with this ID already exists!" });
+            });
+        } else {
+            response.status(401).send({ message: "Authentication error!" });
         }
     })
 ; //close router.route("/:movieID/reviews")
@@ -284,8 +284,8 @@ router.route("/:movieID/reviews/:reviewID")
                         reject();
                     }
                 }).catch(() => {
-                    response.sendStatus(500);
-                })
+                    response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
+                });
             }).then(() => {
                 const { title, review } = request.body.formData;
 
@@ -300,13 +300,13 @@ router.route("/:movieID/reviews/:reviewID")
 
                     response.status(200).send({ updatedReview, token });
                 }).catch(() => {
-                    response.sendStatus(500);
-                })
+                    response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
+                });
             }).catch(() => {
-                response.sendStatus(401);
+                response.status(401).send({ message: "Authentication error!" });
             });
-        }else {
-            response.sendStatus(401);
+        } else {
+            response.status(401).send({ message: "Authentication error!" });
         }
     })
     .delete((request, response) => {
@@ -326,11 +326,12 @@ router.route("/:movieID/reviews/:reviewID")
 
                 response.status(200).send({ deletedReview, token });
             }).catch(() => {
-                response.sendStatus(401);
-            })
-        }else {
-            response.sendStatus(401);
+                response.status(401).send({ message: "Authentication error!" });
+            });
+        } else {
+            response.status(401).send({ message: "Authentication error!" });
         }
     })
 ; //close router.route("/:movieID/reviews")
+
 module.exports = router;

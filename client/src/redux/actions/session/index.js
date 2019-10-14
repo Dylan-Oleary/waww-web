@@ -1,5 +1,7 @@
-import expressServer from '../../../api';
 import { navigate } from 'hookrouter';
+
+import expressServer from '../../../api';
+import errorHandler from "../../../utils/errorHandler";
 
 export const registerUser = formData => {
     return async dispatch => {
@@ -21,9 +23,11 @@ export const registerUser = formData => {
             dispatch({ type: "LOGIN_SUCCESS"});
             navigate("/");
         }).catch(error => {
+            const alert = errorHandler(error);
+
             window.localStorage.clear();
             dispatch({ type: "REGISTER_FAILURE" });
-            dispatch({ type: "LOG_ERROR", payload: error.response.data.errors });
+            dispatch({ type: "LOG_ERROR", payload: alert });
         });
     };
 };
@@ -47,11 +51,13 @@ export const authenticateUser = formData => {
             navigate("/");
         })
         .catch(error => {
+            const alert = errorHandler(error);
+
             window.localStorage.clear();
+            dispatch({ type: "LOG_ERROR", payload: alert });
             dispatch({ type: "LOGIN_FAILURE" });
-            dispatch({ type: "LOG_ERROR", payload: error.response.data.alert});
         });
-    }
+    };
 };
 
 export const userLogout = () => {
@@ -85,8 +91,11 @@ export const persistSession = token => {
             dispatch({ type: "UPDATE_USER", payload: authenticatedUser });
             dispatch({ type: "LOGIN_SUCCESS"});
         }).catch(error => {
+            const alert = errorHandler(error);
+
             window.localStorage.clear();
-            console.log(error);
+            dispatch({ type: "LOG_ERROR", payload: alert });
+            navigate("/");
         });
     };
 };

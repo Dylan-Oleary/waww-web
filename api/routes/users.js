@@ -20,11 +20,11 @@ router.route([ "/:userID/watchlist", "/:userID/favourites", "/:userID/viewed" ])
                 const list = user[listType];
 
                 response.status(200).send({ token, list });
-            }).catch(error => {
-                response.sendStatus(500);
+            }).catch(() => {
+                response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
             });
         } else {
-            response.sendStatus(401);
+            response.status(401).send({ message: "Authentication error!" });
         }
     })
     .post((request, response) => {
@@ -36,7 +36,7 @@ router.route([ "/:userID/watchlist", "/:userID/favourites", "/:userID/viewed" ])
                 const movieRecord = user[listType].filter(movie => movie._id === request.body._id)[0];
 
                 if(movieRecord !== null && movieRecord !== undefined){
-                    response.sendStatus(400);
+                    response.status(400).send({ message: "This movie already exists in the list that it is trying to be added to!" });
                 } else {
                     User.findOneAndUpdate(authenticationID, {
                         $push: {
@@ -84,15 +84,15 @@ router.route([ "/:userID/watchlist", "/:userID/favourites", "/:userID/viewed" ])
                         };
 
                         response.status(200).send({ token, user });
-                    }).catch(error => {
-                        response.sendStatus(500);
+                    }).catch(() => {
+                        response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
                     });
                 }
-            }).catch(error => {
-                response.sendStatus(500);
+            }).catch(() => {
+                response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
             });
         } else {
-            response.sendStatus(401);
+            response.status(401).send({ message: "Authentication error!" });
         }
     })
 ; //close router.route([ "/watchlist", "/favourites", "/viewed" ])
@@ -107,7 +107,7 @@ router.route([ "/:userID/watchlist/:movieID", "/:userID/favourites/:movieID", "/
                 const movieRecord = user[listType].filter(movie => movie._id === parseInt(request.params.movieID))[0];
 
                 if(movieRecord === null || movieRecord === undefined){
-                    response.sendStatus(400);
+                    response.status(400).send({ message: "The movie that is attempting to be deleted does not exist in this list" });
                 } else {
                     User.findOneAndUpdate(authenticationID, {
                         $pull: {
@@ -157,15 +157,15 @@ router.route([ "/:userID/watchlist/:movieID", "/:userID/favourites/:movieID", "/
                         };
 
                         response.status(200).send({ token, user });
-                    }).catch(error => {
-                        response.sendStatus(500);
+                    }).catch(() => {
+                        response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
                     });
                 }
-            }).catch(error => {
-                response.sendStatus(500);
+            }).catch(() => {
+                response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
             })
         } else {
-            response.sendStatus(401);
+            response.status(401).send({ message: "Authentication error!" });
         }
     })
 ; ///close router.route([ "/watchlist/:movieID", "/favourites/:movieID", "/viewed/:movieID" ])
@@ -200,10 +200,10 @@ router.route("/:userID")
 
                 response.status(200).send({ token, user });
             }).catch(() => {
-                response.sendStatus(500);
+                response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
             })
         } else {
-            response.sendStatus(401);
+            response.status(401).send({ message: "Authentication error!" });
         }
     })
     .put(upload.single("file"), (request, response) => {
@@ -268,11 +268,11 @@ router.route("/:userID")
                 };
 
                 response.status(200).send({ token, user });
-            }).catch(error => {
-                response.sendStatus(500);
+            }).catch(() => {
+                response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
             });
         } else {
-            response.sendStatus(401);
+            response.status(401).send({ message: "Authentication error!" });
         }
     })
     .delete((request, response) => {
@@ -281,11 +281,11 @@ router.route("/:userID")
         if(authenticationID){
             User.deleteOne({ _id: authenticationID }).then(() => {
                 response.sendStatus(200);
-            }).catch(error => {
-                response.sendStatus(500);
+            }).catch(() => {
+                response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
             });
         } else {
-            response.sendStatus(401);
+            response.status(401).send({ message: "Authentication error!" });
         }
     })
 ; // close router.route("/:userID")

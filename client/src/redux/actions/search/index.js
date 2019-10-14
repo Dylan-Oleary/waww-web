@@ -1,17 +1,22 @@
 import expressServer from '../../../api';
+import errorHandler from '../../../utils/errorHandler';
 
 export const getSearchResults = (searchTerm, page) => {
     return async dispatch => {
-        const response = await expressServer.get("/api/search", {
+        expressServer.get("/api/search", {
             params: {
                 searchTerm: searchTerm,
                 page: page,
             }
-        });
+        }).then(response => {
+            dispatch({ type: "GET_SEARCH_RESULTS", payload: response.data });
+        }).catch(error => {
+            const alert = errorHandler(error);
 
-        dispatch({ type: "GET_SEARCH_RESULTS", payload: response.data });
-    }
-}
+            dispatch({ type: "LOG_ERROR", payload: alert });
+        });
+    };
+};
 
 export const setSearch = (searchTerm, page) => {
     return {
@@ -20,9 +25,9 @@ export const setSearch = (searchTerm, page) => {
             searchTerm: searchTerm,
             page: page
         }
-    }
-}
+    };
+};
 
 export const clearSearchObject = () => {
     return { type: "CLEAR_SEARCH_OBJECT" };
-}
+};

@@ -1,42 +1,30 @@
 require("dotenv").config();
-
-//Connect to MongoDB
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const mongoose = require("mongoose");
+const path = require("path");
+
+const routes = require("./routes/index");
+
 mongoose.connect(process.env.DB_URI, {
     auth:{
        user: process.env.DB_USERNAME,
        password: process.env.DB_PASSWORD
     },
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 }).catch(err => console.log(`ERROR: ${err}`));
-mongoose.set('useFindAndModify', false);
 
-//Initialize Express application
-const express = require("express");
-const app = express();
-
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-
-//CONFIG
 app.use(cors());
-
 app.use(cookieParser());
-
-//Body Parser
-const bodyParser = require("body-parser");
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-
-const routes = require("./routes/index");
-app.use("/api", routes);
-
-// Serve any static files
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../client/build')));
+app.use("/api", routes);
 
 // Handle React routing, return all requests to React app
 app.get('*', function(req, res) {

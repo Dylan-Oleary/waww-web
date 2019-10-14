@@ -1,22 +1,19 @@
-import { LOG_ERROR, CLEAR_ALERTS, LOG_SUCCESS, LOG_GENERAL } from '../constants';
+import { LOG_ALERT, LOG_ERROR } from '../constants';
 
-const defaultAlertObject = {
-    success: {},
-    error: {},
-    general: {}
+const defaultAlert = {
+    status: null,
+    message: "",
+    icon: "",
+    type: ""
 }
 
-export const alertsReducer = (state = defaultAlertObject , action) => {
+export const alertsReducer = (state = defaultAlert , action) => {
     switch(action.type){
+        case LOG_ALERT :
+            return action.payload;
         case LOG_ERROR :
-            return {...defaultAlertObject, error: action.payload};
-        case CLEAR_ALERTS :
-            return defaultAlertObject;
-        case LOG_SUCCESS :
-            return {...defaultAlertObject, success: action.payload};
-        case LOG_GENERAL :
-            return {...defaultAlertObject, general: action.payload};
-        default:
+            return action.payload;
+        default :
             return state;
     }
 }

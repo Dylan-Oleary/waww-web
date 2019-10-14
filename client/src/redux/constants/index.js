@@ -1,5 +1,6 @@
 //Alerts Reducer
 export const LOG_ERROR = 'LOG_ERROR';
+export const LOG_ALERT = "LOG_ALERT";
 export const CLEAR_ALERTS = 'CLEAR_ALERTS';
 export const LOG_SUCCESS = 'LOG_SUCCESS';
 export const LOG_GENERAL = 'LOG_GENERAL';

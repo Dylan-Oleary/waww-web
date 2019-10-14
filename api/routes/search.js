@@ -23,9 +23,9 @@ router.route("/")
                     totalResults: results.data.total_results
                 })
             }
-        }).catch(err => {
-            console.log(err)
-        })
+        }).catch(() => {
+            response.status(502).send({ message: "Woops! Something went wrong on our end! Please try again" });
+        });
     })
 ; // close router.route("/")
 

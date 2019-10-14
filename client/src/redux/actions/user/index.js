@@ -1,5 +1,7 @@
-import expressServer from '../../../api';
 import { navigate } from 'hookrouter';
+
+import expressServer from '../../../api';
+import errorHandler from '../../../utils/errorHandler';
 
 export const addToUserList = (token, listType, movie, userID) => {
     return async dispatch => {
@@ -12,7 +14,9 @@ export const addToUserList = (token, listType, movie, userID) => {
             
             dispatch({ type: "UPDATE_USER", payload: response.data.user });
         }).catch(error => {
-            console.log(error);
+            const alert = errorHandler(error);
+
+            dispatch({ type: "LOG_ERROR", payload: alert });
         })
     }
 }
@@ -28,7 +32,9 @@ export const removeFromUserList = (token, listType, movie, userID) => {
 
             dispatch({ type: "UPDATE_USER", payload: response.data.user });
         }).catch(error => {
-            console.log(error);
+            const alert = errorHandler(error);
+
+            dispatch({ type: "LOG_ERROR", payload: alert });
         });
     };
 };
@@ -45,7 +51,9 @@ export const updateUserProfile = (token, userID, formValues) => {
             dispatch({ type: "LOG_SUCCESS" });
             dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.user })
         }).catch(error => {
-            dispatch({ type: "LOG_ERROR", payload: error.response.data.alert });
+            const alert = errorHandler(error);
+
+            dispatch({ type: "LOG_ERROR", payload: alert });
         });
     };
 };
@@ -67,7 +75,9 @@ export const updateProfilePicture = (token, userID, image) => {
             dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data.user });
             dispatch({ type: "CLOSE_MODAL" });
         }).catch(error => {
-            dispatch({ type: "LOG_ERROR", payload: error.response.data.alert });
+            const alert = errorHandler(error);
+
+            dispatch({ type: "LOG_ERROR", payload: alert });
         });
     };
 };
@@ -78,7 +88,7 @@ export const deleteAccount = (token, userID) => {
             headers: {
                 "Authorization": token
             }
-        }).then(response => {
+        }).then(() => {
             window.localStorage.clear();
 
             navigate("/register");
@@ -87,6 +97,9 @@ export const deleteAccount = (token, userID) => {
             dispatch({ type: "LOGOUT_REQUEST" });
             dispatch({ type: "CLOSE_MODAL" });
         }).catch(error => {
+            const alert = errorHandler(error);
+
+            dispatch({ type: "LOG_ERROR", payload: alert });
             dispatch({ type: "CLOSE_MODAL" });
         });
     };

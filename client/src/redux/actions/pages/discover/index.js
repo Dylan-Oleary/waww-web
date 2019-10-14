@@ -1,6 +1,5 @@
 import expressServer from '../../../../api';
-import { certificationFilters, sortOptions, releaseDateFilters } from '../../../../constants';
-
+import errorHandler from '../../../../utils/errorHandler';
 
 export const getDiscoverPageContent = filters => {
     const { id, releaseDates, certification, sortBy, page } = filters;
@@ -14,8 +13,7 @@ export const getDiscoverPageContent = filters => {
                 sortBy: sortBy.option,
                 page: page
             }
-        })
-        .then( response => {
+        }).then(response => {
             const payload = {
                 id: response.data.id,
                 page: response.data.page,
@@ -25,11 +23,12 @@ export const getDiscoverPageContent = filters => {
             }
 
             dispatch({ type: "GET_DISCOVER_PAGE_CONTENT", payload: payload })
-        })
-        .catch( err => {
-            dispatch({ type: "LOG_ERROR", payload: err.response.data.alert });
-        })
-    }
+        }).catch(error => {
+            const alert = errorHandler(error);
+
+            dispatch({ type: "LOG_ERROR", payload: alert });
+        });
+    };
 }
 
 export const setFilters = filters => {
@@ -48,7 +47,7 @@ export const setFilters = filters => {
             sortBy: sortBy,
             page: page
         }
-    }
+    };
 }
 
 export const setBackdrop = path => {

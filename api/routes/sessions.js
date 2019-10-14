@@ -33,11 +33,11 @@ router.route("/")
                 };
 
                 response.status(200).send({ authenticatedUser, token });
-            }).catch(error => {
-                response.status(500).send(error);
+            }).catch(() => {
+                response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
             });
         } else {
-            response.sendStatus(200);
+            response.status(401).send({ message: "Authentication error!" });
         }
     })
 ; // close router.route("/")
@@ -51,8 +51,6 @@ router.route("/authenticate")
     
             return new Promise((resolve, reject) => {
                 user.authenticate(password, (error, isMatch) => {
-                    if(error) throw new Error(error);
-        
                     if (isMatch){
                         resolve(user);
                     } else {
@@ -83,11 +81,11 @@ router.route("/authenticate")
                 };
 
                 response.status(200).send({ authenticatedUser, token });
-            }).catch(error => {
-                response.status(401).send(error);
+            }).catch(() => {
+                response.status(401).send({ message: "Invalid e-mail and/or password" });
             });
-        }).catch(error => {    
-            response.status(404).send(error);
+        }).catch(() => {
+            response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
         });
     })
 ; // close router.route("/authenticate")
@@ -101,15 +99,19 @@ router.route("/register")
             ]
         }).then(user => {
             if(user){
-                let errors = [];
+                let errors = "";
+
                 if(user.username === request.body.newUser.username){
-                    errors.push("A user with this user name already exists!");
+                    errors = "A user with this user name already exists!";
                 }
                 if(user.email === request.body.newUser.email){
-                    errors.push("A user with this email already exists!");
+                    errors = "A user with this email already exists!";
+                }
+                if(user.email === request.body.newUser.username && user.email === request.body.newUser.email){
+                    errors = "A user with this email and username already exists!";
                 }
 
-                response.status(409).send(errors);
+                response.status(409).send({ message: errors });
             } else {
                 User.create({
                     firstName: request.body.newUser.firstName,
@@ -150,11 +152,11 @@ router.route("/register")
 
                     response.status(201).send({ authenticatedUser, token });
                 }).catch(error => {
-                    response.status(500).send(error);
+                    response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
                 });
             }
-        }).catch(error => {
-            response.status(500).send(error);
+        }).catch(() => {
+            response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
         });
     })
 ; //close router.route("/register")

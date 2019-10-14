@@ -1,4 +1,4 @@
-import React, { useEffect }from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useRoutes } from 'hookrouter';
 import { ToastContainer, toast, Zoom } from 'react-toastify';
@@ -7,37 +7,18 @@ import 'react-toastify/dist/ReactToastify.css';
 import './public/styles/main.scss';
 import routes from './routes';
 import { persistSession } from './redux/actions/session';
-import Toastr from './components/Toastr';
+
 import Modal from './components/Modal';
+import Toastr from "./components/Toastr";
 
-const toastrAlert = (messages, type, alertFor) => {
-    switch(type){
-        case "success" :
-            return toast(<Toastr messages={messages} type={type} alertFor={alertFor} />, { containerId: "success" });
-        case "error" :
-            return toast(<Toastr messages={messages} type={type} alertFor={alertFor} />, { containerId: "error" });
-        case "general" :
-            return toast(<Toastr messages={messages} type={type} alertFor={alertFor} />, { containerId: "general" });
-        default :
-            return toast(messages);
-    }
-}
-
-const App = ({ alerts }) => {
+const App = ({ alert }) => {
     const routeResult = useRoutes(routes);
 
-    //Toastr Errors
     useEffect(() => {
-        if(alerts.error && alerts.error.alertMessages){
-            toastrAlert(alerts.error.alertMessages, "error", alerts.error.alertFor);
+        if(alert.type === "error"){
+            toast(<Toastr alert={alert} />, { containerId: "error" });
         }
-        if(alerts.success && alerts.success.alertMessages){
-            toastrAlert(alerts.success.alertMessages, "success", alerts.success.alertFor);
-        }
-        if(alerts.general && alerts.general.alertMessages){
-            toastrAlert(alerts.general.alertMessages, "general", alerts.general.alertFor);
-        }
-    }, [alerts]);
+    }, [alert])
 
     return (
         <div id="App">
@@ -73,8 +54,10 @@ const App = ({ alerts }) => {
     );
 }
 
-const mapStateToProps = ({ alerts }) => {
-    return { alerts }
+const mapStateToProps = ({ alert }) => {
+    return { 
+        alert
+    };
 }
 
 export default connect(mapStateToProps, { persistSession })(App);

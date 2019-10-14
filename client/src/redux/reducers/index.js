@@ -12,7 +12,7 @@ import { selectedMovieReducer } from './selectedMovieReducer';
 import { userReducer } from './userReducer';
 
 export default combineReducers({
-    alerts: alertsReducer,
+    alert: alertsReducer,
     discoverPage: discoverPageReducer,
     homePage: homePageReducer,
     form: formReducer,

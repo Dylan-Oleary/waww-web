@@ -38,8 +38,8 @@ router.route("/:id")
                 totalPages: tmdbResponse.data.total_pages, 
                 totalResults: tmdbResponse.data.total_results 
             });
-        }).catch(error => {
-            response.sendStatus(502);
+        }).catch(() => {
+            response.status(502).send({ message: "Woops! Something went wrong on our end! Please try again" });
         });
     })
 ; // close router.route("/:id")
