@@ -258,7 +258,11 @@ router.route("/:movieID/reviews")
                 }).then(newReview => {
                     const token = jwt.sign({ id: authenticationID }, secret, { expiresIn: "1h" });
    
-                    response.status(201).send({ newReview, token });
+                    response.status(201).send({ 
+                        newReview,
+                        token,
+                        message: "Review was created successfully!"
+                    });
                 }).catch(() => {
                     response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
                 });
@@ -298,7 +302,11 @@ router.route("/:movieID/reviews/:reviewID")
                 }).then(updatedReview => {
                     const token = jwt.sign({ id: authenticationID }, secret, { expiresIn: "1h" });
 
-                    response.status(200).send({ updatedReview, token });
+                    response.status(200).send({ 
+                        updatedReview,
+                        token,
+                        message: "Review was edited successfully!"
+                    });
                 }).catch(() => {
                     response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
                 });
@@ -324,7 +332,11 @@ router.route("/:movieID/reviews/:reviewID")
             }).then(deletedReview => {
                 const token = jwt.sign({ id: authenticationID }, secret, { expiresIn: "1h" });
 
-                response.status(200).send({ deletedReview, token });
+                response.status(200).send({ 
+                    deletedReview,
+                    token,
+                    message: "Review was deleted successfully!"
+                });
             }).catch(() => {
                 response.status(401).send({ message: "Authentication error!" });
             });

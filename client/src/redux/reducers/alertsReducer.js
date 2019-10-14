@@ -1,4 +1,4 @@
-import { LOG_ALERT, LOG_ERROR } from '../constants';
+import { LOG_ALERT, LOG_ERROR, LOG_SUCCESS } from '../constants';
 
 const defaultAlert = {
     status: null,
@@ -12,6 +12,8 @@ export const alertsReducer = (state = defaultAlert , action) => {
         case LOG_ALERT :
             return action.payload;
         case LOG_ERROR :
+            return action.payload;
+        case LOG_SUCCESS :
             return action.payload;
         default :
             return state;

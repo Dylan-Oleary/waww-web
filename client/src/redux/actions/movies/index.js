@@ -1,14 +1,14 @@
 import { navigate } from 'hookrouter';
 
 import expressServer from '../../../api';
-import errorHandler from '../../../utils/errorHandler';
+import alertHandler from "../../../utils/alerts";
 
 export const getSelectedMovie = movieID => {
     return async dispatch => {
         expressServer.get(`/api/movies/${movieID}`).then(response => {
             dispatch({ type: "GET_SELECTED_MOVIE", payload: response.data })
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.respponse);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });
@@ -22,7 +22,7 @@ export const getRandomMovie = () => {
 
             navigate(`/movies/${movie.id}`)
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });
@@ -49,6 +49,8 @@ export const addReviewToMovie = (token, formData, movieID) => {
                 "Authorization": token
             }
         }).then(response => {
+            const alert = alertHandler(response);
+
             window.localStorage.setItem("token", response.data.token);
 
             return Promise.all([
@@ -64,9 +66,10 @@ export const addReviewToMovie = (token, formData, movieID) => {
             ]) => {
                 dispatch({ type: "UPDATE_SELECTED_MOVIE", payload: movie.data });
                 dispatch({ type: "UPDATE_USER", payload: userRecord.data.user });
+                dispatch({ type: "LOG_SUCCESS", payload: alert });
             });
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });
@@ -82,6 +85,8 @@ export const editReviewForMovie = (token, formData, movieID) => {
                 "Authorization": token
             }
         }).then(response => {
+            const alert = alertHandler(response);
+
             window.localStorage.setItem("token", response.data.token);
 
             return Promise.all([
@@ -97,13 +102,10 @@ export const editReviewForMovie = (token, formData, movieID) => {
             ]) => {
                 dispatch({ type: "UPDATE_SELECTED_MOVIE", payload: movie.data });
                 dispatch({ type: "UPDATE_USER", payload: userRecord.data.user });
-
-                alert.alertMessages = [`Review was successfully edited!`];
-                alert.alertFor = "successfulReview";
                 dispatch({ type: "LOG_SUCCESS", payload: alert });
             });
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });
@@ -117,6 +119,8 @@ export const deleteReviewForMovie = (token, movieID, reviewID) => {;
                 "Authorization": token
             }
         }).then(response => {
+            const alert = alertHandler(response);
+
             return Promise.all([
                 expressServer.get(`/api/movies/${movieID}`),
                 expressServer.get(`/api/users/${response.data.deletedReview.userID}`, {
@@ -130,13 +134,10 @@ export const deleteReviewForMovie = (token, movieID, reviewID) => {;
             ]) => {
                 dispatch({ type: "UPDATE_SELECTED_MOVIE", payload: movie.data });
                 dispatch({ type: "UPDATE_USER", payload: userRecord.data.user });
-
-                alert.alertMessages = [`Review was successfully deleted!`];
-                alert.alertFor = "successfulReview";
                 dispatch({ type: "LOG_SUCCESS", payload: alert });
             });
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });
@@ -148,7 +149,7 @@ export const getNowPlaying = () => {
         expressServer.get('/api/movies/now-playing').then( response => {
             dispatch({ type: "GET_NOW_PLAYING", payload: response.data });
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });
@@ -160,7 +161,7 @@ export const getPopular = () => {
         expressServer.get('/api/movies/popular').then(response => {
             dispatch({ type: "GET_POPULAR", payload: response.data });
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });
@@ -172,7 +173,7 @@ export const getTopRated = () => {
         expressServer.get('/api/movies/top-rated').then(response => {
             dispatch({ type: "GET_TOP_RATED", payload: response.data })
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });
@@ -184,7 +185,7 @@ export const getUpcoming = () => {
         expressServer.get('/api/movies/upcoming').then(response => {
             dispatch({ type: "GET_UPCOMING", payload: response.data });
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });

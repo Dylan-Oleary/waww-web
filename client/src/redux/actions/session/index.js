@@ -1,7 +1,7 @@
 import { navigate } from 'hookrouter';
 
 import expressServer from '../../../api';
-import errorHandler from "../../../utils/errorHandler";
+import alertHandler from "../../../utils/alerts";
 
 export const registerUser = formData => {
     return async dispatch => {
@@ -14,6 +14,7 @@ export const registerUser = formData => {
         expressServer.post("/api/register", {
             newUser 
         }).then(response => {
+            const alert = alertHandler(response);
             const { authenticatedUser, token } = response.data;
 
             window.localStorage.setItem("token", token);
@@ -21,9 +22,10 @@ export const registerUser = formData => {
             dispatch({ type: "REGISTER_SUCCESS" });
             dispatch({ type: "UPDATE_USER", payload: authenticatedUser });
             dispatch({ type: "LOGIN_SUCCESS"});
+            dispatch({ type: "LOG_SUCCESS", payload: alert });
             navigate("/");
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             window.localStorage.clear();
             dispatch({ type: "REGISTER_FAILURE" });
@@ -47,11 +49,10 @@ export const authenticateUser = formData => {
 
             dispatch({ type: "UPDATE_USER", payload: authenticatedUser });
             dispatch({ type: "LOGIN_SUCCESS" });
-            dispatch({ type: "LOG_GENERAL" , payload: response.data.alert });
             navigate("/");
         })
         .catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             window.localStorage.clear();
             dispatch({ type: "LOG_ERROR", payload: alert });
@@ -62,18 +63,19 @@ export const authenticateUser = formData => {
 
 export const userLogout = () => {
     return async dispatch => {
+
+        const alert = alertHandler({
+            status: 200,
+            data : {
+                message: "You have been successfully logged out!"
+            }
+        });
+
         window.localStorage.clear();
 
         dispatch({ type: "LOGOUT_REQUEST" });
         dispatch({ type: "CLEAR_USER" });
-        dispatch({ 
-            type: "LOG_SUCCESS", 
-            payload: {
-                alertFor: "userLogout",
-                alertMessages: ["Logout Successful!"]
-            } 
-        });
-
+        dispatch({ type: "LOG_SUCCESS", payload: alert });
         navigate("/");
     };
 };
@@ -91,7 +93,7 @@ export const persistSession = token => {
             dispatch({ type: "UPDATE_USER", payload: authenticatedUser });
             dispatch({ type: "LOGIN_SUCCESS"});
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             window.localStorage.clear();
             dispatch({ type: "LOG_ERROR", payload: alert });

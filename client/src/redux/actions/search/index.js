@@ -1,5 +1,5 @@
 import expressServer from '../../../api';
-import errorHandler from '../../../utils/errorHandler';
+import alertHandler from "../../../utils/alerts";
 
 export const getSearchResults = (searchTerm, page) => {
     return async dispatch => {
@@ -11,7 +11,7 @@ export const getSearchResults = (searchTerm, page) => {
         }).then(response => {
             dispatch({ type: "GET_SEARCH_RESULTS", payload: response.data });
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });

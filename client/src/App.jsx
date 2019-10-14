@@ -16,7 +16,10 @@ const App = ({ alert }) => {
 
     useEffect(() => {
         if(alert.type === "error"){
-            toast(<Toastr alert={alert} />, { containerId: "error" });
+            toast(<Toastr alert={alert} />, { containerId: alert.type });
+        }
+        if(alert.type === "success"){
+            toast(<Toastr alert={alert} />, { containerId: alert.type });
         }
     }, [alert])
 

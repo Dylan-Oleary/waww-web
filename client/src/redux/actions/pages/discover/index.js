@@ -1,5 +1,5 @@
 import expressServer from '../../../../api';
-import errorHandler from '../../../../utils/errorHandler';
+import alertHandler from "../../../../utils/alerts";
 
 export const getDiscoverPageContent = filters => {
     const { id, releaseDates, certification, sortBy, page } = filters;
@@ -24,7 +24,7 @@ export const getDiscoverPageContent = filters => {
 
             dispatch({ type: "GET_DISCOVER_PAGE_CONTENT", payload: payload })
         }).catch(error => {
-            const alert = errorHandler(error);
+            const alert = alertHandler(error.response);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });

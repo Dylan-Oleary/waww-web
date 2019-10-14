@@ -80,7 +80,7 @@ router.route("/authenticate")
                     updatedAt: user.updatedAt
                 };
 
-                response.status(200).send({ authenticatedUser, token });
+                response.status(200).send({ authenticatedUser,token });
             }).catch(() => {
                 response.status(401).send({ message: "Invalid e-mail and/or password" });
             });
@@ -150,7 +150,11 @@ router.route("/register")
                         updatedAt: user.updatedAt
                     };
 
-                    response.status(201).send({ authenticatedUser, token });
+                    response.status(201).send({ 
+                        authenticatedUser,
+                        token,
+                        message: "Registration was successful!"
+                    });
                 }).catch(error => {
                     response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
                 });

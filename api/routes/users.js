@@ -83,8 +83,12 @@ router.route([ "/:userID/watchlist", "/:userID/favourites", "/:userID/viewed" ])
                             }
                         };
 
-                        response.status(200).send({ token, user });
-                    }).catch(() => {
+                        response.status(200).send({ 
+                            token,
+                            user,
+                            message: `${request.body.title} (${request.body.release_date.substring(0,4)}) was successfully added to your ${listType}`
+                        });
+                    }).catch(error => {
                         response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
                     });
                 }
@@ -156,7 +160,11 @@ router.route([ "/:userID/watchlist/:movieID", "/:userID/favourites/:movieID", "/
                             }
                         };
 
-                        response.status(200).send({ token, user });
+                        response.status(200).send({ 
+                            token,
+                            user,
+                            message: `${movieRecord.title} (${movieRecord.release_date.substring(0,4)}) was successfully removed from your ${listType}`
+                        });
                     }).catch(() => {
                         response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
                     });
@@ -267,7 +275,13 @@ router.route("/:userID")
                     }
                 };
 
-                response.status(200).send({ token, user });
+                const message = request.file ? "Profile picture was updated successfully!" : "Profile was updated successfully!";
+
+                response.status(200).send({ 
+                    token,
+                    user,
+                    message
+                });
             }).catch(() => {
                 response.status(500).send({ message: "Woops! Something went wrong on our end! Please try again" });
             });

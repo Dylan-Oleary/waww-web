@@ -7,7 +7,7 @@ import {
 const errorHandler = error => {
     let icon;
  
-    switch(error.response.status){
+    switch(error.status){
         case 400 :
             icon = databaseError;
             break;
@@ -29,8 +29,8 @@ const errorHandler = error => {
     }
 
     const alert = {
-        status: error.response.status,
-        message: error.response.data.message,
+        status: error.status,
+        message: error.data.message,
         icon: icon,
         type: "error"
     };
