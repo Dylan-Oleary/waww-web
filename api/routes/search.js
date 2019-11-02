@@ -12,17 +12,13 @@ router.route("/")
                 include_adult: false
             }
         }).then(results => {
-            if (results.data.results.length === 0){
-                response.send('no movies found');
-            }else {
-                response.send({
-                    currentSearch: request.query.searchTerm,
-                    searchResults: results.data.results,
-                    currentPage: results.data.page,
-                    totalPages: results.data.total_pages,
-                    totalResults: results.data.total_results
-                })
-            }
+            response.send({
+                currentSearch: request.query.searchTerm,
+                searchResults: results.data.results,
+                currentPage: results.data.page,
+                totalPages: results.data.total_pages,
+                totalResults: results.data.total_results
+            });
         }).catch(() => {
             response.status(502).send({ message: "Woops! Something went wrong on our end! Please try again" });
         });

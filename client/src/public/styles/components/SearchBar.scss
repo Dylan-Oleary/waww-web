@@ -1,18 +1,51 @@
 #SearchBar {
+    position: relative;
     flex-grow: 1;
-    display: flex;
-    align-items: center;
-    * {
-        color: $primary-white;
+    form {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        * {
+            color: $primary-white;
+        }
+        input {
+            border-bottom: 2px solid $primary-white;
+            margin: 0 10px;
+            font-size: 16px;
+        }
+        .prompt {
+            background-color: $primary-blue;
+            border: none !important;
+            padding-left: 0;  
+        }
     }
-    input {
-        border-bottom: 2px solid $primary-white;
-        margin: 0 10px;
-        font-size: 16px;
-    }
-    .prompt {
-        background-color: $primary-blue;
-        border: none !important;
-        padding-left: 0;  
+    .auto-complete {
+        position: absolute;
+        top: 45px;
+        width: 100%;
+        border: 1px solid black;
+        z-index: 99999;
+        .auto-row {
+            height: 85px;
+            background: #fff;
+            border-bottom: 1px solid grey;
+            display: flex;
+            padding: 0.5rem;
+            img {
+                width: 50px;
+            }
+            .auto-title {
+                flex-grow: 1;
+                padding: 0.5rem;
+                display: flex;
+                flex-direction: column;
+                a {
+                    color: #000 !important;
+                    & :hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
     }
 }
