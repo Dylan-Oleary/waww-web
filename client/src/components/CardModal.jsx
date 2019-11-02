@@ -1,27 +1,41 @@
-import React from 'react';
-import { usePath } from 'hookrouter';
+import React, { Fragment } from 'react';
+import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { connect } from 'react-redux';
 
 import { removeFromUserList } from '../redux/actions/user';
 
-const CardModal = ({ movie, navigateToMovieProfile, removeFromUserList, user }) => {
-    const path = usePath().slice(7);
+const CardModal = ({ movie, removeFromUserList, user }) => {
+    const path = useRouteMatch().url.slice(7);
+    const history = useHistory();
 
-    const renderActionButton = () => {
+    const navigateToMovieProfile = () => {
+        history.push(`/movies/${movie._id ? movie._id : movie.id}`)
+    };
+
+    const renderButtons = () => {
         const token = window.localStorage.getItem("token");
-        let buttonText = `Remove From ${path.charAt(0).toUpperCase() + path.slice(1)}`;
+        const buttonText = `Remove From ${path.charAt(0).toUpperCase() + path.slice(1)}`;
 
-        return <button className="ui button medium inverted" onClick={() => removeFromUserList(token, path, movie, user._id)}>{buttonText}</button>
+        if(path === "watchlist" || path === "favourites" || path === "viewed"){
+            return (
+                <Fragment>
+                    <button className="ui button medium inverted" onClick={() => navigateToMovieProfile()}>See More</button>
+                    <button className="ui button medium inverted" onClick={() => removeFromUserList(token, path, movie, user._id)}>{buttonText}</button>
+                </Fragment>
+            )
+        } else {
+            return <button className="ui button medium inverted" onClick={() => navigateToMovieProfile()}>See More</button>
+        }
+
     }
 
     return (
         <div id="CardModal">
             <div className="top-layer">
-                <button className="ui button medium inverted" onClick={() => navigateToMovieProfile(movie)}>See More</button>
-                {renderActionButton()}
+                {renderButtons()}
             </div>
         </div>
-    )
+    );
 }
 
 const mapStateToProps = ({ user }) => {

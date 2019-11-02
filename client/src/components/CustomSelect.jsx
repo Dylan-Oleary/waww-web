@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { navigate } from 'hookrouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown as open, faCaretUp as close} from '@fortawesome/free-solid-svg-icons';
 

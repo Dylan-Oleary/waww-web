@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { A, navigate, useQueryParams } from 'hookrouter';
+import { Link, useHistory } from "react-router-dom";
 import Slider from 'react-slick';
 
 import MultiPanel from '../components/MultiPanel';
@@ -8,6 +8,7 @@ import altLogo from '../public/assets/images/WAWW-pink.png';
 import { getNowPlaying, getPopular, getTopRated, getUpcoming } from '../redux/actions/movies';
 import { clearHomePage, getUserGenres } from '../redux/actions/pages';
 import { genres } from '../constants';
+import { setBrowserTitle } from "../utils/browserTitle";
 
 const settings = {
     arrows: false,
@@ -19,6 +20,7 @@ const settings = {
 
 const Home = ({ clearHomePage, getUserGenres, getNowPlaying, getPopular, getTopRated, getUpcoming, homePage, login, user }) => {
     const { nowPlaying, popular, topRated, upcoming, userContent } = homePage;
+    const history = useHistory();
 
     //Component Did Mount
     useEffect(() => {
@@ -26,8 +28,7 @@ const Home = ({ clearHomePage, getUserGenres, getNowPlaying, getPopular, getTopR
         getPopular();
         getTopRated();
         getUpcoming();
-
-        // return () => clearHomePage();
+        setBrowserTitle(`WAWW | Home`);
     },[])
 
     useEffect(() => {
@@ -48,7 +49,7 @@ const Home = ({ clearHomePage, getUserGenres, getNowPlaying, getPopular, getTopR
                     return (
                         <div className="home-slider-wrapper">
                             <div className="home-slider-content" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdrop_path})`}}>
-                                <A className="title-overlay" href={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
+                                <Link className="title-overlay" to={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</Link>
                             </div>
                         </div>
                     )
@@ -65,7 +66,7 @@ const Home = ({ clearHomePage, getUserGenres, getNowPlaying, getPopular, getTopR
 
                     return (
                         <div className="upcoming-content" style={{ backgroundImage: bgImage }}>
-                            <A className="title-overlay-small" href={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
+                            <Link className="title-overlay-small" to={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</Link>
                         </div>
                     )
                 })}
@@ -86,7 +87,7 @@ const Home = ({ clearHomePage, getUserGenres, getNowPlaying, getPopular, getTopR
         return (
             <div className="sticky">
                 <h3>Discover</h3>
-                {genres.map( genre => <span className="" onClick={() => navigate(`/discover/${genre.slug}`)} key={`${genre.id}-genre`}>{genre.name}</span>)}
+                {genres.map( genre => <span className="" onClick={() => history.push(`/discover/${genre.slug}`)} key={`${genre.id}-genre`}>{genre.name}</span>)}
             </div>
         )
     }
@@ -143,8 +144,8 @@ const Home = ({ clearHomePage, getUserGenres, getNowPlaying, getPopular, getTopR
                         </div>
                         {
                             login.isLoggedIn ? (
-                                userContent.genres && userContent.genres.length ?  <div className="home-message">Want more genres? Head over to your <span><A href="/users/account">account</A> to add some!</span></div> : <div className="home-message">Customize your home page by adding some of your favourite genres to your <span><A href="/users/account">account!</A></span></div>
-                            ) : <div className="home-message"><span><A href="/login">Login</A></span> to see your favourite genres and customize your home page!</div>
+                                userContent.genres && userContent.genres.length ?  <div className="home-message">Want more genres? Head over to your <span><Link to="/users/account">account</Link> to add some!</span></div> : <div className="home-message">Customize your home page by adding some of your favourite genres to your <span><Link to="/users/account">account!</Link></span></div>
+                            ) : <div className="home-message"><span><Link to="/login">Login</Link></span> to see your favourite genres and customize your home page!</div>
                         }
                         <div className="home-message"></div>
                     </Fragment>

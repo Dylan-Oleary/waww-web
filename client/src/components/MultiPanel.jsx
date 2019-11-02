@@ -1,5 +1,5 @@
 import React from 'react';
-import { A } from 'hookrouter';
+import { Link } from "react-router-dom";
 
 import altLogo from '../public/assets/images/ticket-logo.png';
 import { shuffle } from '../utils/arrayHelpers';
@@ -12,7 +12,7 @@ const MultiPanel = ({ title, content }) => {
 
         return (
             <div className="multi-image-main" style={{ backgroundImage: `url(${bgImage})` }}>
-                <A className="title-overlay-small" href={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
+                <Link className="title-overlay-small" to={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</Link>
             </div>
         )
     }
@@ -25,7 +25,7 @@ const MultiPanel = ({ title, content }) => {
                         const bgImage = movie.backdrop_path === null ? altLogo : `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`;
                         return (
                             <div style={{ backgroundImage: `url(${bgImage})` }} key={`${movie.title}-stack-image`}>
-                                <A className="title-overlay-tiny" href={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
+                                <Link className="title-overlay-tiny" to={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</Link>
                             </div>
                         )
                     })
@@ -40,7 +40,7 @@ const MultiPanel = ({ title, content }) => {
                 <h3>More Titles</h3>
                 {
                     movies.map(movie => {
-                        return <A className="multi-list-item" href={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</A>
+                        return <Link className="multi-list-item" to={`/movies/${movie._id}`}>{`${movie.title} (${movie.release_date.substring(0,4)})`}</Link>
                     })
                 }
             </div>

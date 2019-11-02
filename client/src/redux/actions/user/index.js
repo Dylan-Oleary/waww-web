@@ -1,5 +1,3 @@
-import { navigate } from 'hookrouter';
-
 import expressServer from '../../../api';
 import alertHandler from "../../../utils/alerts";
 
@@ -108,7 +106,6 @@ export const deleteAccount = (token, userID) => {
         }).then(() => {
             window.localStorage.clear();
 
-            navigate("/register");
             dispatch({ type: "LOG_SUCCESS" });
             dispatch({ type: "CLEAR_USER" });
             dispatch({ type: "LOGOUT_REQUEST" });

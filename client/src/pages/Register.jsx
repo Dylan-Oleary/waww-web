@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Link, useHistory } from "react-router-dom";
 import { Field, reduxForm } from 'redux-form';
-import { A, navigate } from 'hookrouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye as hidingPassword, faEyeSlash as showingPassword  } from '@fortawesome/free-solid-svg-icons';
 
@@ -10,16 +10,18 @@ import { validateEmail, validateEmptyField, maxCharacters25, maxCharacters50, re
 import Logo from '../public/assets/images/inverted-logo.svg';
 
 
-const Register = props => {
+const Register = ({ handleSubmit, isLoggedIn, isRegistering, registerUser }) => {
     const [passwordHidden, setPasswordHidden] = useState(true);
     const [confirmPasswordHidden, setConfirmPasswordHidden] = useState(true);
-    const token = window.localStorage.getItem("token");
+    const history = useHistory();
 
     useEffect(() => {
-        if(token){
-            navigate('/');
+        const token = window.localStorage.getItem("token");
+
+        if(token && !isRegistering && isLoggedIn){
+            history.push("/");
         }
-    }, [])
+    }, [isRegistering, isLoggedIn])
 
     const renderInput = ({ input, placeholder, type, meta, label }) => { 
         return (
@@ -55,11 +57,11 @@ const Register = props => {
     }
 
     const onSubmit = formValues => {
-        props.registerUser(formValues);
+        registerUser(formValues);
     }
 
     const renderContent = () => {
-        if(props.registration.isRegistering){
+        if(isRegistering){
             return (
                 <div className="ui active loader massive"></div>
             )
@@ -70,7 +72,7 @@ const Register = props => {
                         <img className="ui fluid image" src={Logo} required />
                     </div>
                     <div id="RegisterForm">
-                        <form className="ui form" onSubmit={props.handleSubmit((formValues) => onSubmit(formValues))}>
+                        <form className="ui form" onSubmit={handleSubmit((formValues) => onSubmit(formValues))}>
                             <div className="field">
                                 <div className="two fields">
                                     <Field 
@@ -145,7 +147,7 @@ const Register = props => {
                     <div className="footnote">
                         <span>
                             Already have an account?
-                            <A href="/login">Click here to login</A>
+                            <Link to="/login">Click here to login</Link>
                         </span>
                     </div>
                 </div>
@@ -175,8 +177,11 @@ const formWrapped = reduxForm({
     validate
 })(Register);
 
-const mapStateToProps = ({ registration }) => {
-    return {registration};
+const mapStateToProps = ({ login, registration }) => {
+    return {
+        isRegistering: registration.isRegistering,
+        isLoggedIn: login.isLoggedIn
+    };
 }
 
 export default connect(mapStateToProps, { registerUser })(formWrapped);

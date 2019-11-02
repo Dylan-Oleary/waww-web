@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { A, navigate } from 'hookrouter';
-
+import { Link } from "react-router-dom";
 import { userLogout } from '../redux/actions/session';
 import SearchBar from './SearchBar';
 import OutsideClickDetect from './OutsideClickDetect';
@@ -20,9 +19,9 @@ const Nav = ({ user, isLoggedIn, userLogout }) => {
                             <Fragment>
                                 <i onClick={() => setListMenu(false)} className="angle up icon"></i>
                                 <div className="dropdown-items">
-                                    <A className="item" onClick={() => setListMenu(false)} href="/users/watchlist"> WatchList </A>
-                                    <A className="item" onClick={() => setListMenu(false)} href="/users/favourites"> Favourites </A>
-                                    <A className="item" onClick={() => setListMenu(false)} href="/users/viewed"> Viewed </A>
+                                    <Link className="item" onClick={() => setListMenu(false)} to="/users/watchlist"> WatchList </Link>
+                                    <Link className="item" onClick={() => setListMenu(false)} to="/users/favourites"> Favourites </Link>
+                                    <Link className="item" onClick={() => setListMenu(false)} to="/users/viewed"> Viewed </Link>
                                 </div>
                             </Fragment>
                         ) : <i onClick={() => setListMenu(true)} className="angle down icon"></i>
@@ -43,7 +42,7 @@ const Nav = ({ user, isLoggedIn, userLogout }) => {
                             <Fragment>
                                 <i onClick={() => setAccountMenu(false)} className="angle up icon"></i>
                                 <div className="dropdown-items">
-                                    <A className="item" onClick={() => setAccountMenu(false)} href="/users/account">My Account</A>
+                                    <Link className="item" onClick={() => setAccountMenu(false)} to="/users/account">My Account</Link>
                                     <span onClick={userLogout} className="item"> Log Out </span>
                                 </div>
                             </Fragment>
@@ -58,8 +57,8 @@ const Nav = ({ user, isLoggedIn, userLogout }) => {
         <div id="Nav" className="ui secondary menu">
             <div className="ui container grid">
                 <div className="row">
-                    <A className="item" href="/"> Home </A>
-                    <span className="item" onClick={() => navigate('/discover/action')}>Discover</span>
+                    <Link className="item" to="/"> Home </Link>
+                    <Link className="item" to="/discover/action">Discover</Link>
                     {
                         isLoggedIn === true ? listMenu() : null
                     }
@@ -67,8 +66,8 @@ const Nav = ({ user, isLoggedIn, userLogout }) => {
                     {
                         isLoggedIn === false ? (
                             [
-                                <A key ={"Register"} className="item" href="/register"> Register </A>,
-                                <A key={"Login"} className="item" href="/login"> Login </A>
+                                <Link key ={"Register"} className="item" to="/register"> Register </Link>,
+                                <Link key={"Login"} className="item" to="/login"> Login </Link>
                             ]
                         ) : accountMenu()
                     }

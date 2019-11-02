@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 
-class About extends React.Component {
+class Contact extends React.Component {
     render(){
         return (
-            <div id="About">
-                ABOUT PAGE
+            <div id="Contact">
+                Contact PAGE
                     <Link to="/">
                     CLICK ME
                     </Link>
@@ -14,4 +14,4 @@ class About extends React.Component {
     }
 }
 
-export default About;
+export default Contact;

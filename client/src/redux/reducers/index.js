@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
 
 import { alertsReducer } from './alertsReducer';
-import { discoverPageReducer } from './discoverPageReducer';
 import { homePageReducer } from './homePageReducer';
 import { loginReducer } from './loginReducer';
 import { modalReducer } from './modalReducer';
@@ -13,7 +12,6 @@ import { userReducer } from './userReducer';
 
 export default combineReducers({
     alert: alertsReducer,
-    discoverPage: discoverPageReducer,
     homePage: homePageReducer,
     form: formReducer,
     login: loginReducer,

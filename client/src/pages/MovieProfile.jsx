@@ -1,16 +1,19 @@
 import React, { Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useParams } from "react-router-dom";
 
 import Jumbotron from '../components/Jumbotron';
 import ContentModule from '../components/ContentModule';
 import { getSelectedMovie, clearSelectedMovie } from '../redux/actions/movies';
 
 const MovieProfile = ({ getSelectedMovie, clearSelectedMovie, selectedMovie, params }) => {
+    let { movieID } = useParams();
+
     useEffect( () => {
-        getSelectedMovie(params.movieID);
+        getSelectedMovie(movieID);
 
         return () => clearSelectedMovie();
-    }, [params.movieID]);
+    }, [movieID]);
 
     const renderContent = () => {
         if(selectedMovie === null){

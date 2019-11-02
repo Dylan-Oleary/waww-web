@@ -1,52 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { usePath, navigate } from 'hookrouter';
 import { connect } from 'react-redux';
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 import ListViewCard from '../components/ListViewCard';
 
-const UserList = ({ user, login }) => {
-    const path = usePath();
-    const token = window.localStorage.getItem("token");
+const UserList = ({ isLoggedIn, user }) => {
+    const history = useHistory();
+    const match = useRouteMatch();
 
     useEffect(() => {
+        const token = window.localStorage.getItem("token");
+
         if(!token){
-            navigate("/error/401");
+            history.push("/error/401");
         }
     }, []);
 
     const renderContent = () => {
+        const listName = match.url.slice(7);
+
         if(user && user._id){
-            switch(path){
-                case "/users/watchlist" :
-                    if(user.watchlist && user.watchlist.length > 0){
-                        return (
-                            user.watchlist.map( movie => {
-                                return <ListViewCard key={movie.tmdb_id} movie={movie}/>
-                            })
-                        )
-                    } else {
-                        return <div>You have zero movies in the list</div>
-                    }
-                case "/users/favourites" :
-                        if(user.favourites && user.favourites.length > 0){
-                            return (
-                                user.favourites.map( movie => {
-                                    return <ListViewCard key={movie.tmdb_id} movie={movie}/>
-                                })
-                            )
-                        } else {
-                            return <div>You have zero movies in the favourites list</div>
-                        }
-                case "/users/viewed" :
-                        if(user.viewed && user.viewed.length > 0){
-                            return (
-                                user.viewed.map( movie => {
-                                    return <ListViewCard key={movie.tmdb_id} movie={movie}/>
-                                })
-                            )
-                        } else {
-                            return <div>You have zero movies in the viewed list</div>
-                        }
+            if(user[listName] && user[listName].length > 0){
+                return user[listName].map(movie => {
+                    return <ListViewCard key={ movie._id } movie={ movie } />
+                });
+            } else {
+                return <div>`You have zero movies in the ${listName} list`</div>
             }
         } else {
             return <div className="ui active loader massive"></div>
@@ -57,11 +36,14 @@ const UserList = ({ user, login }) => {
         <div className="flex space-between">
             {renderContent()}
         </div>
-    )
-}
+    );
+};
 
 const mapStateToProps = ({ user, login }) => {
-    return { user, login };
+    return { 
+        user: user,
+        isLoggedIn: login.isLoggedIn
+    };
 }
 
 export default connect(mapStateToProps)(UserList);

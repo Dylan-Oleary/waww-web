@@ -1,5 +1,3 @@
-import { navigate } from 'hookrouter';
-
 import expressServer from '../../../api';
 import alertHandler from "../../../utils/alerts";
 
@@ -23,7 +21,6 @@ export const registerUser = formData => {
             dispatch({ type: "UPDATE_USER", payload: authenticatedUser });
             dispatch({ type: "LOGIN_SUCCESS"});
             dispatch({ type: "LOG_SUCCESS", payload: alert });
-            navigate("/");
         }).catch(error => {
             const alert = alertHandler(error.response);
 
@@ -49,9 +46,7 @@ export const authenticateUser = formData => {
 
             dispatch({ type: "UPDATE_USER", payload: authenticatedUser });
             dispatch({ type: "LOGIN_SUCCESS" });
-            navigate("/");
-        })
-        .catch(error => {
+        }).catch(error => {
             const alert = alertHandler(error.response);
 
             window.localStorage.clear();
@@ -76,7 +71,6 @@ export const userLogout = () => {
         dispatch({ type: "LOGOUT_REQUEST" });
         dispatch({ type: "CLEAR_USER" });
         dispatch({ type: "LOG_SUCCESS", payload: alert });
-        navigate("/");
     };
 };
 
@@ -97,7 +91,6 @@ export const persistSession = token => {
 
             window.localStorage.clear();
             dispatch({ type: "LOG_ERROR", payload: alert });
-            navigate("/");
         });
     };
 };

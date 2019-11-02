@@ -1,61 +1,90 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { navigate } from 'hookrouter';
+import { useHistory, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThList as withSynopsis, faTh as withoutSynopsis } from '@fortawesome/free-solid-svg-icons';
 
-import { getDiscoverPageContent, setFilters, setBackdrop } from '../redux/actions/pages/discover';
-import { getRandomMovie } from '../redux/actions/movies';
 import { certificationFilters, genres, releaseDateFilters, sortOptions } from '../constants';
+import expressServer from "../api";
 import ListViewCard from '../components/ListViewCard';
 import SearchResultsCard from '../components/SearchResultCard';
 import Pagination from '../components/Pagination';
 import CustomSelect from '../components/CustomSelect';
 import Logo from '../public/assets/images/error-ticket.svg';
+import { setBrowserTitle } from "../utils/browserTitle";
 
-const Discover = ({ params, backdropPath, filters, totalPages, isSearching, movies, getDiscoverPageContent, setFilters, setBackdrop, getRandomMovie }) => {
-    const { id, name, releaseDates, certification, sortBy, page } = filters;
+const defaultQuery = {
+    releaseDates: releaseDateFilters[0],
+    certification: certificationFilters[0],
+    sortBy: sortOptions[0],
+    page: 1
+};
+
+const Discover = () => {
+    const history = useHistory();
+    const params = useParams();
     const [resultViewWithSynopsis, setResultViewWithSynopsis] = useState(false);
+    const [backdropPath, setBackdropPath] = useState(null);
+    const [query, setQuery] = useState(defaultQuery);
+    const [movies, setMovies] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
+    const currentGenre = genres.filter(genre => genre.slug === params.genre)[0];
+    const [isSearching, setIsSearching] = useState(true);
+
 
     useEffect(() => {
-        for(let i = 0; i < genres.length; i++){
-            if(params.slug === genres[i].slug){
-                setBackdrop(genres[i].backdropPath)
-
-                params = { ...params, id: genres[i].id, genre: genres[i].name };
-                break;
-            }
+        if(currentGenre === null || currentGenre === undefined){
+            history.push("/error/404");
+        } else {
+            setBrowserTitle(`WAWW | ${currentGenre.name}`);
+            setBackdropPath(currentGenre.backdropPath);
+            setIsSearching(true);
+            expressServer.get(`/api/genres/${currentGenre.id}`, {
+                params: {
+                    primaryReleaseDateGTE: query.releaseDates.primaryReleaseDateGTE,
+                    primaryReleaseDateLTE: query.releaseDates.primaryReleaseDateLTE,
+                    certification: query.certification.value,
+                    sortBy: query.sortBy.option,
+                    page: query.page
+                }
+            }).then(response => {
+                setIsSearching(false);
+                setMovies(response.data.movies);
+                setTotalPages(response.data.totalPages);
+            }).catch(error => {
+                console.log(error);
+            });
         }
 
+    },[query, params.genre])
+
+    useEffect(() => {
+        if(window.scrollY > 300){
+            window.scrollTo(0, 300);
+        }
+    }, [query]);
+
+    useEffect(() => {
         window.scrollTo(0, 0);
-        setFilters({ ...filters, id: params.id, slug: params.slug, name: params.genre });
-
-        // return () => clearDiscoverPage()
-    },[params])
-
-    useEffect(() => {
-        if(id){
-            if(window.scrollY > 300){
-                window.scrollTo(0, 300);
-            }
-            getDiscoverPageContent(filters);
-        }
-    }, [releaseDates, certification, sortBy, page])
-
-    useEffect(() => {
-        if(id){
-            window.scrollTo(0, 0);
-            getDiscoverPageContent(filters);
-        }
-    }, [id])
+    }, [params.genre]);
 
     const onFilterChange = (newFilter, currentFilter, type) => {
         if(newFilter.id !== currentFilter.id){
-            type === 0 ? setFilters({ ...filters, releaseDates: releaseDateFilters[newFilter.id], page: 1}) : setFilters({ ...filters, certification: certificationFilters[newFilter.id], page: 1})
+            if(type === "releaseDates"){
+                setQuery({
+                    ...query,
+                    releaseDates: releaseDateFilters[newFilter.id],
+                    page: 1
+                });
+            }
+            if(type === "certification"){
+                setQuery({
+                    ...query,
+                    certification: certificationFilters[newFilter.id],
+                    page: 1
+                });
+            }
         }
     }
-
-    const renderHeader = () => <div className="discover-header" style={{ backgroundImage: `url(${backdropPath})`, backgroundSize: 'cover'}}>{ name ? <h2>{name}</h2> : <div className="ui active loader massive"></div>}</div>
 
     const renderFilters = () => {
         return (
@@ -63,13 +92,13 @@ const Discover = ({ params, backdropPath, filters, totalPages, isSearching, movi
                 <div className="filters">
                     <div className="filter-category">
                         <h3>Genre</h3>
-                        <CustomSelect options={genres} initial={name} onChange={onGenreChange} column={false} size={"regular"} />
+                        <CustomSelect options={genres} initial={currentGenre.name} onChange={onGenreChange} column={false} size={"regular"} />
                     </div>
                     <div className="filter-category">
                         <h3>Release Year</h3>
                             {releaseDateFilters.map(filter => {
                                 return (
-                                    <div className={releaseDates.id === filter.id ? 'active filter-field' : 'filter-field'} onClick={() => onFilterChange(filter, releaseDates, 0)} >
+                                    <div className={query.releaseDates.id === filter.id ? 'active filter-field' : 'filter-field'} onClick={() => onFilterChange(filter, query.releaseDates, "releaseDates")} >
                                         <label>{filter.title}</label>
                                     </div>
                                 )
@@ -79,7 +108,7 @@ const Discover = ({ params, backdropPath, filters, totalPages, isSearching, movi
                         <h3>Certification</h3>
                             {certificationFilters.map(filter => {
                                 return (
-                                    <div className={certification.id === filter.id ? 'active filter-field' : 'filter-field'} onClick={() => onFilterChange(filter, certification, 1)} >
+                                    <div className={query.certification.id === filter.id ? 'active filter-field' : 'filter-field'} onClick={() => onFilterChange(filter, query.certification, "certification")} >
                                         <label>{filter.title}</label>
                                     </div>
                                 )
@@ -102,20 +131,24 @@ const Discover = ({ params, backdropPath, filters, totalPages, isSearching, movi
                         <FontAwesomeIcon icon={withSynopsis} onClick={() => setResultViewWithSynopsis(true)}  />
                     </div>
                 </div>
-                <Pagination initialPage={parseInt(page)} totalPages={totalPages} changePage={onPageChange} />
+                <Pagination initialPage={parseInt(query.page)} totalPages={totalPages} changePage={onPageChange} />
                 <div className="sort-options">
                     <label>Sort By: </label>
-                    <CustomSelect options={sortOptions} initial={sortBy.name} onChange={onSortChange} column={true} size="small" background={true} />
+                    <CustomSelect options={sortOptions} initial={query.sortBy.name} onChange={onSortChange} column={true} size="small" background={true} />
                 </div>
             </div>
         )
     }
 
     const onSortChange = option => {
-        if(option.id !== sortBy.id){
-            setFilters({ ...filters, sortBy: sortOptions[option.id], page: 1})
+        if(option.id !== query.sortBy.id){
+            setQuery({
+                ...query,
+                sortBy: sortOptions[option.id],
+                page: 1
+            });
         }
-    }
+    };
 
     const renderMovies = () => {
         return (
@@ -123,19 +156,30 @@ const Discover = ({ params, backdropPath, filters, totalPages, isSearching, movi
                 {movies.map(movie => resultViewWithSynopsis ? <SearchResultsCard movie={movie} /> : <ListViewCard movie={movie} />)}
             </div>
         )
-    }
+    };
 
     const onPageChange = newPage => {
-        setFilters({ ...filters, page: newPage})
-    }
+        setQuery({
+            ...query,
+            page: newPage
+        });
+    };
 
     const onGenreChange = genre => {
-        navigate(`/discover/${genre.slug}`);
+        history.push(`/discover/${genre.slug}`);
     }
+
+    const getRandomMovie = () => {
+        return expressServer.get("/api/movies/random").then(response => {
+            history.push(`/movies/${response.data.movie.id}`);
+        });
+    };
 
     return (
         <div id="Discover">
-            {renderHeader()}
+            <div className="discover-header" style={{ backgroundImage: `url(${backdropPath})`, backgroundSize: 'cover'}}>
+                {currentGenre.name ? <h2>{currentGenre.name}</h2> : <div className="ui active loader massive"></div>}
+            </div>
             <div className="discover-body">
                 {renderFilters()}
                 <div className="discover-content-wrapper">
@@ -149,7 +193,7 @@ const Discover = ({ params, backdropPath, filters, totalPages, isSearching, movi
                             ) : (
                                 <div className="search-error">
                                     <div className="image-container">
-                                        <img src={Logo} required />
+                                        <img src={Logo}/>
                                     </div>
                                     <div className="search-error-message">
                                         <h2>Sorry! We couldn't find anything for you!</h2>
@@ -165,23 +209,4 @@ const Discover = ({ params, backdropPath, filters, totalPages, isSearching, movi
     )
 }
 
-const mapStateToProps = ({ discoverPage }) => {
-    return {
-        movies: discoverPage.movies,
-        filters: {
-            id: discoverPage.id,
-            name: discoverPage.name,
-            slug: discoverPage.slug,
-            releaseDates: discoverPage.filters.releaseDates,
-            certification: discoverPage.filters.certification,
-            sortBy: discoverPage.sortBy,
-            page: discoverPage.page
-        },
-        totalPages: discoverPage.totalPages,
-        totalResults: discoverPage.totalResults,
-        isSearching: discoverPage.isSearching,
-        backdropPath: discoverPage.backdropPath
-    };
-}
-
-export default connect(mapStateToProps, { getDiscoverPageContent, setFilters, getRandomMovie, setBackdrop })(Discover);
+export default Discover;

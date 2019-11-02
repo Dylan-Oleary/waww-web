@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Link, useHistory } from "react-router-dom";
 import { Field, reduxForm } from 'redux-form';
-import { A, navigate } from 'hookrouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye as hidingPassword, faEyeSlash as showingPassword  } from '@fortawesome/free-solid-svg-icons';
 
@@ -9,15 +9,17 @@ import { authenticateUser } from '../redux/actions/session';
 import { validateEmail, validateEmptyField, maxCharacters50, required } from '../utils/formFieldValidators';
 import Logo from '../public/assets/images/inverted-logo.svg';
 
-const Login = props => {
+const Login = ({ authenticateUser, handleSubmit, isAttemptingLogin, isLoggedIn }) => {
     const [passwordHidden, setPasswordHidden] = useState(true);
-    const token = window.localStorage.getItem("token");
+    const history = useHistory();
 
     useEffect(() => {
-        if(token){
-            navigate("/");
+        const token = window.localStorage.getItem("token");
+
+        if(token && isLoggedIn){
+            history.push("/");
         }
-    }, [token])
+    }, [isLoggedIn])
 
     const renderInput = ({ input, placeholder, type, meta, label  }) => {
         return (
@@ -53,11 +55,11 @@ const Login = props => {
     }
 
     const onSubmit = formValues => {
-        props.authenticateUser(formValues);
+        authenticateUser(formValues);
     }
 
     const renderContent = () => {
-        if(props.login.isLoggingIn){
+        if(isAttemptingLogin){
             return (
                 <div className="ui active loader massive"></div>
             )
@@ -68,7 +70,7 @@ const Login = props => {
                         <img className="ui fluid image" src={Logo} />
                     </div>
                     <div id="LoginForm">
-                        <form className="ui form" onSubmit={props.handleSubmit((formValues) => onSubmit(formValues))}>
+                        <form className="ui form" onSubmit={handleSubmit((formValues) => onSubmit(formValues))}>
                             <h2>Log In!</h2>
                             <div className="field">
                                 <Field 
@@ -100,11 +102,11 @@ const Login = props => {
                         <div className="footnote">
                             <span>
                                 Don't have an account?
-                                <A href="/register">Click here to register</A>
+                                <Link to="/register">Click here to register</Link>
                             </span>
                             <span>
                                 or
-                                <A href="/">continue without account</A>
+                                <Link to="/">continue without account</Link>
                             </span>
                         </div>
                     </div>
@@ -125,7 +127,10 @@ const formWrapped = reduxForm({
 })(Login);
 
 const mapStateToProps = ({ login }) => {
-    return { login };
+    return { 
+        isLoggedIn: login.isLoggedIn,
+        isAttemptingLogin: login.isAttemptingLogin
+    };
 }
 
 export default connect(mapStateToProps, { authenticateUser })(formWrapped);  

@@ -1,5 +1,3 @@
-import { navigate } from 'hookrouter';
-
 import expressServer from '../../../api';
 import alertHandler from "../../../utils/alerts";
 
@@ -9,20 +7,6 @@ export const getSelectedMovie = movieID => {
             dispatch({ type: "GET_SELECTED_MOVIE", payload: response.data })
         }).catch(error => {
             const alert = alertHandler(error.respponse);
-
-            dispatch({ type: "LOG_ERROR", payload: alert });
-        });
-    };
-};
-
-export const getRandomMovie = () => {
-    return async dispatch => {
-        expressServer.get("/api/movies/random").then(response => {
-            const { movie } = response.data;
-
-            navigate(`/movies/${movie.id}`)
-        }).catch(error => {
-            const alert = alertHandler(error);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
         });

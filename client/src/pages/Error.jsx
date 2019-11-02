@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { A } from 'hookrouter';
+import { Link } from "react-router-dom";
 
 import Logo from '../public/assets/images/error-ticket.svg';
 
@@ -17,17 +17,17 @@ const Error = ({ type }) => {
     return (
         <div id="Error">
             <div className="image-container">
-                <img src={Logo} required />
+                <img src={Logo} />
             </div>
             <div className="error-message">
                 <h2>{message}</h2>
             </div>
             <div className="error-footnote">
                 <div>
-                    <span>Already have an account? <A href="/login">Click here to login</A></span>
+                    <span>Already have an account? <Link to="/login">Click here to login</Link></span>
                 </div>
                 <div>
-                    <span>Don't have an account? <A href="/register">Click here to register</A> or <A href="/">Click here to go back home</A></span>
+                    <span>Don't have an account? <Link to="/register">Click here to register</Link> or <Link to="/">Click here to go back home</Link></span>
                 </div>
             </div>
         </div>

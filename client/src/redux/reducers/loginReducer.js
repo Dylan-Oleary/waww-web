@@ -1,16 +1,27 @@
 import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST} from '../constants';
 
-export const loginReducer = (state = {isLoggedIn: false}, action) => {
+const defaultLoginState = {
+    isAttemptingLogin: false,
+    isLoggedIn: false
+};
+
+export const loginReducer = (state = defaultLoginState, action) => {
     switch(action.type){
         case LOGIN_REQUEST :
-            return { isLoggingIn: true, isLoggedIn: false};
+            return { 
+                isAttemptingLogin: true, 
+                isLoggedIn: false
+            };
         case LOGIN_SUCCESS :
-            return { isLoggedIn: true };
+            return {
+                isAttemptingLogin: false,
+                isLoggedIn: true 
+            };
         case LOGIN_FAILURE :
-            return { isLoggedIn: false };
+            return defaultLoginState;
         case LOGOUT_REQUEST :
-            return { isLoggedIn: false };
+            return defaultLoginState;
         default :
             return state;
     }
-}
+};

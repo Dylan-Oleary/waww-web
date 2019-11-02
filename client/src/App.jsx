@@ -1,19 +1,25 @@
 import React, { useEffect } from 'react';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
 import { connect } from 'react-redux';
-import { useRoutes } from 'hookrouter';
 import { ToastContainer, toast, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import './public/styles/main.scss';
-import routes from './routes';
 import { persistSession } from './redux/actions/session';
 
 import Modal from './components/Modal';
 import Toastr from "./components/Toastr";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Error from "./pages/Error";
+import Layout from "./components/Layout";
 
 const App = ({ alert }) => {
-    const routeResult = useRoutes(routes);
-
     useEffect(() => {
         if(alert.type === "error"){
             toast(<Toastr alert={alert} />, { containerId: alert.type });
@@ -24,36 +30,43 @@ const App = ({ alert }) => {
     }, [alert])
 
     return (
-        <div id="App">
-            {routeResult}
-            <Modal />
-            <ToastContainer
-                autoClose={2500}
-                enableMultiContainer 
-                containerId={"success"}
-                pauseOnHover={false}
-                toastClassName="toast-success"
-                progressClassName="toast-progress"
-            />
-            <ToastContainer
-                autoClose={2500}
-                enableMultiContainer 
-                containerId={"error"}
-                pauseOnHover={false}
-                toastClassName="toast-error"
-                progressClassName="toast-progress"
-            />
-            <ToastContainer
-                autoClose={2500}
-                enableMultiContainer
-                position="top-center"
-                containerId={"general"}
-                toastClassName={"toast-general"}
-                bodyClassName="toast-general-body"
-                hideProgressBar={true}
-                transition={Zoom}
-            />
-        </div>
+        <Router>
+            <div id="App">
+                <Modal />
+                <ToastContainer
+                    autoClose={2500}
+                    enableMultiContainer 
+                    containerId={"success"}
+                    pauseOnHover={false}
+                    toastClassName="toast-success"
+                    progressClassName="toast-progress"
+                />
+                <ToastContainer
+                    autoClose={2500}
+                    enableMultiContainer 
+                    containerId={"error"}
+                    pauseOnHover={false}
+                    toastClassName="toast-error"
+                    progressClassName="toast-progress"
+                />
+                <ToastContainer
+                    autoClose={2500}
+                    enableMultiContainer
+                    position="top-center"
+                    containerId={"general"}
+                    toastClassName={"toast-general"}
+                    bodyClassName="toast-general-body"
+                    hideProgressBar={true}
+                    transition={Zoom}
+                />
+                <Switch>
+                    <Route path="/login" component={ Login } />
+                    <Route path="/register" component={ Register } />
+                    <Route path="/error" component={ Error } />
+                    <Route path="/" component={ Layout } />
+                </Switch>
+            </div>
+        </Router>
     );
 }
 
