@@ -24,6 +24,7 @@
     "redux": "^4.0.3",
     "redux-form": "^8.2.4",
     "redux-thunk": "^2.3.0",
+    "semantic-ui-react": "^0.88.1",
     "throttle-debounce": "^2.1.0"
   },
   "scripts": {

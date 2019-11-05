@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Field, reduxForm} from "redux-form";
 import { Link, useHistory } from "react-router-dom";
-import { Field, reduxForm } from 'redux-form';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye as hidingPassword, faEyeSlash as showingPassword  } from '@fortawesome/free-solid-svg-icons';
+import { Container, Form, Icon, Image } from "semantic-ui-react";
 
 import { registerUser } from '../redux/actions/session';
-import { validateEmail, validateEmptyField, maxCharacters25, maxCharacters50, required } from '../utils/formFieldValidators';
+import ShowPasswordToggle from "../components/ShowPasswordToggle";
 import Logo from '../public/assets/images/inverted-logo.svg';
+import { validateEmail, validateEmptyField, maxCharacters25, maxCharacters50, required } from '../utils/formFieldValidators';
 
-
-const Register = ({ handleSubmit, isLoggedIn, isRegistering, registerUser }) => {
+const Register = ({ isLoggedIn, isRegistering, registerUser, handleSubmit }) => {
     const [passwordHidden, setPasswordHidden] = useState(true);
     const [confirmPasswordHidden, setConfirmPasswordHidden] = useState(true);
     const history = useHistory();
@@ -23,143 +22,120 @@ const Register = ({ handleSubmit, isLoggedIn, isRegistering, registerUser }) => 
         }
     }, [isRegistering, isLoggedIn])
 
-    const renderInput = ({ input, placeholder, type, meta, label }) => { 
-        return (
-            <div className="field input-field">
-                <label>{label}</label>
-                <input {...input} type={type} className="form-control" placeholder={placeholder} autoFocus={meta.active ? true : false}/>
-                {renderError(meta)}
-            </div>
-        ) 
-    }
+    const renderInput = ({ input, placeholder, type, meta, label, onToggle, isHidingPassword }) => {
+        const hasError = meta.touched && meta.error ? true : false;
 
-    const renderPasswordInput = ({ input, placeholder, type, meta, label, toggleInput }) => {
         return (
-            <div className="field input-field">
-                <label>{label}</label>
-                <div className="flex">
-                    <input {...input} type={type} className="form-control" placeholder={placeholder} autoFocus={meta.active ? true : false}/>
-                    <FontAwesomeIcon className="pointer" icon={type === "password" ? hidingPassword : showingPassword} onClick={() => toggleInput(type === "password" ? false : true)} size="1x"/>
+            <div className="required field">
+                {label.toLowerCase().includes("password") ? <ShowPasswordToggle
+                    text={label}
+                    onToggle={onToggle}
+                    isHidingPassword={isHidingPassword}
+                /> : <label>{label}</label>}
+                <div className={`flex no-wrap align-center ${hasError ? "border-bottom red" : "border-bottom white"}`}>
+                    <input {...input} type={type} placeholder={placeholder} autoFocus={meta.active ? true : false}/>
+                    {hasError && <Icon className="text red" name="times"/>}
                 </div>
-                {renderError(meta)}
+                <div className="input-error">
+                    {hasError && meta.error}
+                </div>
             </div>
-        ) 
-    }
-
-    const renderError = ({ touched, error }) => {
-        if(touched && error){
-            return (
-                <div>
-                    {error}
-                </div>
-            )
-        }
+        );
     }
 
     const onSubmit = formValues => {
         registerUser(formValues);
     }
 
-    const renderContent = () => {
-        if(isRegistering){
-            return (
-                <div className="ui active loader massive"></div>
-            )
-        }else {
-            return (
-                <div className="ui container">
-                    <div className="form-image-container">
-                        <img className="ui fluid image" src={Logo} required />
+    const renderForm = () => {
+        return (
+            <Container>
+                <Image className="logo main" src={Logo} fluid={true} />
+                <h1 className="heading large text white">Register</h1>
+                <Form id="RegisterForm" onSubmit={handleSubmit((formValues) => onSubmit(formValues))}>
+                    <Form.Group widths="equal">
+                        <Field 
+                            name="firstName" 
+                            component={(formProps) => renderInput(formProps)} 
+                            placeholder="Jesse" 
+                            type="text" 
+                            label="First Name"
+                            validate={[validateEmptyField, maxCharacters25, required]}
+                        />
+                        <Field 
+                            name="lastName" 
+                            component={(formProps) => renderInput(formProps)} 
+                            placeholder="Pinkman" 
+                            type="text" 
+                            label="Last Name"
+                            validate={[validateEmptyField, maxCharacters25, required]}
+                        />
+                    </Form.Group>
+                    <Form.Group widths="equal">
+                        <Field 
+                            name="email" 
+                            component={(formProps) => renderInput(formProps)} 
+                            placeholder="cpncook@abq.com" 
+                            type="email" 
+                            label="E-mail"
+                            validate={[validateEmptyField, validateEmail, maxCharacters50, required]}
+                        />
+                        <Field 
+                            name="username" 
+                            component={(formProps) => renderInput(formProps)} 
+                            placeholder="cpncook" 
+                            type="text" 
+                            label="Username"
+                            validate={[validateEmptyField, maxCharacters50, required]}
+                        />
+                    </Form.Group>
+                    <Form.Group widths="equal">
+                        <Field 
+                            name="password" 
+                            component={(formProps) => renderInput(formProps)} 
+                            placeholder="Enter password" 
+                            type={passwordHidden ? "password" : "text"} 
+                            label="Password"
+                            validate={[validateEmptyField, required]}
+                            props={{
+                                onToggle: setPasswordHidden,
+                                isHidingPassword: passwordHidden
+                            }}
+                        />
+                        <Field 
+                            name="confirmPassword" 
+                            component={(formProps) => renderInput(formProps)} 
+                            placeholder="Re-Enter password" 
+                            type={confirmPasswordHidden ? "password" : "text"} 
+                            label="Confirm Password"
+                            validate={[validateEmptyField, required]}
+                            props={{
+                                onToggle: setConfirmPasswordHidden,
+                                isHidingPassword: confirmPasswordHidden
+                            }}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <div className="flex center my small">
+                            <button className="btn center main" type="submit">Create Account</button>
+                        </div>
+                    </Form.Group>
+                </Form>
+                <Container>
+                    <div className="flex center my small footnote">
+                        <span>Already have an account?</span>
+                        <Link to="/login">Click here to login</Link>
                     </div>
-                    <div id="RegisterForm">
-                        <form className="ui form" onSubmit={handleSubmit((formValues) => onSubmit(formValues))}>
-                            <div className="field">
-                                <div className="two fields">
-                                    <Field 
-                                        name="firstName" 
-                                        component={(formProps) => renderInput(formProps)} 
-                                        placeholder="Jesse" 
-                                        type="text" 
-                                        label="First Name"
-                                        validate={[validateEmptyField, maxCharacters25, required]}
-                                    />
-                                    <Field 
-                                        name="lastName" 
-                                        component={(formProps) => renderInput(formProps)} 
-                                        placeholder="Pinkman" 
-                                        type="text" 
-                                        label="Last Name"
-                                        validate={[validateEmptyField, maxCharacters25, required]}
-                                    />
-                                </div>
-                            </div>
-                            <div className="field">
-                                <div className="two fields">
-                                    <Field 
-                                        name="email" 
-                                        component={(formProps) => renderInput(formProps)} 
-                                        placeholder="cpncook@abq.com" 
-                                        type="email" 
-                                        label="E-mail"
-                                        validate={[validateEmptyField, validateEmail, maxCharacters50, required]}
-                                    />
-                                    <Field 
-                                        name="username" 
-                                        component={(formProps) => renderInput(formProps)} 
-                                        placeholder="cpncook" 
-                                        type="text" 
-                                        label="Username"
-                                        validate={[validateEmptyField, maxCharacters50, required]}
-                                    />
-                                </div>
-                            </div>
-                            <div className="field">
-                                <div className="two fields">
-                                    <Field 
-                                        name="password" 
-                                        component={(formProps) => renderPasswordInput(formProps)} 
-                                        placeholder="Enter password" 
-                                        type={passwordHidden ? "password" : "text"} 
-                                        label="Password"
-                                        validate={[validateEmptyField, required]}
-                                        props={{
-                                            toggleInput: setPasswordHidden
-                                        }}
-                                    />
-                                    <Field 
-                                        name="confirmPassword" 
-                                        component={(formProps) => renderPasswordInput(formProps)} 
-                                        placeholder="Re-Enter password" 
-                                        type={confirmPasswordHidden ? "password" : "text"} 
-                                        label="Confirm Password"
-                                        validate={[validateEmptyField, required]}
-                                        props={{
-                                            toggleInput: setConfirmPasswordHidden
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                            <div className="actions">
-                                <button className="ui button">Create Account</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div className="footnote">
-                        <span>
-                            Already have an account?
-                            <Link to="/login">Click here to login</Link>
-                        </span>
-                    </div>
-                </div>
-            )
-        }
+                </Container>
+            </Container>
+        );
     }
 
     return (
         <div id="Register">
-            {renderContent()}
+            {isRegistering ? <div className="ui active loader massive"></div> : renderForm()}
         </div>
-    )
+    );
 }
 
 const validate = formValues => {

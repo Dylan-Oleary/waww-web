@@ -31,7 +31,6 @@
 @import './pages/Home.scss';
 @import './pages/MovieProfile.scss';
 @import './static/Login.scss';
-@import './static/Register.scss';
 
 @font-face {
     font-family: 'Blackside-Bold';
@@ -64,21 +63,21 @@ html, body, #root, #App, #Main {
     margin-top: 40px;
 }
 
-.flex {
-    display: flex;
-    flex: 1;
-    &.space-between {
-        justify-content: space-between;
-        flex-wrap: wrap;
-        padding: 4rem 8rem;
-    }
-    &.two-items {
-        justify-content: space-between;
-        .flex-item {
-            width: 50%;
-        }
-    }
-}
+// .flex {
+//     display: flex;
+//     flex: 1;
+//     &.space-between {
+//         justify-content: space-between;
+//         flex-wrap: wrap;
+//         padding: 4rem 8rem;
+//     }
+//     &.two-items {
+//         justify-content: space-between;
+//         .flex-item {
+//             width: 50%;
+//         }
+//     }
+// }
 
 .flex-column {
     display: flex;
@@ -90,19 +89,6 @@ html, body, #root, #App, #Main {
     width: 100%;
 }
 
-.footnote {
-    display: flex;
-    justify-content: center;
-    color: $primary-white;
-    margin-top: 10px;
-    a {
-        padding: 0 5px;
-        color: $primary-red !important;
-        &:hover{
-            text-decoration: underline;
-        }
-    }
-}
 
 .blur:hover img {
     -webkit-filter: blur(2px);
@@ -131,12 +117,12 @@ html, body, #root, #App, #Main {
     z-index: 99999;
 }
 
-.form-image-container {
-    height: 300px;
-    width: 500px;
-    margin: 0 auto;
-    margin-bottom: 30px;
-}
+// .form-image-container {
+//     height: 300px;
+//     width: 500px;
+//     margin: 0 auto;
+//     margin-bottom: 30px;
+// }
 
 .ui.form .field .field.input-field .form-control:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px #13293d inset !important;
@@ -281,4 +267,140 @@ select:focus,
 textarea:focus,
 button:focus {
     outline: none;
+}
+
+//STYLE REDESIGN !!!!!
+.text {
+    &.red {
+        color: $primary-red;
+    }
+    &.white {
+        color: $primary-white;
+    }
+}
+.border-bottom {
+    &.red {
+        border-bottom: 1px solid $primary-red !important;
+    }
+    &.white {
+        border-bottom: 1px solid $primary-white !important;
+    }
+}
+
+.heading {
+    font-family: 'Blackside-Bold';
+    &.large {
+        font-size: 5rem;
+        letter-spacing: 0.25rem;
+    }
+}
+
+#Register, #Login {
+    background-color: $primary-blue;
+    min-height: 100vh;
+    padding: 1rem;
+    font-size: 1.25rem;
+    form {
+        margin: 1.5rem 0;
+        font-size: 1.25rem;
+    }
+    label, i, input {
+        color: $primary-white;
+    }
+    i {
+        cursor: pointer;
+    }
+    input {
+        background: $primary-blue;
+        border-radius: 0;
+        &:focus {
+            border-color: $primary-blue;
+        }
+    }
+    .input-error {
+        color: $primary-red;
+        margin-bottom: -0.5rem;
+        font-size: 0.9rem;
+        min-height: 25px;
+    }
+    /* Change Autocomplete styles in Chrome*/
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill,
+    select:-webkit-autofill:hover,
+    select:-webkit-autofill:focus {
+        border-bottom: none;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        background-color: $primary-blue !important;
+        -webkit-text-fill-color: $primary-white;
+        -webkit-box-shadow: 0 0 0 30px $primary-blue inset !important;
+        font-size: 1.25rem !important;
+        height: inherit;
+    }
+}
+
+.btn {
+    &.center {
+        margin: 0 auto;
+    }
+    &.main {
+        background: $primary-red;
+        &:hover {
+            background: $secondary-red;
+            color: $primary-white;
+        }
+    }
+}
+
+.flex {
+    display: flex;
+    flex: 1;
+    &.between {
+        justify-content: space-between;
+    }
+    &.center {
+        justify-content: center;
+    }
+    &.no-wrap {
+        flex-wrap: nowrap;
+    }
+    &.align-center {
+        align-items: center;
+    }
+}
+
+.footnote {
+    color: $primary-white;
+    flex-wrap: wrap;
+    span {
+        padding-top: 0.5rem;
+    }
+    a {
+        padding: 0.5rem 0.25rem;
+        color: $primary-red !important;
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+}
+
+.logo {
+    &.main {
+        max-height: 300px;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+}
+
+.my {
+    &.small {
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
 }
