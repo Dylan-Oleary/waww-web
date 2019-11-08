@@ -42,6 +42,20 @@
     src: local('Blackside-Bold-Italic'), url(../fonts/Blackside-Bold-Italic.otf) format('opentype');
 }
 
+@keyframes autofill {
+    100% {
+        background: transparent;
+        color: inherit;
+    }
+}
+
+@-webkit-keyframes autofill {
+    100% {
+        background: transparent;
+        color: inherit;
+    }
+}
+
 html, body, #root, #App, #Main {
     min-height: 100vh;
 }
@@ -62,22 +76,6 @@ html, body, #root, #App, #Main {
     justify-content: center;
     margin-top: 40px;
 }
-
-// .flex {
-//     display: flex;
-//     flex: 1;
-//     &.space-between {
-//         justify-content: space-between;
-//         flex-wrap: wrap;
-//         padding: 4rem 8rem;
-//     }
-//     &.two-items {
-//         justify-content: space-between;
-//         .flex-item {
-//             width: 50%;
-//         }
-//     }
-// }
 
 .flex-column {
     display: flex;
@@ -115,20 +113,6 @@ html, body, #root, #App, #Main {
     justify-content: center;
     pointer-events: all;
     z-index: 99999;
-}
-
-// .form-image-container {
-//     height: 300px;
-//     width: 500px;
-//     margin: 0 auto;
-//     margin-bottom: 30px;
-// }
-
-.ui.form .field .field.input-field .form-control:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px #13293d inset !important;
-    box-shadow: 0 0 0 1000px #13293d inset !important;
-    -webkit-text-fill-color: #F6F4F3;
-    caret-color: #F6F4F3;
 }
 
 .ui.active.loader {
@@ -270,6 +254,9 @@ button:focus {
 }
 
 //STYLE REDESIGN !!!!!
+.container-max {
+    max-width: 1100px;
+}
 .text {
     &.red {
         color: $primary-red;
@@ -277,6 +264,18 @@ button:focus {
     &.white {
         color: $primary-white;
     }
+}
+
+.height {
+    &.full {
+        height: 100vh;
+    }
+}
+
+.shadow {
+    text-shadow: 0px 4px 3px rgba(0,0,0,0.4),
+                0px 8px 13px rgba(0,0,0,0.1),
+                0px 18px 23px rgba(0,0,0,0.1);
 }
 .border-bottom {
     &.red {
@@ -290,18 +289,63 @@ button:focus {
 .heading {
     font-family: 'Blackside-Bold';
     &.large {
-        font-size: 5rem;
+        font-size: 3.5rem;
         letter-spacing: 0.25rem;
+        @media screen and (min-width: $mobile-S){
+            font-size: 2.5rem;
+            letter-spacing: 0.20rem;
+        }
+    }
+}
+
+.mw {
+    &.750 {
+        max-width: 750px;
+    }
+}
+
+.required {
+    label {
+        &::after{
+            display: inline-block;
+            vertical-align: top;
+            margin: -.2em 0 0 .2em;
+            content: '*';
+            color: #db2828;
+        }
     }
 }
 
 #Register, #Login {
-    background-color: $primary-blue;
+    background: #13293D;
+    background: -webkit-linear-gradient(bottom, #13293D, #354E64);
+    background: -moz-linear-gradient(bottom, #13293D, #354E64);
+    background: linear-gradient(to top, #13293D, #354E64);
     min-height: 100vh;
     padding: 1rem;
     font-size: 1.25rem;
+    @media screen and (min-width: $tablet){
+        padding-top: 1rem;
+    }
+    .ui.grid {
+        margin: 0 auto;
+    }
+    .form-wrapper {
+        min-width: 260px;
+        max-width: 600px;
+        padding: 1.5rem;
+        margin: 0 auto;
+        border: 2px solid $primary-red;
+        // border-radius: 1rem;
+        // background: $primary-blue;
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        &.landing {
+            margin-top: 3rem;
+        }
+    }
     form {
-        margin: 1.5rem 0;
+        margin: 1.5rem auto;
+        margin-bottom: 0;
         font-size: 1.25rem;
     }
     label, i, input {
@@ -311,11 +355,9 @@ button:focus {
         cursor: pointer;
     }
     input {
-        background: $primary-blue;
+        background: transparent;
+        border: none;
         border-radius: 0;
-        &:focus {
-            border-color: $primary-blue;
-        }
     }
     .input-error {
         color: $primary-red;
@@ -337,11 +379,15 @@ button:focus {
         border-top: none !important;
         border-left: none !important;
         border-right: none !important;
-        background-color: $primary-blue !important;
+        border-color: $primary-white;
+        background: transparent !important;
         -webkit-text-fill-color: $primary-white;
-        -webkit-box-shadow: 0 0 0 30px $primary-blue inset !important;
+        -webkit-box-shadow: none !important;
+        box-shadow: none !important;
         font-size: 1.25rem !important;
         height: inherit;
+        -webkit-animation: autofill 0s forwards;
+        animation: autofill 0s forwards;
     }
 }
 
@@ -392,8 +438,8 @@ button:focus {
 
 .logo {
     &.main {
-        max-height: 300px;
-        max-width: 500px;
+        max-height: 270px;
+        max-width: 450px;
         margin: 0 auto;
     }
 }

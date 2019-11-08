@@ -8,6 +8,7 @@ import { registerUser } from '../redux/actions/session';
 import ShowPasswordToggle from "../components/ShowPasswordToggle";
 import Logo from '../public/assets/images/inverted-logo.svg';
 import { validateEmail, validateEmptyField, maxCharacters25, maxCharacters50, required } from '../utils/formFieldValidators';
+import { setBrowserTitle } from "../utils/browserTitle";
 
 const Register = ({ isLoggedIn, isRegistering, registerUser, handleSubmit }) => {
     const [passwordHidden, setPasswordHidden] = useState(true);
@@ -16,6 +17,7 @@ const Register = ({ isLoggedIn, isRegistering, registerUser, handleSubmit }) => 
 
     useEffect(() => {
         const token = window.localStorage.getItem("token");
+        setBrowserTitle("WAWW | Register");
 
         if(token && !isRegistering && isLoggedIn){
             history.push("/");
@@ -31,7 +33,8 @@ const Register = ({ isLoggedIn, isRegistering, registerUser, handleSubmit }) => 
                     text={label}
                     onToggle={onToggle}
                     isHidingPassword={isHidingPassword}
-                /> : <label>{label}</label>}
+                    className="shadow"
+                /> : <label className="shadow">{label}</label>}
                 <div className={`flex no-wrap align-center ${hasError ? "border-bottom red" : "border-bottom white"}`}>
                     <input {...input} type={type} placeholder={placeholder} autoFocus={meta.active ? true : false}/>
                     {hasError && <Icon className="text red" name="times"/>}
@@ -49,78 +52,78 @@ const Register = ({ isLoggedIn, isRegistering, registerUser, handleSubmit }) => 
 
     const renderForm = () => {
         return (
-            <Container>
-                <Image className="logo main" src={Logo} fluid={true} />
-                <h1 className="heading large text white">Register</h1>
-                <Form id="RegisterForm" onSubmit={handleSubmit((formValues) => onSubmit(formValues))}>
-                    <Form.Group widths="equal">
-                        <Field 
-                            name="firstName" 
-                            component={(formProps) => renderInput(formProps)} 
-                            placeholder="Jesse" 
-                            type="text" 
-                            label="First Name"
-                            validate={[validateEmptyField, maxCharacters25, required]}
-                        />
-                        <Field 
-                            name="lastName" 
-                            component={(formProps) => renderInput(formProps)} 
-                            placeholder="Pinkman" 
-                            type="text" 
-                            label="Last Name"
-                            validate={[validateEmptyField, maxCharacters25, required]}
-                        />
-                    </Form.Group>
-                    <Form.Group widths="equal">
-                        <Field 
-                            name="email" 
-                            component={(formProps) => renderInput(formProps)} 
-                            placeholder="cpncook@abq.com" 
-                            type="email" 
-                            label="E-mail"
-                            validate={[validateEmptyField, validateEmail, maxCharacters50, required]}
-                        />
-                        <Field 
-                            name="username" 
-                            component={(formProps) => renderInput(formProps)} 
-                            placeholder="cpncook" 
-                            type="text" 
-                            label="Username"
-                            validate={[validateEmptyField, maxCharacters50, required]}
-                        />
-                    </Form.Group>
-                    <Form.Group widths="equal">
-                        <Field 
-                            name="password" 
-                            component={(formProps) => renderInput(formProps)} 
-                            placeholder="Enter password" 
-                            type={passwordHidden ? "password" : "text"} 
-                            label="Password"
-                            validate={[validateEmptyField, required]}
-                            props={{
-                                onToggle: setPasswordHidden,
-                                isHidingPassword: passwordHidden
-                            }}
-                        />
-                        <Field 
-                            name="confirmPassword" 
-                            component={(formProps) => renderInput(formProps)} 
-                            placeholder="Re-Enter password" 
-                            type={confirmPasswordHidden ? "password" : "text"} 
-                            label="Confirm Password"
-                            validate={[validateEmptyField, required]}
-                            props={{
-                                onToggle: setConfirmPasswordHidden,
-                                isHidingPassword: confirmPasswordHidden
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group>
-                        <div className="flex center my small">
+            <Container className="container-max" fluid={true}>
+                <Image className="logo main" src={Logo} fluid={true}/>
+                <div className="form-wrapper landing">
+                    <h1 className="heading large text white shadow">Register</h1>
+                    <Form onSubmit={handleSubmit((formValues) => onSubmit(formValues))}>
+                        <Form.Group widths="equal">
+                            <Field 
+                                name="firstName" 
+                                component={(formProps) => renderInput(formProps)} 
+                                placeholder="Jesse" 
+                                type="text" 
+                                label="First Name"
+                                validate={[validateEmptyField, maxCharacters25, required]}
+                            />
+                            <Field 
+                                name="lastName" 
+                                component={(formProps) => renderInput(formProps)} 
+                                placeholder="Pinkman" 
+                                type="text" 
+                                label="Last Name"
+                                validate={[validateEmptyField, maxCharacters25, required]}
+                            />
+                        </Form.Group>
+                        <Form.Group widths="equal">
+                            <Field 
+                                name="email" 
+                                component={(formProps) => renderInput(formProps)} 
+                                placeholder="cpncook@abq.com" 
+                                type="email" 
+                                label="E-mail"
+                                validate={[validateEmptyField, validateEmail, maxCharacters50, required]}
+                            />
+                            <Field 
+                                name="username" 
+                                component={(formProps) => renderInput(formProps)} 
+                                placeholder="cpncook" 
+                                type="text" 
+                                label="Username"
+                                validate={[validateEmptyField, maxCharacters50, required]}
+                            />
+                        </Form.Group>
+                        <Form.Group widths="equal">
+                            <Field 
+                                name="password" 
+                                component={(formProps) => renderInput(formProps)} 
+                                placeholder="Enter password" 
+                                type={passwordHidden ? "password" : "text"} 
+                                label="Password"
+                                validate={[validateEmptyField, required]}
+                                props={{
+                                    onToggle: setPasswordHidden,
+                                    isHidingPassword: passwordHidden
+                                }}
+                            />
+                            <Field 
+                                name="confirmPassword" 
+                                component={(formProps) => renderInput(formProps)} 
+                                placeholder="Re-Enter password" 
+                                type={confirmPasswordHidden ? "password" : "text"} 
+                                label="Confirm Password"
+                                validate={[validateEmptyField, required]}
+                                props={{
+                                    onToggle: setConfirmPasswordHidden,
+                                    isHidingPassword: confirmPasswordHidden
+                                }}
+                            />
+                        </Form.Group>
+                        <div className="flex center">
                             <button className="btn center main" type="submit">Create Account</button>
                         </div>
-                    </Form.Group>
-                </Form>
+                    </Form>
+                </div>
                 <Container>
                     <div className="flex center my small footnote">
                         <span>Already have an account?</span>
