@@ -333,14 +333,14 @@ button:focus {
     .form-wrapper {
         min-width: 260px;
         max-width: 600px;
-        padding: 1.5rem;
+        padding: 2.25rem;
         margin: 0 auto;
         border: 2px solid $primary-red;
-        // border-radius: 1rem;
-        // background: $primary-blue;
+        border-radius: 0.5rem;
+        // background-image: linear-gradient(to bottom, #13293d, #133349, #103d54, #0a485f, #00536a);
         box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
         &.landing {
-            margin-top: 3rem;
+            margin-top: 2rem;
         }
     }
     form {
@@ -424,11 +424,9 @@ button:focus {
 .footnote {
     color: $primary-white;
     flex-wrap: wrap;
-    span {
-        padding-top: 0.5rem;
-    }
+    padding: 0.5rem 0;
     a {
-        padding: 0.5rem 0.25rem;
+        margin: 0 0.5rem;
         color: $primary-red !important;
         &:hover{
             text-decoration: underline;
@@ -441,6 +439,7 @@ button:focus {
         max-height: 270px;
         max-width: 450px;
         margin: 0 auto;
+        cursor: pointer;
     }
 }
 

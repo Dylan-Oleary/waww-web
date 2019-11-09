@@ -5,10 +5,11 @@ import { Link, useHistory } from "react-router-dom";
 import { Container, Form, Icon, Image } from "semantic-ui-react";
 
 import { registerUser } from '../redux/actions/session';
-import ShowPasswordToggle from "../components/ShowPasswordToggle";
-import Logo from '../public/assets/images/inverted-logo.svg';
 import { validateEmail, validateEmptyField, maxCharacters25, maxCharacters50, required } from '../utils/formFieldValidators';
 import { setBrowserTitle } from "../utils/browserTitle";
+
+import ShowPasswordToggle from "../components/ShowPasswordToggle";
+import Logo from '../public/assets/images/inverted-logo.svg';
 
 const Register = ({ isLoggedIn, isRegistering, registerUser, handleSubmit }) => {
     const [passwordHidden, setPasswordHidden] = useState(true);
@@ -17,6 +18,7 @@ const Register = ({ isLoggedIn, isRegistering, registerUser, handleSubmit }) => 
 
     useEffect(() => {
         const token = window.localStorage.getItem("token");
+
         setBrowserTitle("WAWW | Register");
 
         if(token && !isRegistering && isLoggedIn){
@@ -24,7 +26,15 @@ const Register = ({ isLoggedIn, isRegistering, registerUser, handleSubmit }) => 
         }
     }, [isRegistering, isLoggedIn])
 
-    const renderInput = ({ input, placeholder, type, meta, label, onToggle, isHidingPassword }) => {
+    const renderInput = ({
+        input,
+        placeholder,
+        type,
+        meta,
+        label,
+        onToggle,
+        isHidingPassword 
+    }) => {
         const hasError = meta.touched && meta.error ? true : false;
 
         return (
@@ -53,16 +63,16 @@ const Register = ({ isLoggedIn, isRegistering, registerUser, handleSubmit }) => 
     const renderForm = () => {
         return (
             <Container className="container-max" fluid={true}>
-                <Image className="logo main" src={Logo} fluid={true}/>
+                <Image className="logo main" src={Logo} fluid={true} onClick={() => history.push("/")}/>
                 <div className="form-wrapper landing">
                     <h1 className="heading large text white shadow">Register</h1>
-                    <Form onSubmit={handleSubmit((formValues) => onSubmit(formValues))}>
+                    <Form onSubmit={handleSubmit(formValues => onSubmit(formValues))}>
                         <Form.Group widths="equal">
                             <Field 
                                 name="firstName" 
                                 component={(formProps) => renderInput(formProps)} 
-                                placeholder="Jesse" 
-                                type="text" 
+                                placeholder="Jesse"
+                                type="text"
                                 label="First Name"
                                 validate={[validateEmptyField, maxCharacters25, required]}
                             />
@@ -120,7 +130,7 @@ const Register = ({ isLoggedIn, isRegistering, registerUser, handleSubmit }) => 
                             />
                         </Form.Group>
                         <div className="flex center">
-                            <button className="btn center main" type="submit">Create Account</button>
+                            <button className="btn center main ui button medium" type="submit">Create Account</button>
                         </div>
                     </Form>
                 </div>
