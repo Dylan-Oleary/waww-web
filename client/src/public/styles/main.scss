@@ -60,6 +60,15 @@ html, body, #root, #App, #Main {
     min-height: 100vh;
 }
 
+a {
+    cursor: pointer;
+    &:hover {
+        &.red {
+            color: $primary-red;
+        }
+    }
+}
+
 .text {
     &.small {
         font-size: 1rem;
@@ -288,6 +297,7 @@ button:focus {
 
 .heading {
     font-family: 'Blackside-Bold';
+    color: #fff;
     &.large {
         font-size: 3.5rem;
         letter-spacing: 0.25rem;
@@ -295,6 +305,10 @@ button:focus {
             font-size: 2.5rem;
             letter-spacing: 0.20rem;
         }
+    }
+    &.small {
+        font-size: 2.5rem;
+        letter-spacing: 0.1rem;
     }
 }
 
@@ -317,7 +331,6 @@ button:focus {
 }
 
 #Register, #Login {
-    background: #13293D;
     background: -webkit-linear-gradient(bottom, #13293D, #354E64);
     background: -moz-linear-gradient(bottom, #13293D, #354E64);
     background: linear-gradient(to top, #13293D, #354E64);
@@ -448,4 +461,16 @@ button:focus {
         margin-top: 1em;
         margin-bottom: 1em;
     }
+}
+
+.mobile {
+    &.none {
+        @media screen and (max-width: $mobile-XL-cap){
+            display: none !important;
+        }
+    }
+}
+
+.transparent {
+    background: transparent;
 }

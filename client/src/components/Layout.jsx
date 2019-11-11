@@ -2,9 +2,9 @@ import React, { useEffect, useState, Fragment } from 'react';
 import {
     Route,
     Switch,
-    useRouteMatch
 } from "react-router-dom";
 import { connect } from 'react-redux';
+import { Container } from "semantic-ui-react";
 
 import { persistSession } from '../redux/actions/session';
 import About from "../pages/About";
@@ -34,7 +34,7 @@ const Layout = ({ children, persistSession, login }) => {
     }, []);
 
     return (
-        <div id="Layout">
+        <Container id="Layout" fluid={true}>
             {isLoading && <div className="ui active loader massive"></div>}
             {!isLoading && <Fragment>
                 <Nav/>
@@ -54,7 +54,7 @@ const Layout = ({ children, persistSession, login }) => {
                 </div>
                 <Footer/>
             </Fragment>}
-        </div>
+        </Container>
     )
 }
 

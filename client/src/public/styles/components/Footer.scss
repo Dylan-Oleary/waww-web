@@ -1,15 +1,45 @@
-@import '../variables.scss';
-
 #Footer {
-    background-color: $primary-blue;
-    padding: 40px;
-    height: 250px;
-    * {
-        background-color: $primary-blue;
-        color: $primary-white;
-        border: none; 
+    background: -webkit-linear-gradient(bottom, #13293D, #354E64);
+    background: -moz-linear-gradient(bottom, #13293D, #354E64);
+    background: linear-gradient(to top, #13293D, #354E64);
+    padding: 2.5rem;
+    margin: 0 !important;
+    position: relative;
+    @media screen and (min-width: $tablet) and (max-width: 991px){
+        padding: 2.5rem 1rem;
     }
-    .row {
-        width: 700px;
+    .lifted {
+        z-index: 99;
+    }
+    .footer-logo {
+        img {
+            height: 180px;
+            width: 275px;
+            margin: 0 auto;
+        }
+    }
+    .item {
+        margin: 0.5rem 0;
+        a {
+            color: #fff;
+            font-size: 1.35rem;
+            &:hover {
+                color: $primary-red;
+            }
+        }
+    }
+    .mobile-only {
+        @media screen and (min-width: $tablet){
+            display: none;
+        }
+        display: flex;
+        align-items: center;
+        height: 350px;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        margin-left: -200px;
+        width: 400px;
+        opacity: 0.25;
     }
 }
