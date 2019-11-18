@@ -57,10 +57,10 @@ const SearchBar = () => {
     }
 
     return (
-        <div id="SearchBar" className="ui item">
+        <div id="SearchBar" className="item">
             <form onSubmit={(e) => handleSubmit(e)} className="ui input">
                 <i className="search icon" />
-                <input className="prompt" value={searchTerm} onChange={(e) => handleInputChange(e)} placeholder="Search for a movie..."/>
+                <input className="prompt transparent" value={searchTerm} onChange={(e) => handleInputChange(e)} placeholder="Search for a movie..."/>
             </form>
             {autoCompleteResults.length > 0 && <div className="auto-complete">
                 {autoCompleteResults.map((result, index) => {

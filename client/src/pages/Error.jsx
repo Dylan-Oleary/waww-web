@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Logo from '../public/assets/images/error-ticket.svg';
 
 const Error = ({ type }) => {
-    const [message, setMessage] = useState('hey')
+    const [message, setMessage] = useState("")
 
     useEffect(() => {
         if(type === "authError"){

@@ -12,11 +12,9 @@
         z-index: 99;
     }
     .footer-logo {
-        img {
-            height: 180px;
-            width: 275px;
-            margin: 0 auto;
-        }
+        max-height: 180px;
+        max-width: 275px;
+        margin: 0 auto;
     }
     .item {
         margin: 0.5rem 0;

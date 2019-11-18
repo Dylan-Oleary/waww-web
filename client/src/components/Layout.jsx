@@ -38,7 +38,7 @@ const Layout = ({ children, persistSession, login }) => {
             {isLoading && <div className="ui active loader massive"></div>}
             {!isLoading && <Fragment>
                 <Nav/>
-                <div id="LayoutBody">
+                {/* <div id="LayoutBody">
                     <Switch>
                         <Route path="/about" component={ About } />
                         <Route path="/contact" component={ Contact } />
@@ -51,7 +51,7 @@ const Layout = ({ children, persistSession, login }) => {
                         <Route path="/users/account" component={ Account } />
                         <Route path="/" component={ Home } />
                     </Switch>
-                </div>
+                </div> */}
                 <Footer/>
             </Fragment>}
         </Container>

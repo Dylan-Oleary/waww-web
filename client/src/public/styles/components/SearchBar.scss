@@ -1,22 +1,24 @@
 #SearchBar {
     position: relative;
     flex-grow: 1;
+    padding-top: 0;
     form {
-        flex-grow: 1;
         display: flex;
         align-items: center;
-        * {
-            color: $primary-white;
-        }
+        width: 100%;
+        padding-bottom: 5px;
         input {
             border-bottom: 2px solid $primary-white;
             margin: 0 10px;
             font-size: 16px;
+            padding: 0;
         }
         .prompt {
-            background-color: $primary-blue;
             border: none !important;
             padding-left: 0;  
+        }
+        i {
+            font-size: 1.25rem;
         }
     }
     .auto-complete {

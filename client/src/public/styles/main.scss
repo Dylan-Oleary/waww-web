@@ -64,7 +64,7 @@ a {
     cursor: pointer;
     &:hover {
         &.red {
-            color: $primary-red;
+            color: $primary-red !important;
         }
     }
 }
@@ -310,6 +310,10 @@ button:focus {
         font-size: 2.5rem;
         letter-spacing: 0.1rem;
     }
+    &.nav {
+        font-size: 1.5rem;
+        letter-spacing: 0.05rem;
+    }
 }
 
 .mw {
@@ -350,7 +354,6 @@ button:focus {
         margin: 0 auto;
         border: 2px solid $primary-red;
         border-radius: 0.5rem;
-        // background-image: linear-gradient(to bottom, #13293d, #133349, #103d54, #0a485f, #00536a);
         box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
         &.landing {
             margin-top: 2rem;
@@ -426,11 +429,20 @@ button:focus {
     &.center {
         justify-content: center;
     }
+    &.end {
+        justify-content: flex-end;
+    }
     &.no-wrap {
         flex-wrap: nowrap;
     }
     &.align-center {
         align-items: center;
+    }
+    &.column {
+        flex-direction: column;
+    }
+    &.fluid {
+        margin: 0 !important;
     }
 }
 
@@ -471,6 +483,20 @@ button:focus {
     }
 }
 
+// .laptop {
+//     &.none {
+//         @media screen and (min-width: $tablet){
+//             display: none !important;
+//         }
+//     }
+// }
+
 .transparent {
-    background: transparent;
+    background: transparent !important;
+}
+
+.border {
+    &.none {
+        border: none;
+    }
 }
