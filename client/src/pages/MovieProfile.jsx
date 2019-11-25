@@ -10,6 +10,7 @@ const MovieProfile = ({ getSelectedMovie, clearSelectedMovie, selectedMovie, par
     let { movieID } = useParams();
 
     useEffect( () => {
+        console.log(movieID);
         getSelectedMovie(movieID);
 
         return () => clearSelectedMovie();

@@ -7,16 +7,14 @@ import MobileNav from './MobileNav';
 import DesktopNav from './DesktopNav';
 
 const Nav = ({ user, isLoggedIn, userLogout }) => {
-    const [windowWidth, setWindowWidth] = useState(0);
+    const [windowWidth, setWindowWidth] = useState(window.window.innerWidth);
 
     useEffect(() => {
-        if(windowWidth === 0){
-            window.addEventListener('resize', () => setWindowWidth(window.window.innerWidth));
-        }
+        window.addEventListener('resize', () => setWindowWidth(window.window.innerWidth));
 
         return () => window.removeEventListener('resize', () => setWindowWidth(window.window.innerWidth));
 
-    }, [windowWidth]);
+    }, []);
 
     return (
         <Fragment>

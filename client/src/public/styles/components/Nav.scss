@@ -21,10 +21,11 @@
     .nav-wrapper {
         max-width: 1200px;
         width: 90%;
+        height: 100%;
         margin: 0 auto;
-        padding: 10px 0;
         &.mobile {
             justify-content: space-between;
+            padding: 10px 0;
         }
     }
     button {
@@ -33,31 +34,85 @@
 }
 
 #DesktopNav {
-    .dropdown {
-        display: flex;
+    .nav-link {
         position: relative;
+        height: 100%;
+        display: flex;
         align-items: center;
-        max-width: 250px;
-        z-index: 999;
-        .dropdown-items {
-            text-align: center;
-            .item {
-                width: auto;
-                margin: 0 auto;
-                &:hover{
-                    background: $primary-red;
-                }
-                padding: 5px 10px;
-                span {
-                    text-align: center;
-                    width: 100%;
-                    color: $primary-blue;
+        border-left: 1px solid transparent;
+        border-right: 1px solid transparent;
+        &.active {
+            background: rgb(60,72,86);
+            border-left: 1px solid rgba(255,255,255, 0.7);
+            border-right: 1px solid rgba(255,255,255, 0.7);
+        }
+        .border-block {
+            position: absolute;
+            top: 65px;
+            width: 100%;
+            box-sizing: border-box;
+            height: 1px;
+            z-index: 1000;
+            background: rgb(60,72,86);
+        }
+        &.children {
+            &.left {
+                left: -1px;
+            }
+            &.right {
+                right: -1px;
+            }
+            &.w-425 {
+                width: 425px;
+                > div {
+                    width: 25%;
                 }
             }
-            background-color: $primary-white;
+            &.w-dynamic {
+                width: calc(100% + 75px);
+                > div {
+                    width: 100%;
+                }
+            }
             position: absolute;
-            top: 30px;
-            border: solid 1px $primary-blue;
+            background: rgb(60,72,86);
+            top: 65px;
+            z-index: 999;
+            height: auto;
+            flex-wrap: wrap;
+            font-family: 'Alatsi', sans-serif;
+            border: 1px solid rgba(255,255,255, 0.7);
+            box-shadow: 0 14px 28px -28px rgba(0,0,0,0.25), 0 10px 10px -10px rgba(0,0,0,0.22);
+            > div {
+                height: 50px;
+                text-align: center;
+                padding: 1rem 0.5rem;
+            }
+            a, span {
+                color: $primary-white;
+                font-size: 1.1rem;
+                -webkit-transition: font-size 0.25s ease-out;
+                -moz-transition: font-size 0.25s ease-out;
+                -o-transition: font-size 0.25s ease-out;
+                transition: font-size 0.25s ease-out;
+                &:hover{
+                    color: $primary-red;
+                    font-size: 1.2rem;
+                }
+
+            }
+        }
+        > a {
+            display: flex;
+            align-items: center;
+            height: 45px;
+            padding: 5px 0;
+            margin: 0 15px;
+            font-size: 1.5rem;
+            letter-spacing: 0.05rem;
+            &.mobile {
+                margin: 0;
+            }
         }
     }
     img {
@@ -135,9 +190,6 @@
                     font-size: 1rem;
                     padding: 0.4rem 0;
                     width: 50%;
-                    &:hover {
-                        color: $primary-red;
-                    }
                 }
             }
         }

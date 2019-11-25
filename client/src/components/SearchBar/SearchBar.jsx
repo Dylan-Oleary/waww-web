@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory, useLocation } from "react-router-dom";
 import { throttle, debounce } from "throttle-debounce";
-import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
-import expressServer from "../api";
-import altImage from '../public/assets/images/case-white.svg';
+import AutoCompleteResults from "./AutoCompleteResults";
+import expressServer from "../../api";
 
-const SearchBar = () => {
+const SearchBar = ({ isMobile }) => {
     const [searchTerm , setSearchTerm] = useState("");
     const [autoCompleteResults, setAutoCompleteResults] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
     const history = useHistory();
     const location = useLocation();
 
     useEffect(() => {
-        if(searchTerm !== ""){
+        if(searchTerm.trim() !== ""){
             if(searchTerm.length < 5){
                 throttleSearch(searchTerm);
             } else {
                 debounceSearch(searchTerm);
             }
-        } else {
-            setAutoCompleteResults([]);
         }
     }, [searchTerm]);
 
@@ -30,6 +30,8 @@ const SearchBar = () => {
     }, [location, history])
 
     const autoCompleteSearch = query => {
+        setIsSearching(true);
+
         expressServer.get("/api/search", {
             params: {
                 searchTerm: query,
@@ -37,6 +39,7 @@ const SearchBar = () => {
             }
         }).then(response => {
             setAutoCompleteResults(response.data.searchResults.slice(0, 5));
+            setIsSearching(false);
         })
     };
 
@@ -56,24 +59,30 @@ const SearchBar = () => {
         }
     }
 
+    const clearSearch = () => {
+        setSearchTerm("");
+        setAutoCompleteResults([]);
+    };
+
     return (
-        <div id="SearchBar" className="item">
+        <div id="SearchBar" className={`item ${isMobile ? "mobile" : "desktop"}`}>
             <form onSubmit={(e) => handleSubmit(e)} className="ui input">
-                <i className="search icon" />
+                <FontAwesomeIcon icon={faSearch} />
                 <input className="prompt transparent" value={searchTerm} onChange={(e) => handleInputChange(e)} placeholder="Search for a movie..."/>
+                {searchTerm.length > 0 &&
+                    <FontAwesomeIcon
+                        icon={faTimesCircle}
+                        onClick={clearSearch}
+                    />
+                }
             </form>
-            {autoCompleteResults.length > 0 && <div className="auto-complete">
-                {autoCompleteResults.map((result, index) => {
-                    return (
-                        <div className="auto-row" key={`autocomplete-${result.id}`}>
-                            <img src={result.poster_path ? `https://image.tmdb.org/t/p/w92${result.poster_path}` : altImage} />
-                            <div className="auto-title">
-                                <Link to={`/movies/${result.id}`} onClick={() => setSearchTerm("")}>{`${result.title} (${result.release_date.substring(0,4)})`}</Link>
-                            </div>
-                        </div>
-                    )
-                })}
-            </div>}
+            {searchTerm !== "" && <AutoCompleteResults 
+                isMobile={isMobile}
+                searchTerm={searchTerm}
+                isSearching={isSearching}
+                results={autoCompleteResults}
+                clearSearch={clearSearch}
+            />}
         </div>
     );
 }

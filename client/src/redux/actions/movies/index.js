@@ -3,7 +3,10 @@ import alertHandler from "../../../utils/alerts";
 
 export const getSelectedMovie = movieID => {
     return async dispatch => {
+        console.log("here")
         expressServer.get(`/api/movies/${movieID}`).then(response => {
+            console.log("here")
+            console.log(response.data)
             dispatch({ type: "GET_SELECTED_MOVIE", payload: response.data })
         }).catch(error => {
             const alert = alertHandler(error.respponse);

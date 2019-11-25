@@ -140,6 +140,7 @@ router.route("/random")
 router.route("/:movieID")
     .get((request, response) => {
         Movie.findById(parseInt(request.params.movieID)).then(movie => {
+            console.log(movie);
             if(movie !== null && movie !== undefined){
                 response.status(200).send(movie);
             } else {
@@ -149,6 +150,7 @@ router.route("/:movieID")
                         append_to_response: "credits,recommendations,images,videos"
                     }
                 }).then(movie => {
+                    console.log(movie);
                     const recommendedMovies = movie.data.recommendations.results.map(movie => {
                         return {
                             _id: movie.id,

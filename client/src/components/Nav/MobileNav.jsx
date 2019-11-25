@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons"
 
 import mobileLogo from "../../public/assets/images/inverted-logo.svg"
-import SearchBar from '../SearchBar';
+import SearchBar from '../SearchBar/';
 import OutsideClickDetect from '../OutsideClickDetect';
 
 
@@ -66,7 +66,7 @@ const MobileNav = ({ genres, isLoggedIn, user, userLogout }) => {
                         <Link className="heading nav shadow list red" onClick={() => handleNavItemClick(item)}>{item.label}</Link>
                     </div>
                     {(item.children.length > 0 && secondaryMenuOpen === item.id) && <div className={`flex secondary`}>
-                    {item.children.map(child => <Link className="shadow" onClick={() => handleSecondaryNavItemClick(`/discover/${child.slug}`)}>{child.name.toUpperCase()}</Link>)}
+                    {item.children.map(child => <Link className="shadow" onClick={() => handleSecondaryNavItemClick(`${item.link}${child.slug}`)}>{child.name.toUpperCase()}</Link>)}
                     </div>}
                 </Fragment>
             );
@@ -89,15 +89,19 @@ const MobileNav = ({ genres, isLoggedIn, user, userLogout }) => {
                         <Image 
                             src={user.profilePicture.secureURL}
                             className="shadow circle profile"
+                            onClick={() => history.push("/users/account")}
                         />
                     ) : (
                         <Link className="heading nav shadow" to="/login">Login</Link>
                     )}
                 </div>
             </div>
-            <div className={`mobile-slider wrapper ${mobileNavIsOpen ? "active" : "disabled"}`}>
+            {mobileNavIsOpen && <div className={`mobile-slider wrapper ${mobileNavIsOpen ? "active" : "disabled"}`}>
                 <div className="mobile-slider content">
                     <div className="flex column fluid">
+                        <SearchBar
+                            isMobile
+                        />
                         {navItems.map(item => renderNavItem(item))}
                     </div>
                     {isLoggedIn && <Fragment>
@@ -106,7 +110,7 @@ const MobileNav = ({ genres, isLoggedIn, user, userLogout }) => {
                         </div>
                     </Fragment>}
                 </div>
-            </div>
+            </div>}
         </div>
     );
 };

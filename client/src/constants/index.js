@@ -18,8 +18,13 @@ import Thriller from '../public/assets/images/discover-thriller.png';
 import War from '../public/assets/images/discover-war.png';
 import Western from '../public/assets/images/discover-western.png';
 
+import { userLogout } from "../redux/actions/session";
 
 const date = new Date().toISOString();
+
+export const userNavItems = [
+    { id: 0, name: "Account", slug: "account" }
+]
 
 export const genres = [
     { "id": 28, "name": "Action", slug: "action", backdropPath: Action },
@@ -36,7 +41,7 @@ export const genres = [
     { "id": 10402, "name": "Music", slug: "music", backdropPath: Music },
     { "id": 9648, "name": "Mystery", slug: "mystery", backdropPath: Mystery },
     { "id": 10749, "name": "Romance", slug: "romance", backdropPath: Romance },
-    { "id": 878, "name": "Science Fiction", slug: "science-fiction", backdropPath: ScienceFiction },
+    { "id": 878, "name": "Sci-Fi", slug: "science-fiction", backdropPath: ScienceFiction },
     { "id": 10770, "name": "TV Movie", slug: "tv-movie", backdropPath: TvMovie },
     { "id": 53, "name": "Thriller", slug: "thriller", backdropPath: Thriller },
     { "id": 10752, "name": "War", slug: "war", backdropPath: War },

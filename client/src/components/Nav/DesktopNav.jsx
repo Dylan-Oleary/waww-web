@@ -1,71 +1,68 @@
-import React, { useState, Fragment } from 'react';
-import { Link } from "react-router-dom";
-import { Grid, Icon, Image, GridColumn, GridRow } from "semantic-ui-react";
-import { Transition } from "react-transition-group";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons"
+import React, { Fragment } from 'react';
+import { Image } from "semantic-ui-react";
+import { genres, userNavItems } from "../../constants";
 
-import SearchBar from '../SearchBar';
-import OutsideClickDetect from '../OutsideClickDetect';
+import NavLink from "./NavLink";
+import SearchBar from "../SearchBar";
 
 const DesktopNav = ({ isLoggedIn, user, userLogout }) => {
-    const [listMenuIsOpen, setListMenu] = useState(false);
-    const [accountMenuIsOpen, setAccountMenuIsOpen] = useState(false);
+    const logoutButton = ref => {
+        const handleClick = () => {
+            ref.current.className = "nav-link";
+            userLogout();
+        };
+
+        return (
+            <span className="pointer shadow" onClick={handleClick}>Log Out</span>
+        );
+    }
 
     return (
         <div id="DesktopNav">
-            <div className="flex align-center nav-wrapper">
-                <Link className="item heading nav shadow" to="/"> Home </Link>
-                <Link className="item heading nav shadow" to="/discover/action">Discover</Link>
-                {isLoggedIn && <div className="item heading nav shadow">
-                    <OutsideClickDetect className="dropdown" state={listMenuIsOpen} setState={setListMenu}>
-                        <span>Lists</span>
-                        {listMenuIsOpen ? 
-                            (
-                                <Fragment>
-                                    <i onClick={() => setListMenu(false)} className="angle up icon"></i>
-                                    <div className="dropdown-items">
-                                        <Link className="item" onClick={() => setListMenu(false)} to="/users/watchlist">WatchList</Link>
-                                        <Link className="item" onClick={() => setListMenu(false)} to="/users/favourites">Favourites</Link>
-                                        <Link className="item" onClick={() => setListMenu(false)} to="/users/viewed">Viewed</Link>
-                                    </div>
-                                </Fragment>
-                            ) : (
-                                <i onClick={() => setListMenu(true)} className="angle down icon"></i>
-                            )
-                        }
-                    </OutsideClickDetect>
-                </div>}
-                <SearchBar />
+            <div className="flex align-center nav-wrapper desktop">
+                <NavLink 
+                    path="/"
+                    label="Home"
+                />
+                <NavLink
+                    path="/discover/"
+                    label="Discover"
+                    children={genres}
+                    childClasses={"left w-425"}
+                />
+                {isLoggedIn && <NavLink
+                    path="/users/movies"
+                    label="My Movies"
+                />}
+                <div className="flex">
+                    <SearchBar className="desktop" />
+                </div>
                 {isLoggedIn ?
                     (
-                        <div className="item heading nav shadow">
-                            <Image 
+                        <Fragment>
+                            <Image
                                 src={user.profilePicture.secureURL}
                                 className="shadow circle"
                                 avatar
                             />
-                            <OutsideClickDetect className="dropdown" state={accountMenuIsOpen} setState={setAccountMenuIsOpen}>
-                                <span>{user.username}</span>
-                                {accountMenuIsOpen ? 
-                                    (
-                                        <Fragment>
-                                            <i onClick={() => setAccountMenuIsOpen(false)} className="angle up icon"></i>
-                                            <div className="dropdown-items flex column">
-                                                <Link className="item" onClick={() => setAccountMenuIsOpen(false)} to="/users/account">My Account</Link>
-                                                <span onClick={userLogout} className="item"> Log Out </span>
-                                            </div>
-                                        </Fragment>
-                                    ) : (
-                                        <i onClick={() => setAccountMenuIsOpen(true)} className="angle down icon"></i>
-                                    )
-                                }
-                            </OutsideClickDetect>
-                        </div>
+                            <NavLink
+                                path="/users/"
+                                label={user.username}
+                                children={userNavItems}
+                                childClasses={"right column w-dynamic"}
+                                button={logoutButton}
+                            />
+                        </Fragment>
                     ) : (
                         <Fragment>
-                            <Link className="item heading nav shadow" to="/register"> Register </Link>
-                            <Link className="item heading nav shadow" to="/login"> Login </Link>
+                            <NavLink 
+                                path="/register"
+                                label="Register"
+                            />
+                            <NavLink 
+                                path="/login"
+                                label="Login"
+                            />
                         </Fragment>
                     )
                 }

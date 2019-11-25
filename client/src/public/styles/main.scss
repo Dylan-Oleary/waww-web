@@ -62,11 +62,11 @@ html, body, #root, #App, #Main {
 
 a {
     cursor: pointer;
-    &:hover {
-        &.red {
-            color: $primary-red !important;
-        }
-    }
+    // &:hover {
+    //     &.red {
+    //         color: $primary-red !important;
+    //     }
+    // }
 }
 
 .text {
@@ -77,6 +77,9 @@ a {
     &.medium {
         font-size: 1.25rem;
         font-weight: 300;
+    }
+    &.blue {
+        color: $primary-blue !important;
     }
 }
 
@@ -482,14 +485,6 @@ button:focus {
         }
     }
 }
-
-// .laptop {
-//     &.none {
-//         @media screen and (min-width: $tablet){
-//             display: none !important;
-//         }
-//     }
-// }
 
 .transparent {
     background: transparent !important;

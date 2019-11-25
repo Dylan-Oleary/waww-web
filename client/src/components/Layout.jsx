@@ -58,8 +58,6 @@ const Layout = ({ children, persistSession, login }) => {
     )
 }
 
-// "/users/account": () => <Layout><Account/></Layout>,
-
 const mapStateToProps = ({ login }) => {
     return { login };
 };
