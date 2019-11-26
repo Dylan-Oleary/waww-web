@@ -18,8 +18,6 @@ import Thriller from '../public/assets/images/discover-thriller.png';
 import War from '../public/assets/images/discover-war.png';
 import Western from '../public/assets/images/discover-western.png';
 
-import { userLogout } from "../redux/actions/session";
-
 const date = new Date().toISOString();
 
 export const userNavItems = [

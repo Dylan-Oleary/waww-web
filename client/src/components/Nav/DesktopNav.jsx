@@ -55,7 +55,7 @@ const DesktopNav = ({ isLoggedIn, user, userLogout }) => {
                         </Fragment>
                     ) : (
                         <Fragment>
-                            <NavLink 
+                            <NavLink
                                 path="/register"
                                 label="Register"
                             />

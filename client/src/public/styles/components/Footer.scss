@@ -5,6 +5,7 @@
     padding: 2.5rem;
     margin: 0 !important;
     position: relative;
+    overflow: hidden;
     @media screen and (min-width: $tablet) and (max-width: 991px){
         padding: 2.5rem 1rem;
     }

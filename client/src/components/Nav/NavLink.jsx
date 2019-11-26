@@ -1,7 +1,7 @@
 import React, { Fragment, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-const NavLink = ({ children, childClasses, label, path, button }) => {
+const NavLink = ({ children, childClasses, childClick, label, path, button, isMobile }) => {
     const [showChildren, setShowChildren] = useState(false);
     const navWrapper = useRef();
 
@@ -20,25 +20,37 @@ const NavLink = ({ children, childClasses, label, path, button }) => {
     };
 
     const handleItemClick = () => {
-        setShowChildren(false);
-        navWrapper.current.className = "nav-link";
+        if(isMobile && children){
+            navWrapper.current.className = `nav-link ${showChildren ? "" : "active"}`
+            setShowChildren(showChildren ? false : true);
+        } else {
+            setShowChildren(false);
+            navWrapper.current.className = "nav-link";
+        }
     }
 
     return (
         <div 
             className="nav-link"
             ref={navWrapper}
-            onMouseEnter={() => handleMouseEnter()}
-            onMouseLeave={() => handleMouseLeave()}
+            onMouseEnter={isMobile ? null : () => handleMouseEnter()}
+            onMouseLeave={isMobile ? null : () => handleMouseLeave()}
         >
-            <Link
-                className="heading shadow"
-                to={children ? "#" : path}
-            >
-                {label}
-            </Link>
+            {isMobile && button
+                ? (
+                    button()
+                ) : (
+                    <Link
+                        className="heading shadow"
+                        to={children ? "#" : path}
+                        onClick={isMobile ? () => handleItemClick() : null}
+                    >
+                        {label}
+                    </Link>
+                )
+            }
             {(children && showChildren) && <Fragment>
-                <div className="border-block"></div>
+                {!isMobile && <div className="border-block"></div>}
                 <div className={`nav-link children flex ${childClasses}`}>
                     {children.map(child => {
                         return (
@@ -46,22 +58,20 @@ const NavLink = ({ children, childClasses, label, path, button }) => {
                                 <Link
                                     className="shadow"
                                     to={`${path}${child.slug}`}
-                                    onClick={handleItemClick}
+                                    onClick={isMobile ? childClick : handleItemClick}
                                 >
                                     {child.name}
                                 </Link>
                             </div>
                         )
                     })}
-                    {(button && showChildren) && <div>
+                    {(button && showChildren && !isMobile) && <div>
                         {button(navWrapper)}
                     </div>}
                 </div>
             </Fragment>}
-            
-            
         </div>
-    )
+    );
 };
 
 export default NavLink;
