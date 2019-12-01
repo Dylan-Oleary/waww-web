@@ -81,11 +81,14 @@ const Home = ({ clearHomePage, getUserGenres, getNowPlaying, getPopular, getTopR
                     <div className="ui active loader massive"></div>
                 ) : (
                     <div className="main flex">
-                        <BannerSlider
-                            items={nowPlaying}
-                            className="title-card large"
-                        />
-                        {/* <div className="secondary">
+                        <div className="primary flex column">
+                            <h2>Now Playing</h2> 
+                            <BannerSlider
+                                items={nowPlaying}
+                                className="title-card large"
+                            />
+                        </div>
+                        <div className="secondary">
                             <h2>Coming Soon</h2>
                             <div className="card-group">
                                 {upcoming.map(item => (
@@ -96,6 +99,25 @@ const Home = ({ clearHomePage, getUserGenres, getNowPlaying, getPopular, getTopR
                                         onError={onError}
                                         />
                                         <Link
+                                            className="title-overlay small"
+                                            to={item.path}
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        {/* <div className="secondary">
+                            <h2>Upcoming</h2>
+                            <div className="card-group">
+                                {upcoming.map(item => (
+                                    <div
+                                        className="title-card small"
+                                        key={`main-secondary-${item._id}`}
+                                        style={{ backgroundImage: `url(${item.backdropPath}), url(${altLogo})` }}
+                                    >
+                                        <Link 
                                             className="title-overlay small"
                                             to={item.path}
                                         >
