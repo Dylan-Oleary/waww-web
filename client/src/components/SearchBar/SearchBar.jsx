@@ -73,6 +73,7 @@ const SearchBar = ({ isMobile }) => {
                     <FontAwesomeIcon
                         icon={faTimesCircle}
                         onClick={clearSearch}
+                        className="pointer"
                     />
                 }
             </form>

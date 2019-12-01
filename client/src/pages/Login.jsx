@@ -13,7 +13,6 @@ import Logo from '../public/assets/images/inverted-logo.svg';
 
 const Login = ({ authenticateUser, handleSubmit, isAttemptingLogin, isLoggedIn }) => {
     const [passwordHidden, setPasswordHidden] = useState(true);
-    const [confirmPasswordHidden, setConfirmPasswordHidden] = useState(true);
     const history = useHistory();
 
     useEffect(() => {
@@ -62,8 +61,8 @@ const Login = ({ authenticateUser, handleSubmit, isAttemptingLogin, isLoggedIn }
 
     const renderForm = () => {
         return (
-            <Container className="container-max" fluid={true}>
-                <Image className="logo main" src={Logo} fluid={true} onClick={() => history.push("/")}/>
+            <Container className="container-max" fluid>
+                <Image className="logo main" src={Logo} fluid onClick={() => history.push("/")}/>
                 <div className="form-wrapper landing">
                     <h1 className="heading large text white shadow">Login</h1>
                     <Form onSubmit={handleSubmit(formValues => onSubmit(formValues))}>

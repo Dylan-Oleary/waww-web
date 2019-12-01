@@ -21,9 +21,11 @@ router.route("/now-playing")
                 return {
                     _id: movie.id,
                     title: movie.title,
-                    poster_path: movie.poster_path,
-                    backdrop_path: movie.backdrop_path,
-                    release_date: movie.release_date
+                    posterPath: `https://image.tmdb.org/t/p/original/${movie.poster_path}`,
+                    backdropPath: `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`,
+                    releaseDate: movie.release_date || "",
+                    path: `/movies/${movie.id}`,
+                    label: `${movie.title} ${movie.release_date ? `(${movie.release_date.substring(0,4)})` : ""}`
                 }
             });
     
@@ -102,9 +104,11 @@ router.route("/upcoming")
                 return {
                     _id: movie.id,
                     title: movie.title,
-                    poster_path: movie.poster_path,
-                    backdrop_path: movie.backdrop_path,
-                    release_date: movie.release_date
+                    posterPath: `https://image.tmdb.org/t/p/original/${movie.poster_path}`,
+                    backdropPath: `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`,
+                    releaseDate: movie.release_date || "",
+                    path: `/movies/${movie.id}`,
+                    label: `${movie.title} ${movie.release_date ? `(${movie.release_date.substring(0,4)})` : ""}`
                 }
             });
     

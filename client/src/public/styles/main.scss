@@ -1,6 +1,7 @@
 @import './variables.scss';
 @import './icons.scss';
 @import './toastr.scss';
+@import "./components/BannerSlider.scss";
 @import './components/CardDeck.scss';
 @import './components/CardModal.scss';
 @import './components/Carousel.scss';
@@ -446,6 +447,9 @@ button:focus {
     }
     &.fluid {
         margin: 0 !important;
+    }
+    &.wrap {
+        flex-wrap: wrap;
     }
 }
 
