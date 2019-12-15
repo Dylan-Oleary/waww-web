@@ -17,13 +17,13 @@ router.route("/now-playing")
                 page: 1,
             }
         }).then(recordSet => {
-            const nowPlaying = recordSet.data.results.slice(0, 11).map( movie => {
+            const nowPlaying = recordSet.data.results.map( movie => {
                 return {
                     _id: movie.id,
                     title: movie.title,
-                    posterPath: `https://image.tmdb.org/t/p/original/${movie.poster_path}`,
-                    backdropPath: `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`,
-                    releaseDate: movie.release_date || "",
+                    poster_path: `https://image.tmdb.org/t/p/original/${movie.poster_path}`,
+                    backdrop_path: `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`,
+                    release_date: movie.release_date || "",
                     path: `/movies/${movie.id}`,
                     label: `${movie.title} ${movie.release_date ? `(${movie.release_date.substring(0,4)})` : ""}`
                 }
@@ -50,9 +50,11 @@ router.route("/popular")
                 return {
                     _id: movie.id,
                     title: movie.title,
-                    poster_path: movie.poster_path,
-                    backdrop_path: movie.backdrop_path,
-                    release_date: movie.release_date
+                    poster_path: `https://image.tmdb.org/t/p/original/${movie.poster_path}`,
+                    backdrop_path: `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`,
+                    release_date: movie.release_date || "",
+                    path: `/movies/${movie.id}`,
+                    label: `${movie.title} ${movie.release_date ? `(${movie.release_date.substring(0,4)})` : ""}`
                 }
             });
     
@@ -100,13 +102,13 @@ router.route("/upcoming")
                 page: 1
             }
         }).then(recordSet => {
-            const upcoming = recordSet.data.results.slice(1, 7).map( movie => {
+            const upcoming = recordSet.data.results.map( movie => {
                 return {
                     _id: movie.id,
                     title: movie.title,
-                    posterPath: `https://image.tmdb.org/t/p/original/${movie.poster_path}`,
-                    backdropPath: `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`,
-                    releaseDate: movie.release_date || "",
+                    poster_path: `https://image.tmdb.org/t/p/original/${movie.poster_path}`,
+                    backdrop_path: `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`,
+                    release_date: movie.release_date || "",
                     path: `/movies/${movie.id}`,
                     label: `${movie.title} ${movie.release_date ? `(${movie.release_date.substring(0,4)})` : ""}`
                 }
@@ -144,7 +146,6 @@ router.route("/random")
 router.route("/:movieID")
     .get((request, response) => {
         Movie.findById(parseInt(request.params.movieID)).then(movie => {
-            console.log(movie);
             if(movie !== null && movie !== undefined){
                 response.status(200).send(movie);
             } else {
@@ -154,7 +155,6 @@ router.route("/:movieID")
                         append_to_response: "credits,recommendations,images,videos"
                     }
                 }).then(movie => {
-                    console.log(movie);
                     const recommendedMovies = movie.data.recommendations.results.map(movie => {
                         return {
                             _id: movie.id,

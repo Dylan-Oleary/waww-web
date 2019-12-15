@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
-    Route,
-    Link
+    Route
 } from "react-router-dom";
 import { connect } from 'react-redux';
 import { ToastContainer, toast, Zoom } from 'react-toastify';
@@ -71,7 +70,7 @@ const App = ({ alert }) => {
 }
 
 const mapStateToProps = ({ alert }) => {
-    return { 
+    return {
         alert
     };
 }

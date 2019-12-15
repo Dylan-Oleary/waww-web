@@ -49,8 +49,3 @@ export const UPDATE_SELECTED_MOVIE = "UPDATE_SELECTED_MOVIE";
 export const UPDATE_USER = "UPDATE_USER";
 export const UPDATE_USER_PROFILE = 'UPDATE_USER_PROFILE';
 export const CLEAR_USER = 'CLEAR_USER';
-
-
-
-
-

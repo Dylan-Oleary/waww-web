@@ -26,7 +26,7 @@ const BannerSlider = ({ items, className }) => {
                         key={`banner-slider-${item._id}`}
                     >
                         <img
-                            src={item.backdropPath}
+                            src={item.backdrop_path}
                             alt={item.label}
                             onError={onError}
                         />

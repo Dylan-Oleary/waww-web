@@ -290,6 +290,12 @@ button:focus {
                 0px 8px 13px rgba(0,0,0,0.1),
                 0px 18px 23px rgba(0,0,0,0.1);
 }
+
+.tight-shadow {
+    text-shadow: 0 2px 0 0px hsl(330, 100%, 25%),
+            0 3px 2px 0px hsla(330, 100%, 15%, 0.5);
+}
+
 .border-bottom {
     &.red {
         border-bottom: 1px solid $primary-red !important;
@@ -309,6 +315,10 @@ button:focus {
             font-size: 2.5rem;
             letter-spacing: 0.20rem;
         }
+    }
+    &.big {
+        font-size: 3rem;
+        letter-spacing: 0.15rem;
     }
     &.small {
         font-size: 2.5rem;
@@ -451,6 +461,9 @@ button:focus {
     &.wrap {
         flex-wrap: wrap;
     }
+    &.align-bottom {
+        align-items: flex-end;
+    }
 }
 
 .footnote {
@@ -498,4 +511,20 @@ button:focus {
     &.none {
         border: none;
     }
+}
+
+.button {
+    &.waww-primary {
+        color: $primary-white;
+        background-color: $primary-red;
+        &:hover {
+            color: $primary-white;
+            text-decoration: none !important;
+            background-color: $secondary-red;
+        }
+    }
+}
+
+.primary-blue {
+    color: $primary-blue;
 }

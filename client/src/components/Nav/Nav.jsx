@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState, useRef, Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import { genres } from "../../constants";
@@ -7,7 +7,8 @@ import MobileNav from './MobileNav';
 import DesktopNav from './DesktopNav';
 
 const Nav = ({ user, isLoggedIn, userLogout }) => {
-    const [windowWidth, setWindowWidth] = useState(window.window.innerWidth);
+    const windowWidth = useRef(window.window.innerWidth);
+    const [isMobile, setIsMobile] = useState(window.window.innerWidth < 768 ? true : false);
 
     useEffect(() => {
         window.addEventListener('resize', () => setWindowWidth(window.window.innerWidth));
@@ -16,9 +17,22 @@ const Nav = ({ user, isLoggedIn, userLogout }) => {
 
     }, []);
 
+    const setWindowWidth = width => {
+        const previousWidth = windowWidth.current;
+
+        windowWidth.current = width;
+        
+        if(windowWidth.current < 768 && previousWidth >= 768){
+            setIsMobile(true);
+        }
+        if(windowWidth.current >= 768 && previousWidth < 768){
+            setIsMobile(false);
+        }
+    };
+
     return (
         <Fragment>
-            {windowWidth < 768 ? (
+            {isMobile ? (
                 <MobileNav
                     genres={genres}
                     isLoggedIn={isLoggedIn}

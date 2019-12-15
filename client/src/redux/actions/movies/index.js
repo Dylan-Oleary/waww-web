@@ -170,8 +170,10 @@ export const getTopRated = () => {
 export const getUpcoming = () => {
     return async dispatch => {
         expressServer.get('/api/movies/upcoming').then(response => {
+            console.log(response);
             dispatch({ type: "GET_UPCOMING", payload: response.data });
         }).catch(error => {
+            console.log(error);
             const alert = alertHandler(error.response);
 
             dispatch({ type: "LOG_ERROR", payload: alert });

@@ -3,45 +3,12 @@
     flex-direction: column;
     margin: 2rem auto;
     align-items: center;
-    max-width: 1200px;
-    width: 95%;
-    @media screen and (min-width: $mobile-S) and (max-width: $mobile-XL-cap){
+    min-height: 100%;
+    max-width: 1100px;
+    width: 90%;
+    @media screen and (max-width: $tablet) {
+        margin: 2rem 0;
         width: 100%;
-        .main {
-            flex-direction: column;
-            .primary {
-                min-width: 100%;
-            }
-            .title-card {
-                &.large {
-                    img {
-                        height: auto !important;
-                        max-width: 100% !important;
-                    }
-                }
-            }
-        }
-    }
-    @media screen and (min-width: $tablet) and (max-width: $tablet-cap){
-        .card-group {
-            height: 335px !important;
-        }
-        .primary {
-            width: 70% !important;
-        }
-        .title-card {
-            &.large {
-                img {
-                    height: 335px !important;
-                }
-            }
-            &.small {
-                width: 50% !important;
-                &:nth-of-type(5), &:nth-of-type(6){
-                    display: none;;
-                }
-            }
-        }
     }
     .panel {
         display: flex;
@@ -49,58 +16,35 @@
     .main {
         display: flex;
         width: 100%;
-        .primary {
-            width: 62.5%
-        }
-        .secondary {
-            display: flex;
-            flex-direction: column;
-            .card-group {
-                display: flex;
-                flex-direction: row;
-                flex-wrap: wrap;
-                height: 375px;
-                display: flex;
-                flex-wrap: wrap;
-            }
-        }
-        .title-card {
-            position: relative;
-            &.large {
-                img {
-                    height: 375px;
-                    width: 100%;
-                }
-                &:hover {
-                    cursor: pointer;
-                }
-            }
-            &.small {
-                width: 33.3%;
-                height: 50%;
-                img {
-                    height: 100%;
-                    width: 100%;
-                }
-            }
-        }
+        max-height: 100%;
+        height: 475px;
+    }
+    .secondary {
+        width: 100%;
     }
     .title-overlay {
         position: absolute;
         width: 100%;
         bottom: 0;
+        left: 0;
         padding: 1rem 2rem;
         font-size: 1.25rem;
         color: $primary-white;
-        background-color: rgba(71, 73, 76, 0.5);
+        background-color: rgba(48, 49, 51, 0.5);
         &:hover {
             text-decoration: underline;
+            color: $primary-red;
         }
         &.small {
             padding: .5rem 1rem;
             line-height: 1.05rem;
             font-size: 0.9rem;
             left: 0;
+        }
+    }
+    a {
+        &:hover {
+            text-decoration: underline;
         }
     }
     // @media (min-width: 1200px) and (max-width: $laptop-cap){

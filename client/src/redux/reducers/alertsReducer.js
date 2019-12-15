@@ -8,6 +8,7 @@ const defaultAlert = {
 }
 
 export const alertsReducer = (state = defaultAlert , action) => {
+    console.log(action)
     switch(action.type){
         case LOG_ALERT :
             return action.payload;
