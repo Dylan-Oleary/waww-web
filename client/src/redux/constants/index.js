@@ -16,6 +16,8 @@ export const GET_NOW_PLAYING = 'GET_NOW_PLAYING';
 export const GET_POPULAR = 'GET_POPULAR';
 export const GET_TOP_RATED = 'GET_TOP_RATED';
 export const GET_UPCOMING = 'GET_UPCOMING';
+export const GET_CLASSICS = "GET_CLASSICS";
+export const GET_HOMEPAGE_CONTENT = "GET_HOMEPAGE_CONTENT";
 export const GET_USER_GENRES = 'GET_USER_GENRES';
 export const CLEAR_HOME_PAGE = 'CLEAR_HOME_PAGE';
 

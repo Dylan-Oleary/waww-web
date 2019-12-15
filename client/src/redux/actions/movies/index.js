@@ -3,10 +3,7 @@ import alertHandler from "../../../utils/alerts";
 
 export const getSelectedMovie = movieID => {
     return async dispatch => {
-        console.log("here")
         expressServer.get(`/api/movies/${movieID}`).then(response => {
-            console.log("here")
-            console.log(response.data)
             dispatch({ type: "GET_SELECTED_MOVIE", payload: response.data })
         }).catch(error => {
             const alert = alertHandler(error.respponse);
@@ -170,13 +167,59 @@ export const getTopRated = () => {
 export const getUpcoming = () => {
     return async dispatch => {
         expressServer.get('/api/movies/upcoming').then(response => {
-            console.log(response);
             dispatch({ type: "GET_UPCOMING", payload: response.data });
         }).catch(error => {
-            console.log(error);
             const alert = alertHandler(error.response);
 
             dispatch({ type: "LOG_ERROR", payload: alert });
+        });
+    };
+};
+
+export const getClassics = () => {
+    return async dispatch => {
+        expressServer.get('/api/movies/classics').then(response => {
+            dispatch({ type: "GET_CLASSICS", payload: response.data });
+        }).catch(error => {
+            const alert = alertHandler(error.response);
+
+            dispatch({ type: "LOG_ERROR", payload: alert });
+        });
+    };
+}
+
+export const getHomePageContent = () => {
+    return async dispatch => {
+        Promise.all([
+            expressServer.get("/api/movies/classics"),
+            expressServer.get("/api/movies/upcoming"),
+            expressServer.get("/api/movies/top-rated"),
+            expressServer.get("/api/movies/popular"),
+            expressServer.get("/api/movies/now-playing")
+        ]).then(([
+            { data: { classics = [] }},
+            { data: { upcoming = [] }},
+            { data: { topRated = [] }},
+            { data: { popular = [] }},
+            { data: { nowPlaying = [] }}
+        ]) => {
+            dispatch({
+                type: "GET_HOMEPAGE_CONTENT",
+                payload: {
+                    classics: classics,
+                    upcoming: upcoming,
+                    topRated: topRated,
+                    popular: popular,
+                    nowPlaying: nowPlaying
+                }
+            });
+        }).catch(error => {
+            console.error(error);
+
+            dispatch({
+                type: "HOMEPAGE_ERROR",
+                payload: { hasError: true }
+            });
         });
     };
 };

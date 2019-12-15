@@ -11,7 +11,7 @@ const DesktopMultiPanel = ({ title, content }) => {
     return (
         <div id="DesktopMultiPanel">
             <div className="flex between title-row">
-                <h2 className="heading big primary-blue tight-shadow">{title}</h2>
+                <h2 className="heading small primary-blue tight-shadow">{title}</h2>
                 <Link
                     className="ui button waww-primary"
                 >

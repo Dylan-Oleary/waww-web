@@ -1,55 +1,41 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from "react-router-dom";
 
 import BannerSlider from "../components/BannerSlider";
 import MultiPanel from "../components/MultiPanel";
-import { getNowPlaying, getPopular, getTopRated, getUpcoming } from '../redux/actions/movies';
+import { getHomePageContent } from '../redux/actions/movies';
 import { getUserGenres } from '../redux/actions/pages';
-import { genres } from '../constants';
 import { setBrowserTitle } from "../utils/browserTitle";
+import { shuffle } from "../utils/arrayHelpers";
 
-const Home = ({ getUserGenres, getNowPlaying, getPopular, getTopRated, getUpcoming, homePage, login, user }) => {
-    const { nowPlaying, popular, topRated, upcoming, userContent } = homePage;
-    const [isLoading, setIsLoading] = useState(true);
+const Home = ({ getUserGenres, getHomePageContent, homePage, login, user }) => {
+    const { isLoading, hasError, classics, nowPlaying, popular, topRated, upcoming, userContent } = homePage;
     const history = useHistory();
 
-    //TODO: Gather calls more efficiently
     useEffect(() => {
-        if(nowPlaying.length === 0 || upcoming.length === 0 || popular.length === 0){
-            getNowPlaying();
-            getPopular();
-            // getTopRated();
-            getUpcoming();
+        if(isLoading){
             setBrowserTitle(`WAWW | Home`);
-        } else {
-            setIsLoading(false);
+            getHomePageContent();
+        } else if(hasError){
+            history.push("/error");
         }
-    },[nowPlaying, upcoming, popular])
-
-    const renderSideBar = () => {
-        return (
-            <div className="sticky">
-                <h3>Discover</h3>
-                {genres.map( genre => <span className="" onClick={() => history.push(`/discover/${genre.slug}`)} key={`${genre.id}-genre`}>{genre.name}</span>)}
-            </div>
-        )
-    }
+    }, [isLoading]);
 
     return (
         <div id="Home">
-            {isLoading 
+            {isLoading
                 ? (
                     <div className="ui active loader massive"></div>
                 ) : (
                     <Fragment>
                         <div className="main flex column">
+                            <h2 className="heading small primary-blue tight-shadow">Now Playing</h2>
                             <BannerSlider
                                 items={nowPlaying}
                                 className="title-card large"
                             />
                         </div>
-                        <hr className="break"/>
                         <div className="secondary">
                             <MultiPanel
                                 title="Coming Soon"
@@ -58,6 +44,14 @@ const Home = ({ getUserGenres, getNowPlaying, getPopular, getTopRated, getUpcomi
                             <MultiPanel
                                 title="Popular"
                                 content={popular}
+                            />
+                            <MultiPanel
+                                title="Top Rated"
+                                content={shuffle(topRated)}
+                            />
+                            <MultiPanel
+                                title="Classics"
+                                content={shuffle(classics)}
                             />
                         </div>
                     </Fragment>
@@ -75,4 +69,4 @@ const mapStateToProps = ({ homePage, login, user }) => {
     };
 };
 
-export default connect(mapStateToProps, { getNowPlaying, getUserGenres, getPopular, getTopRated, getUpcoming })(Home);
+export default connect(mapStateToProps, { getHomePageContent, getUserGenres })(Home);

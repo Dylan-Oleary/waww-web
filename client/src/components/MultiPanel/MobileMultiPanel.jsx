@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExternalLinkSquareAlt } from "@fortawesome/free-solid-svg-icons";
+import { Icon } from "semantic-ui-react";
 
 import altLogo from '../../public/assets/images/WAWW-pink.png';
 
@@ -13,12 +12,15 @@ const MobileMultiPanel = ({ content, title }) => {
     return (
         <div id="MobileMultiPanel">
             <div className="flex between">
-                <h4>{title}</h4>
+                <h4 className="heading tiny primary-blue tight-shadow">{title}</h4>
                 <Link
-                    className="waww-primary"
+                    className="waww-primary flex"
                 >
-                    <FontAwesomeIcon
-                        icon={faExternalLinkSquareAlt}
+                    <Icon
+                        name="external alternate"
+                        bordered
+                        size="small"
+                        className="tight-shadow"
                     />
                 </Link>
             </div>

@@ -79,9 +79,11 @@ router.route("/top-rated")
                 return {
                     _id: movie.id,
                     title: movie.title,
-                    poster_path: movie.poster_path,
-                    backdrop_path: movie.backdrop_path,
-                    release_date: movie.release_date
+                    poster_path: `https://image.tmdb.org/t/p/original/${movie.poster_path}`,
+                    backdrop_path: `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`,
+                    release_date: movie.release_date || "",
+                    path: `/movies/${movie.id}`,
+                    label: `${movie.title} ${movie.release_date ? `(${movie.release_date.substring(0,4)})` : ""}`
                 }
             });
 
@@ -121,6 +123,39 @@ router.route("/upcoming")
     })
 ; //close router.route("/upcoming")
 
+router.route("/classics")
+    .get((request, response) => {
+        tmdb.get("/discover/movie", {
+            params: {
+                api_key: process.env.TMDB_KEY,
+                language: "en-US",
+                region: "US",
+                sort_by: "popularity.desc",
+                include_adult: false,
+                page: 1,
+                "primary_release_date.lte": "1989-12-31"
+
+            }
+        }).then(recordSet => {
+            const classics = recordSet.data.results.map( movie => {
+                return {
+                    _id: movie.id,
+                    title: movie.title,
+                    poster_path: `https://image.tmdb.org/t/p/original/${movie.poster_path}`,
+                    backdrop_path: `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`,
+                    release_date: movie.release_date || "",
+                    path: `/movies/${movie.id}`,
+                    label: `${movie.title} ${movie.release_date ? `(${movie.release_date.substring(0,4)})` : ""}`
+                }
+            });
+    
+            response.status(200).send({ classics });
+        }).catch(() => {
+            response.status(502).send({ message: "Woops! Something went wrong on our end! Please try again" });
+        });
+    })
+;
+
 router.route("/random")
     .get((request, response) => {
         const randomPage = Math.ceil(Math.random() * (150 - 1) + 1);
@@ -158,9 +193,12 @@ router.route("/:movieID")
                     const recommendedMovies = movie.data.recommendations.results.map(movie => {
                         return {
                             _id: movie.id,
-                            poster_path: movie.poster_path,
-                            release_date: movie.release_date,
-                            title: movie.title
+                            title: movie.title,
+                            poster_path: `https://image.tmdb.org/t/p/original/${movie.poster_path}`,
+                            backdrop_path: `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`,
+                            release_date: movie.release_date || "",
+                            path: `/movies/${movie.id}`,
+                            label: `${movie.title} ${movie.release_date ? `(${movie.release_date.substring(0,4)})` : ""}`
                         }
                     });
 

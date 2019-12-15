@@ -63,11 +63,6 @@ html, body, #root, #App, #Main {
 
 a {
     cursor: pointer;
-    // &:hover {
-    //     &.red {
-    //         color: $primary-red !important;
-    //     }
-    // }
 }
 
 .text {
@@ -292,8 +287,7 @@ button:focus {
 }
 
 .tight-shadow {
-    text-shadow: 0 2px 0 0px hsl(330, 100%, 25%),
-            0 3px 2px 0px hsla(330, 100%, 15%, 0.5);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 .border-bottom {
@@ -317,12 +311,15 @@ button:focus {
         }
     }
     &.big {
-        font-size: 3rem;
-        letter-spacing: 0.15rem;
+        font-size: 2.75rem;
+        letter-spacing: 0.1rem;
     }
     &.small {
         font-size: 2.5rem;
         letter-spacing: 0.1rem;
+    }
+    &.tiny {
+        font-size: 1.75rem;
     }
     &.nav {
         font-size: 1.5rem;
